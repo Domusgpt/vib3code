@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VIB3CODE Deployment Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #1a1a2e; 
+            color: white; 
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .success { background: #00ff88; color: black; }
+        .error { background: #ff0066; }
+    </style>
+</head>
+<body>
+    <h1>VIB3CODE Deployment Test - 2025-06-14</h1>
+    <div id="status"></div>
+    
+    <script>
+        const status = document.getElementById('status');
+        
+        // Test if magazine router loads
+        setTimeout(() => {
+            if (typeof window.MagazineRouter !== 'undefined') {
+                status.innerHTML += '<div class="status success">✅ Magazine Router: LOADED</div>';
+                status.innerHTML += '<div class="status success">✅ Current Section: ' + window.MagazineRouter.currentSection + '</div>';
+            } else {
+                status.innerHTML += '<div class="status error">❌ Magazine Router: NOT LOADED</div>';
+            }
+            
+            // Test if magazine content exists
+            const magazineContent = document.querySelector('.magazine-content');
+            if (magazineContent) {
+                status.innerHTML += '<div class="status success">✅ Magazine Content Container: FOUND</div>';
+                status.innerHTML += '<div class="status success">✅ Magazine Children: ' + magazineContent.children.length + '</div>';
+            } else {
+                status.innerHTML += '<div class="status error">❌ Magazine Content Container: NOT FOUND</div>';
+            }
+            
+            // Test theme engine
+            if (typeof window.ThemeEngine !== 'undefined') {
+                status.innerHTML += '<div class="status success">✅ Theme Engine: LOADED</div>';
+            } else {
+                status.innerHTML += '<div class="status error">❌ Theme Engine: NOT LOADED</div>';
+            }
+            
+        }, 2000);
+    </script>
+</body>
+</html>
