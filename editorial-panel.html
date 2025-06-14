@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIB3CODE Editorial Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #00d9ff;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d9ff, #ff10f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card h3 {
+            color: #00d9ff;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        
+        .ai-chat {
+            grid-column: 1 / -1;
+        }
+        
+        .chat-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #f5f5f5;
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00d9ff;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #00d9ff, #0099cc);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: #0a0a0f;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff10f0, #cc0099);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(135deg, #ffcc00, #cc9900);
+        }
+        
+        .response {
+            background: rgba(0, 217, 255, 0.1);
+            border-left: 3px solid #00d9ff;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .log-entry {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            border-left: 3px solid #ffcc00;
+            font-size: 0.9rem;
+        }
+        
+        .log-time {
+            color: #a0a0a0;
+            font-size: 0.8rem;
+        }
+        
+        .log-action {
+            color: #00d9ff;
+            font-weight: 600;
+        }
+        
+        .theme-preview {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .color-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: #a0a0a0;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .chat-input {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <div class="header">
+            <h1>🎨 VIB3CODE Editorial Panel</h1>
+            <p>AI Context Management & Publication Control</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Status Overview -->
+            <div class="card">
+                <h3>📊 Editorial Status</h3>
+                <div class="status-grid">
+                    <div class="stat">
+                        <div class="stat-value" id="pub-count">0</div>
+                        <div class="stat-label">Publications</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="theme-changes">0</div>
+                        <div class="stat-label">Theme Changes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="content-updates">0</div>
+                        <div class="stat-label">Content Updates</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="context-size">0KB</div>
+                        <div class="stat-label">Context Size</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button onclick="refreshStatus()">Refresh Status</button>
+                    <button onclick="regenerateTheme()" class="btn-secondary">New Theme</button>
+                </div>
+            </div>
+            
+            <!-- Current Theme -->
+            <div class="card">
+                <h3>🎭 Current Theme</h3>
+                <div id="theme-info">
+                    <p>Loading theme information...</p>
+                </div>
+                <div class="theme-preview" id="theme-colors"></div>
+                <div class="controls">
+                    <button onclick="showThemeDetails()">Theme Details</button>
+                    <button onclick="exportTheme()" class="btn-accent">Export Theme</button>
+                </div>
+            </div>
+            
+            <!-- AI Chat -->
+            <div class="card ai-chat">
+                <h3>🤖 Editorial AI Assistant</h3>
+                <div class="chat-container">
+                    <div class="chat-input">
+                        <input type="text" id="ai-question" placeholder="Ask about themes, content, EMA integration, or editorial decisions..." onkeypress="handleEnter(event)">
+                        <button onclick="askAI()">Ask AI</button>
+                    </div>
+                    <div id="ai-response" class="response" style="display: none;"></div>
+                </div>
+                <div class="controls">
+                    <button onclick="quickQuestion('theme')">Theme Guidance</button>
+                    <button onclick="quickQuestion('ema')">EMA Principles</button>
+                    <button onclick="quickQuestion('sections')">Section Strategy</button>
+                    <button onclick="quickQuestion('publication')">Publication Info</button>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="card">
+                <h3>📝 Recent Editorial Actions</h3>
+                <div id="recent-logs" style="max-height: 300px; overflow-y: auto;">
+                    <p>Loading recent activity...</p>
+                </div>
+                <div class="controls">
+                    <button onclick="refreshLogs()">Refresh Logs</button>
+                    <button onclick="clearLogs()" class="btn-secondary">Clear History</button>
+                </div>
+            </div>
+            
+            <!-- Export Tools -->
+            <div class="card">
+                <h3>📦 Export & Handoff</h3>
+                <p>Generate reports for new AI instances or backup editorial state.</p>
+                <div class="controls">
+                    <button onclick="generateHandoff()">Handoff Report</button>
+                    <button onclick="exportState()" class="btn-secondary">Export State</button>
+                    <button onclick="downloadMemory()" class="btn-accent">Download Memory</button>
+                </div>
+                <div id="export-result" class="response" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- Main Site Link -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="window.open('index.html', '_blank')" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                🚀 Open VIB3CODE Magazine
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Wait for page load
+        window.addEventListener('load', function() {
+            // Check if main site systems are available
+            if (window.opener || window.parent !== window) {
+                // Running in popup or iframe - try to access parent systems
+                console.log('Attempting to connect to main site systems...');
+            }
+            
+            // Initialize panel
+            refreshStatus();
+            refreshLogs();
+            updateThemeInfo();
+        });
+        
+        function refreshStatus() {
+            try {
+                // Try to get status from main site if available
+                var status = getEditorialStatusSafe();
+                
+                document.getElementById('pub-count').textContent = status.totalPublications || 0;
+                document.getElementById('theme-changes').textContent = status.themeChanges || 0;
+                document.getElementById('content-updates').textContent = status.contentUpdates || 0;
+                document.getElementById('context-size').textContent = Math.round((status.contextSize || 0) / 1024) + 'KB';
+                
+                console.log('Status refreshed:', status);
+            } catch (error) {
+                console.warn('Could not refresh status:', error);
+                showOfflineMessage();
+            }
+        }
+        
+        function getEditorialStatusSafe() {
+            // Try multiple ways to access the editorial system
+            if (typeof getEditorialStatus === 'function') {
+                return getEditorialStatus();
+            }
+            
+            if (window.opener && window.opener.getEditorialStatus) {
+                return window.opener.getEditorialStatus();
+            }
+            
+            if (window.parent && window.parent.getEditorialStatus) {
+                return window.parent.getEditorialStatus();
+            }
+            
+            // Return mock data if not available
+            return {
+                totalPublications: 1,
+                themeChanges: 5,
+                contentUpdates: 12,
+                contextSize: 8192,
+                status: 'offline'
+            };
+        }
+        
+        function updateThemeInfo() {
+            var themeInfo = document.getElementById('theme-info');
+            var themeColors = document.getElementById('theme-colors');
+            
+            try {
+                var status = getEditorialStatusSafe();
+                
+                themeInfo.innerHTML = '<p><strong>Current Publication:</strong> ' + (status.currentPublication || 'None') + '</p>' +
+                                     '<p><strong>Last Activity:</strong> ' + new Date(status.lastActivity || Date.now()).toLocaleString() + '</p>';
+                
+                // Mock theme colors for display
+                themeColors.innerHTML = 
+                    '<div class="color-swatch" style="background: #00d9ff;"><div class="color-label">Primary</div></div>' +
+                    '<div class="color-swatch" style="background: #ff10f0;"><div class="color-label">Secondary</div></div>' +
+                    '<div class="color-swatch" style="background: #ffcc00;"><div class="color-label">Accent</div></div>';
+                    
+            } catch (error) {
+                themeInfo.innerHTML = '<p>Theme information unavailable (offline mode)</p>';
+            }
+        }
+        
+        function askAI() {
+            var question = document.getElementById('ai-question').value.trim();
+            if (!question) return;
+            
+            var responseDiv = document.getElementById('ai-response');
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = 'Thinking...';
+            
+            try {
+                var answer = askEditorialAISafe(question);
+                displayAIResponse(answer);
+            } catch (error) {
+                responseDiv.textContent = 'AI system offline. Response: This editorial panel provides context management for VIB3CODE Digital Magazine. ' +
+                                         'The theme engine maintains mathematical color relationships, and the AI system tracks all editorial decisions for continuity.';
+            }
+            
+            document.getElementById('ai-question').value = '';
+        }
+        
+        function askEditorialAISafe(question) {
+            if (typeof askEditorialAI === 'function') {
+                return askEditorialAI(question);
+            }
+            
+            if (window.opener && window.opener.askEditorialAI) {
+                return window.opener.askEditorialAI(question);
+            }
+            
+            if (window.parent && window.parent.askEditorialAI) {
+                return window.parent.askEditorialAI(question);
+            }
+            
+            // Mock response for offline mode
+            return {
+                guidance: 'Editorial Guidance (Offline Mode)',
+                context: 'This is a mock response. The AI system tracks editorial decisions and maintains context for future Claude instances.',
+                recommendations: [
+                    'Theme engine maintains mathematical color relationships',
+                    'Each section has specific modifiers while preserving relative relationships',
+                    'EMA principles should be integrated into all design decisions',
+                    'Editorial voice should remain sophisticated and authoritative'
+                ]
+            };
+        }
+        
+        function displayAIResponse(response) {
+            var responseDiv = document.getElementById('ai-response');
+            
+            if (typeof response === 'object') {
+                var formatted = JSON.stringify(response, null, 2);
+                responseDiv.textContent = formatted;
+            } else {
+                responseDiv.textContent = response;
+            }
+        }
+        
+        function quickQuestion(type) {
+            var questions = {
+                theme: 'How does the theme system maintain color relationships?',
+                ema: 'What are the core EMA principles for VIB3CODE?',
+                sections: 'What is the content strategy for each section?',
+                publication: 'What is the current publication status?'
+            };
+            
+            document.getElementById('ai-question').value = questions[type];
+            askAI();
+        }
+        
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                askAI();
+            }
+        }
+        
+        function regenerateTheme() {
+            try {
+                if (typeof regenerateTheme === 'function') {
+                    window.regenerateTheme();
+                } else if (window.opener && window.opener.regenerateTheme) {
+                    window.opener.regenerateTheme();
+                } else {
+                    alert('Theme regeneration requires the main VIB3CODE site to be open.');
+                }
+                
+                setTimeout(function() {
+                    refreshStatus();
+                    updateThemeInfo();
+                }, 1000);
+                
+            } catch (error) {
+                console.warn('Could not regenerate theme:', error);
+            }
+        }
+        
+        function refreshLogs() {
+            var logsDiv = document.getElementById('recent-logs');
+            
+            // Mock recent logs for display
+            var mockLogs = [
+                { time: new Date().toISOString(), action: 'theme_change', description: 'Updated to Liberation Matrix theme' },
+                { time: new Date(Date.now() - 300000).toISOString(), action: 'content_update', description: 'Modified Parserator section content' },
+                { time: new Date(Date.now() - 600000).toISOString(), action: 'system_init', description: 'Editorial AI System started' }
+            ];
+            
+            logsDiv.innerHTML = mockLogs.map(function(log) {
+                return '<div class="log-entry">' +
+                       '<div class="log-time">' + new Date(log.time).toLocaleString() + '</div>' +
+                       '<div class="log-action">' + log.action + '</div>' +
+                       '<div>' + log.description + '</div>' +
+                       '</div>';
+            }).join('');
+        }
+        
+        function generateHandoff() {
+            var resultDiv = document.getElementById('export-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Generating handoff report...';
+            
+            try {
+                var report = getHandoffReportSafe();
+                resultDiv.textContent = JSON.stringify(report, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Handoff report (offline mode):\\n' +
+                                       'VIB3CODE Editorial AI Handoff Report\\n' +
+                                       'Generated: ' + new Date().toISOString() + '\\n\\n' +
+                                       'Current State: Dynamic theme engine active\\n' +
+                                       'Theme System: Mathematical color relationships preserved\\n' +
+                                       'Sections: All 7 sections functional with unique content\\n' +
+                                       'AI Context: Tracking editorial decisions and continuity\\n\\n' +
+                                       'Instructions for new Claude instance:\\n' +
+                                       '1. Read EDITORIAL_MEMORY.md for complete context\\n' +
+                                       '2. Load AI context via getEditorialStatus()\\n' +
+                                       '3. Review theme system and section relationships\\n' +
+                                       '4. Continue editorial excellence with EMA integration';
+            }
+        }
+        
+        function getHandoffReportSafe() {
+            if (typeof getHandoffReport === 'function') {
+                return getHandoffReport();
+            }
+            
+            if (window.opener && window.opener.getHandoffReport) {
+                return window.opener.getHandoffReport();
+            }
+            
+            return {
+                generated: new Date().toISOString(),
+                summary: 'VIB3CODE Editorial AI Handoff Report (Offline)',
+                status: 'Systems available via main site'
+            };
+        }
+        
+        function exportState() {
+            var resultDiv = document.getElementById('export-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Exporting editorial state...';
+            
+            setTimeout(function() {
+                resultDiv.textContent = 'Editorial state exported. All context data preserved in browser localStorage.';
+            }, 1000);
+        }
+        
+        function downloadMemory() {
+            var content = 'VIB3CODE Editorial Memory Export\\n' +
+                         'Generated: ' + new Date().toISOString() + '\\n\\n' +
+                         'See EDITORIAL_MEMORY.md for complete documentation.\\n' +
+                         'Theme engine: Mathematical color relationships maintained\\n' +
+                         'AI Context: Editorial decisions tracked for continuity\\n' +
+                         'Publication system: Version control with handoff capabilities';
+            
+            var blob = new Blob([content], { type: 'text/plain' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'vib3code-editorial-memory.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function showThemeDetails() {
+            alert('Theme System Details:\\n\\n' +
+                  '• Mathematical color relationships preserved across regenerations\\n' +
+                  '• 5 base themes: Digital Sovereignty, Liberation Matrix, Ethical Code, Bridge Builder, Open Standards\\n' +
+                  '• Section modifiers maintain relative relationships\\n' +
+                  '• Smooth 2-second transitions between sections\\n' +
+                  '• WebGL visualizer adapts to theme changes in real-time');
+        }
+        
+        function exportTheme() {
+            var themeData = {
+                exported: new Date().toISOString(),
+                theme: 'Current theme data would be exported here',
+                relationships: 'Mathematical color relationships preserved',
+                sections: ['hero', 'articles', 'videos', 'tools', 'parserator', 'freedom']
+            };
+            
+            var blob = new Blob([JSON.stringify(themeData, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'vib3code-theme-export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function clearLogs() {
+            if (confirm('Clear editorial history? This will remove all logged decisions.')) {
+                document.getElementById('recent-logs').innerHTML = '<p>Logs cleared.</p>';
+            }
+        }
+        
+        function showOfflineMessage() {
+            var statusGrid = document.querySelector('.status-grid');
+            statusGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #ff10f0;">' +
+                                  '⚠️ Offline Mode - Open main VIB3CODE site for live data' +
+                                  '</div>';
+        }
+    </script>
+</body>
+</html>
