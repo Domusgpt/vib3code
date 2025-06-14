@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="styles/dark-vib3.css">
     <link rel="stylesheet" href="styles/parallax.css">
     <link rel="stylesheet" href="styles/sections.css">
+    <link rel="stylesheet" href="styles/magazine.css">
+    <link rel="stylesheet" href="styles/magazine-enhanced.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
@@ -53,11 +55,13 @@
             </a>
             
             <div class="nav-links">
+                <!-- Navigation will be dynamically updated by magazine router -->
+                <a href="#home" class="nav-link active" data-section="home">Home</a>
                 <a href="#articles" class="nav-link" data-section="articles">Articles</a>
                 <a href="#videos" class="nav-link" data-section="videos">Videos</a>
-                <a href="#tools" class="nav-link" data-section="tools">Tools</a>
-                <a href="#parserator" class="nav-link" data-section="parserator">Parserator</a>
-                <a href="#freedom" class="nav-link" data-section="freedom">Digital Freedom</a>
+                <a href="#podcasts" class="nav-link" data-section="podcasts">Podcasts</a>
+                <a href="#ema" class="nav-link" data-section="ema">E.M.A</a>
+                <a href="https://parserator.com" class="nav-link" target="_blank">Parserator</a>
             </div>
             
             <button class="nav-toggle" id="nav-toggle">
@@ -68,529 +72,42 @@
         </div>
     </nav>
 
-    <!-- Hero Section with Parallax -->
-    <section class="hero-cyber parallax-section" id="hero">
-        <div class="hero-content">
-            <div class="hero-text-container">
-                <h1 class="hero-title">
-                    <span class="title-line">Code Without</span>
-                    <span class="title-line title-accent">Chains</span>
-                </h1>
-                <p class="hero-subtitle">
-                    The digital magazine where Exoditical Moral Architecture meets aesthetic excellence. We prove that ethical technology produces superior results through premium editorial design, sophisticated theme systems, and AI-powered content that advances the liberation movement. Beautiful code, zero lock-in, infinite sophistication.
-                </p>
-                <div class="hero-cta">
-                    <a href="#articles" class="btn-cyber btn-primary">
-                        <span class="btn-icon">💡</span>
-                        <span class="btn-text">Explore Ideas</span>
-                        <span class="btn-glow"></span>
-                    </a>
-                    <a href="#parserator" class="btn-cyber btn-secondary">
-                        <span class="btn-icon">⚡</span>
-                        <span class="btn-text">Try Parserator</span>
-                        <span class="btn-glow"></span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Floating UI Elements -->
-            <div class="floating-elements">
-                <div class="floating-element" style="--delay: 0s; --duration: 8s;">
-                    <div class="element-content">{ }</div>
-                </div>
-                <div class="floating-element" style="--delay: 2s; --duration: 6s;">
-                    <div class="element-content">λ</div>
-                </div>
-                <div class="floating-element" style="--delay: 4s; --duration: 10s;">
-                    <div class="element-content">∞</div>
-                </div>
-            </div>
-        </div>
+    <!-- Static sections above will be hidden and replaced by dynamic magazine sections -->
+    <style>
+        /* Hide all static sections - they will be replaced by magazine router */
+        .hero-cyber,
+        .section-cyber,
+        .hero-content,
+        section,
+        main {
+            display: none !important;
+        }
         
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <div class="scroll-line"></div>
-            <div class="scroll-text">Scroll to explore</div>
-        </div>
-    </section>
+        /* Ensure magazine content is visible and properly positioned */
+        .magazine-content {
+            display: block !important;
+            min-height: 100vh;
+            padding-top: 80px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .magazine-section {
+            display: block !important;
+            width: 100%;
+        }
+        
+        /* Force immediate visibility of home section */
+        .magazine-section#section-home {
+            display: block !important;
+            opacity: 1 !important;
+        }
+    </style>
 
-    <!-- Featured Content with Parallax -->
-    <section class="section-cyber parallax-section" id="articles">
-        <div class="container-cyber">
-            <div class="section-header">
-                <h2 class="section-title">Latest Insights</h2>
-                <div class="section-subtitle">Exploring the intersection of code, freedom, and innovation</div>
-            </div>
-            
-            <div class="article-grid">
-                <!-- Featured Article -->
-                <article class="article-featured card-3d">
-                    <div class="article-image">
-                        <div class="code-visualization">
-                            <div class="code-lines">
-                                <span>const freedom = () => {</span>
-                                <span>  return noLockIn;</span>
-                                <span>};</span>
-                            </div>
-                            <div class="data-flow"></div>
-                        </div>
-                    </div>
-                    <div class="article-content">
-                        <span class="article-badge">Development</span>
-                        <h3 class="article-title">
-                            Building Without Boundaries
-                        </h3>
-                        <p class="article-excerpt">
-                            How thoughtful API design, data portability, and open standards create better developer experiences. When users can export their data easily, everyone wins—including the platform.
-                        </p>
-                        <div class="article-meta">
-                            <span>💡 VIB3CODE</span>
-                            <span>• 12 min read</span>
-                            <span>• Code Examples</span>
-                        </div>
-                        <div class="article-progress">
-                            <div class="progress-bar"></div>
-                        </div>
-                    </div>
-                </article>
-                
-                <!-- Sidebar Articles -->
-                <aside class="sidebar-articles">
-                    <article class="sidebar-article card-3d">
-                        <span class="article-badge">Tech Deep-Dive</span>
-                        <h4 class="article-title">
-                            Parserator: Parse with Purpose
-                        </h4>
-                        <p class="article-excerpt">
-                            How we achieved 95% parsing accuracy while keeping everything exportable and migration-friendly. Architecture decisions that prioritize developer freedom.
-                        </p>
-                        <div class="article-meta">
-                            <span>🔧 Technical</span>
-                            <span>• 8 min</span>
-                        </div>
-                    </article>
-                    
-                    <article class="sidebar-article card-3d">
-                        <span class="article-badge">Design Patterns</span>
-                        <h4 class="article-title">
-                            APIs That Don't Trap Users
-                        </h4>
-                        <p class="article-excerpt">
-                            Design patterns for building APIs that users love to integrate with and never fear being locked into. Export-first development philosophy.
-                        </p>
-                        <div class="article-meta">
-                            <span>🎨 Patterns</span>
-                            <span>• 10 min</span>
-                        </div>
-                    </article>
-                    
-                    <article class="sidebar-article card-3d">
-                        <span class="article-badge">Open Source</span>
-                        <h4 class="article-title">
-                            Developer Freedom Toolkit
-                        </h4>
-                        <p class="article-excerpt">
-                            Open-source tools and code patterns for building applications that respect user choice and data ownership. Templates and examples included.
-                        </p>
-                        <div class="article-meta">
-                            <span>🛠️ Tools</span>
-                            <span>• GitHub</span>
-                        </div>
-                    </article>
-                </aside>
-            </div>
-        </div>
-    </section>
-
-    <!-- Videos Section -->
-    <section class="section-cyber parallax-section" id="videos">
-        <div class="container-cyber">
-            <div class="section-header">
-                <h2 class="section-title">Visual Philosophy</h2>
-                <div class="section-subtitle">Deep dives into EMA principles through video essays and technical demonstrations</div>
-            </div>
-            
-            <div class="video-grid">
-                <div class="video-featured card-3d">
-                    <div class="video-thumbnail">
-                        <div class="video-overlay">
-                            <div class="play-button">▶</div>
-                            <div class="video-duration">24:31</div>
-                        </div>
-                        <div class="video-preview"></div>
-                    </div>
-                    <div class="video-content">
-                        <span class="video-badge">Philosophy</span>
-                        <h3 class="video-title">
-                            The Moral Architecture of Digital Systems
-                        </h3>
-                        <p class="video-description">
-                            A comprehensive exploration of why ethical design isn't just good morality—it's good business. How EMA principles create competitive advantages through user trust and technical excellence.
-                        </p>
-                        <div class="video-meta">
-                            <span>🎭 Paul Phillips</span>
-                            <span>• 847K views</span>
-                            <span>• Technical Deep Dive</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="video-sidebar">
-                    <div class="video-item card-3d">
-                        <div class="video-thumbnail-small">
-                            <div class="play-indicator">▶</div>
-                            <span class="duration">12:45</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>API Design for Digital Sovereignty</h4>
-                            <p>Live coding session: Building APIs that liberate rather than lock in</p>
-                            <span class="views">234K views</span>
-                        </div>
-                    </div>
-                    
-                    <div class="video-item card-3d">
-                        <div class="video-thumbnail-small">
-                            <div class="play-indicator">▶</div>
-                            <span class="duration">18:22</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Parserator: EMA in Practice</h4>
-                            <p>Real-world demonstration of ethical data processing architecture</p>
-                            <span class="views">156K views</span>
-                        </div>
-                    </div>
-                    
-                    <div class="video-item card-3d">
-                        <div class="video-thumbnail-small">
-                            <div class="play-indicator">▶</div>
-                            <span class="duration">31:07</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Migration Stories: Users Who Left and Returned</h4>
-                            <p>Documentary exploring the psychology of platform loyalty through liberation</p>
-                            <span class="views">89K views</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tools Section -->
-    <section class="section-cyber parallax-section" id="tools">
-        <div class="container-cyber">
-            <div class="section-header">
-                <h2 class="section-title">EMA Toolkit</h2>
-                <div class="section-subtitle">Open-source tools and frameworks for building ethically-aligned technology</div>
-            </div>
-            
-            <div class="tools-grid">
-                <div class="tool-category">
-                    <h3 class="category-title">Developer Tools</h3>
-                    
-                    <div class="tool-card card-3d">
-                        <div class="tool-header">
-                            <div class="tool-icon">🔧</div>
-                            <div class="tool-meta">
-                                <h4 class="tool-name">EMA Linter</h4>
-                                <span class="tool-status">Production Ready</span>
-                            </div>
-                        </div>
-                        <p class="tool-description">
-                            Static analysis tool that identifies potential vendor lock-in patterns in your codebase. Suggests EMA-compliant alternatives.
-                        </p>
-                        <div class="tool-stats">
-                            <span>⭐ 2.3k stars</span>
-                            <span>📦 npm install @vib3code/ema-linter</span>
-                        </div>
-                    </div>
-                    
-                    <div class="tool-card card-3d">
-                        <div class="tool-header">
-                            <div class="tool-icon">📊</div>
-                            <div class="tool-meta">
-                                <h4 class="tool-name">Export Validator</h4>
-                                <span class="tool-status">Beta</span>
-                            </div>
-                        </div>
-                        <p class="tool-description">
-                            Test suite for verifying that your application's data export functionality is complete and user-friendly.
-                        </p>
-                        <div class="tool-stats">
-                            <span>⭐ 847 stars</span>
-                            <span>🔗 CLI & Web Interface</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tool-category">
-                    <h3 class="category-title">Design Patterns</h3>
-                    
-                    <div class="tool-card card-3d">
-                        <div class="tool-header">
-                            <div class="tool-icon">🏗️</div>
-                            <div class="tool-meta">
-                                <h4 class="tool-name">Bridge Builder</h4>
-                                <span class="tool-status">Alpha</span>
-                            </div>
-                        </div>
-                        <p class="tool-description">
-                            Framework for creating seamless migration paths between competing platforms. Turn user departure into competitive advantage.
-                        </p>
-                        <div class="tool-stats">
-                            <span>⭐ 1.2k stars</span>
-                            <span>🎯 Multi-platform</span>
-                        </div>
-                    </div>
-                    
-                    <div class="tool-card card-3d">
-                        <div class="tool-header">
-                            <div class="tool-icon">🛡️</div>
-                            <div class="tool-meta">
-                                <h4 class="tool-name">Sovereignty Scanner</h4>
-                                <span class="tool-status">Research</span>
-                            </div>
-                        </div>
-                        <p class="tool-description">
-                            Audit tool for evaluating how well your application respects user data sovereignty and provides genuine choice.
-                        </p>
-                        <div class="tool-stats">
-                            <span>⭐ 456 stars</span>
-                            <span>🔬 Academic Research</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Parserator Section -->
-    <section class="section-cyber parallax-section" id="parserator">
-        <div class="container-cyber">
-            <div class="section-header">
-                <h2 class="section-title">Parserator: EMA in Action</h2>
-                <div class="section-subtitle">The world's first EMA-compliant data parsing platform—proving liberation-focused software wins</div>
-            </div>
-            
-            <div class="parserator-demo">
-                <div class="demo-container">
-                    <div class="demo-header">
-                        <h3>Live Data Liberation Demo</h3>
-                        <div class="demo-controls">
-                            <button class="demo-btn active">Parse Sample</button>
-                            <button class="demo-btn">Export Schema</button>
-                            <button class="demo-btn">Migration Path</button>
-                        </div>
-                    </div>
-                    
-                    <div class="demo-content card-3d">
-                        <div class="demo-input">
-                            <div class="input-header">Raw Data Input</div>
-                            <div class="input-content">
-                                <div class="data-sample">
-                                    <span class="data-type">JSON</span>
-                                    <pre class="data-preview">{
-  "users": [
-    {"name": "Alice", "role": "Developer"},
-    {"name": "Bob", "role": "Designer"}
-  ],
-  "meta": {"version": "1.0", "export": true}
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="demo-arrow">→</div>
-                        
-                        <div class="demo-output">
-                            <div class="output-header">Structured Results</div>
-                            <div class="output-content">
-                                <div class="parsing-result">
-                                    <div class="result-stats">
-                                        <span class="stat">✅ 100% Accuracy</span>
-                                        <span class="stat">⚡ 0.23s Parse Time</span>
-                                        <span class="stat">🔓 Full Export Available</span>
-                                    </div>
-                                    <div class="result-data">
-                                        <div class="schema-preview">
-                                            <strong>Generated Schema:</strong>
-                                            <ul>
-                                                <li>User Collection (2 entities)</li>
-                                                <li>Metadata Object (versioned)</li>
-                                                <li>Export Capability: Enabled</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="demo-features">
-                        <div class="feature-highlight">
-                            <div class="feature-icon">🌉</div>
-                            <div class="feature-content">
-                                <h4>Bridge Builder Technology</h4>
-                                <p>One-click export to 15+ competing platforms. We celebrate your choice to leave.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="feature-highlight">
-                            <div class="feature-icon">🏛️</div>
-                            <div class="feature-content">
-                                <h4>Digital Sovereignty</h4>
-                                <p>Your data, your logic, your IP. Complete ownership with zero technical entrapment.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="feature-highlight">
-                            <div class="feature-icon">⚖️</div>
-                            <div class="feature-content">
-                                <h4>Transparent Competition</h4>
-                                <p>Public scorecard of industry openness. We compete on merit, not lock-in.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="parserator-cta">
-                    <div class="cta-content">
-                        <h3>Ready to Experience True Data Freedom?</h3>
-                        <p>Join the EMA movement with the platform that proves ethical software wins commercially.</p>
-                        <div class="cta-buttons">
-                            <a href="https://parserator.com" class="btn-cyber btn-primary btn-large">
-                                <span class="btn-icon">🚀</span>
-                                <span class="btn-text">Start Free Trial</span>
-                                <span class="btn-glow"></span>
-                            </a>
-                            <a href="/parserator/docs" class="btn-cyber btn-secondary">
-                                <span class="btn-icon">📚</span>
-                                <span class="btn-text">View Documentation</span>
-                                <span class="btn-glow"></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Core Principles with Interactive Elements -->
-    <section class="section-cyber parallax-section" id="freedom">
-        <div class="container-cyber">
-            <div class="section-header">
-                <h2 class="section-title">Development Philosophy</h2>
-                <p class="section-description">
-                    Five principles that make technology more elegant, user-friendly, and developer-focused. 
-                    <span class="highlight">Good design is liberation.</span>
-                </p>
-            </div>
-            
-            <div class="ema-grid">
-                <div class="ema-card card-3d" data-principle="ownership">
-                    <div class="card-header">
-                        <div class="ema-principle">🏗️ User Ownership</div>
-                        <div class="card-indicator"></div>
-                    </div>
-                    <h3 class="ema-title">Data Belongs to Users</h3>
-                    <p class="ema-description">
-                        Build systems where users control their data. Export functionality isn't an afterthought—it's a core feature that demonstrates respect for user choice and builds trust.
-                    </p>
-                    <div class="card-glow"></div>
-                </div>
-                
-                <div class="ema-card card-3d" data-principle="migration">
-                    <div class="card-header">
-                        <div class="ema-principle">🚀 Migration-Friendly</div>
-                        <div class="card-indicator"></div>
-                    </div>
-                    <h3 class="ema-title">Easy In, Easy Out</h3>
-                    <p class="ema-description">
-                        Design APIs and data formats that make integration simple and migration painless. When users aren't afraid to leave, they're more likely to stay and evangelize.
-                    </p>
-                    <div class="card-glow"></div>
-                </div>
-                
-                <div class="ema-card card-3d" data-principle="standards">
-                    <div class="card-header">
-                        <div class="ema-principle">🌐 Open Standards</div>
-                        <div class="card-indicator"></div>
-                    </div>
-                    <h3 class="ema-title">Standards Over Lock-in</h3>
-                    <p class="ema-description">
-                        Use open formats and common protocols. Compete on features and experience, not on making it hard for users to choose alternatives or integrate with other tools.
-                    </p>
-                    <div class="card-glow"></div>
-                </div>
-                
-                <div class="ema-card card-3d" data-principle="transparency">
-                    <div class="card-header">
-                        <div class="ema-principle">🔍 Transparent Costs</div>
-                        <div class="card-indicator"></div>
-                    </div>
-                    <h3 class="ema-title">Honest Integration Paths</h3>
-                    <p class="ema-description">
-                        Make integration and migration costs clear upfront. Provide tools and documentation that help users understand their options and make informed decisions.
-                    </p>
-                    <div class="card-glow"></div>
-                </div>
-                
-                <div class="ema-card card-3d" data-principle="exits">
-                    <div class="card-header">
-                        <div class="ema-principle">🎯 Elegant Exits</div>
-                        <div class="card-indicator"></div>
-                    </div>
-                    <h3 class="ema-title">Graceful Offboarding</h3>
-                    <p class="ema-description">
-                        When users decide to move on, make the process smooth and complete. Great offboarding experiences turn departing users into advocates and potential future customers.
-                    </p>
-                    <div class="card-glow"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="section-cyber parallax-section" id="newsletter">
-        <div class="container-cyber">
-            <div class="newsletter-cyber glass-container">
-                <div class="newsletter-header">
-                    <h2 class="newsletter-title">Join the Community</h2>
-                    <p class="newsletter-description">
-                        Get weekly insights on elegant development patterns, API design, and building technology that respects users. 
-                        Plus complete data export—we practice what we code.
-                    </p>
-                </div>
-                
-                <form class="newsletter-form" id="newsletter-form">
-                    <div class="form-group">
-                        <input 
-                            type="email" 
-                            placeholder="developer@awesome-company.com" 
-                            class="form-input-cyber"
-                            id="email-input"
-                            required
-                        >
-                        <button type="submit" class="btn-cyber btn-primary">
-                            <span class="btn-icon">💡</span>
-                            <span class="btn-text">Get Insights</span>
-                            <span class="btn-glow"></span>
-                        </button>
-                    </div>
-                    
-                    <div class="form-status" id="form-status"></div>
-                </form>
-                
-                <div class="newsletter-links">
-                    <a href="/privacy" class="newsletter-link">Privacy Policy</a>
-                    <span class="separator">•</span>
-                    <a href="/export" class="newsletter-link">Export Your Data</a>
-                    <span class="separator">•</span>
-                    <a href="/unsubscribe" class="newsletter-link">Unsubscribe</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Magazine Content Container - MOVED ABOVE FOOTER -->
+    <div class="magazine-content">
+        <!-- Dynamic sections will be loaded here by the magazine router -->
+    </div>
 
     <!-- Footer -->
     <footer class="footer-cyber">
@@ -658,10 +175,38 @@
         </div>
     </footer>
 
+
     <!-- Core Scripts -->
-    <script src="js/visualizer-simple.js"></script>
+    <script src="js/holographic-visualizer.js"></script>
+    <script src="js/theme-engine-clean.js"></script>
+    <script src="js/magazine-router.js"></script>
+    <script src="js/editorial-ai-clean.js"></script>
+    <script src="js/interactive-features.js"></script>
     <script src="js/main-fixed.js"></script>
     <script src="js/parallax-fixed.js"></script>
+    
+    <!-- Debug Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 DOM loaded, checking magazine router...');
+            
+            setTimeout(function() {
+                if (window.MagazineRouter) {
+                    console.log('✅ Magazine Router found:', window.MagazineRouter);
+                    console.log('📍 Current section:', window.MagazineRouter.currentSection);
+                    
+                    // Force load home if nothing is loaded
+                    var magazineContent = document.querySelector('.magazine-content');
+                    if (magazineContent && !magazineContent.innerHTML.trim()) {
+                        console.log('🔧 Forcing home section load...');
+                        window.MagazineRouter.navigateToSection('home');
+                    }
+                } else {
+                    console.error('❌ Magazine Router not found!');
+                }
+            }, 500);
+        });
+    </script>
     
     <!-- Audio Context Warning for Safari -->
     <div id="audio-warning" class="audio-warning" style="display: none;">
