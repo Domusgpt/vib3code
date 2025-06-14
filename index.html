@@ -72,15 +72,22 @@
         </div>
     </nav>
 
-    <!-- Static sections above will be hidden and replaced by dynamic magazine sections -->
+    <!-- Hide ALL old static content and show only magazine content -->
     <style>
-        /* Hide all static sections - they will be replaced by magazine router */
+        /* Hide all static sections completely - magazine router takes over */
         .hero-cyber,
         .section-cyber,
         .hero-content,
-        section,
-        main {
+        section:not(.magazine-section),
+        main,
+        .container-cyber,
+        .grid-cyber,
+        .ema-grid,
+        .newsletter-cyber,
+        .pattern-overlay,
+        .floating-elements {
             display: none !important;
+            visibility: hidden !important;
         }
         
         /* Ensure magazine content is visible and properly positioned */

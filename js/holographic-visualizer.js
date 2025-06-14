@@ -430,9 +430,26 @@
         ctx.globalCompositeOperation = 'lighten';
         
         var gradient = ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
-        gradient.addColorStop(0, this.currentTheme.primary);
-        gradient.addColorStop(0.5, this.currentTheme.accent);
-        gradient.addColorStop(1, this.currentTheme.secondary);
+        
+        // Fix color extraction from theme object
+        var primaryColor = this.currentTheme.primary || '#00d9ff';
+        var accentColor = this.currentTheme.accent || '#ffcc00';
+        var secondaryColor = this.currentTheme.secondary || '#ff10f0';
+        
+        // If colors are objects, extract the actual color value
+        if (typeof primaryColor === 'object' && primaryColor.value) {
+            primaryColor = primaryColor.value;
+        }
+        if (typeof accentColor === 'object' && accentColor.value) {
+            accentColor = accentColor.value;
+        }
+        if (typeof secondaryColor === 'object' && secondaryColor.value) {
+            secondaryColor = secondaryColor.value;
+        }
+        
+        gradient.addColorStop(0, primaryColor);
+        gradient.addColorStop(0.5, accentColor);
+        gradient.addColorStop(1, secondaryColor);
         
         ctx.fillStyle = gradient;
         

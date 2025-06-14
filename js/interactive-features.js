@@ -125,30 +125,42 @@
         
         // Content cards enhanced hover
         document.addEventListener('mouseenter', function(e) {
-            if (e.target.matches('.content-card') || e.target.closest('.content-card')) {
-                var card = e.target.matches('.content-card') ? e.target : e.target.closest('.content-card');
+            var target = e.target || e.srcElement;
+            if (!target || !target.matches) return; // Safety check for older browsers
+            
+            if (target.matches('.content-card') || target.closest('.content-card')) {
+                var card = target.matches('.content-card') ? target : target.closest('.content-card');
                 self.enhanceCardHover(card, true);
             }
         }, true);
         
         document.addEventListener('mouseleave', function(e) {
-            if (e.target.matches('.content-card') || e.target.closest('.content-card')) {
-                var card = e.target.matches('.content-card') ? e.target : e.target.closest('.content-card');
+            var target = e.target || e.srcElement;
+            if (!target || !target.matches) return; // Safety check for older browsers
+            
+            if (target.matches('.content-card') || target.closest('.content-card')) {
+                var card = target.matches('.content-card') ? target : target.closest('.content-card');
                 self.enhanceCardHover(card, false);
             }
         }, true);
         
         // Feature blocks hover
         document.addEventListener('mouseenter', function(e) {
-            if (e.target.matches('.feature-block') || e.target.closest('.feature-block')) {
-                var block = e.target.matches('.feature-block') ? e.target : e.target.closest('.feature-block');
+            var target = e.target || e.srcElement;
+            if (!target || !target.matches) return; // Safety check for older browsers
+            
+            if (target.matches('.feature-block') || target.closest('.feature-block')) {
+                var block = target.matches('.feature-block') ? target : target.closest('.feature-block');
                 self.enhanceFeatureHover(block, true);
             }
         }, true);
         
         document.addEventListener('mouseleave', function(e) {
-            if (e.target.matches('.feature-block') || e.target.closest('.feature-block')) {
-                var block = e.target.matches('.feature-block') ? e.target : e.target.closest('.feature-block');
+            var target = e.target || e.srcElement;
+            if (!target || !target.matches) return; // Safety check for older browsers
+            
+            if (target.matches('.feature-block') || target.closest('.feature-block')) {
+                var block = target.matches('.feature-block') ? target : target.closest('.feature-block');
                 self.enhanceFeatureHover(block, false);
             }
         }, true);

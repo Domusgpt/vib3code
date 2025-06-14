@@ -189,7 +189,7 @@
     
     ParallaxEngine.prototype.disablePerformanceMode = function() {
         this.recalculateElements();
-        console.log('🚀 Full quality mode restored');
+        // console.log('🚀 Full quality mode restored'); // Reduced logging for performance
     };
     
     ParallaxEngine.prototype.recalculateElements = function() {

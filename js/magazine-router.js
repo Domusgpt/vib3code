@@ -197,7 +197,7 @@
         var sectionDiv = document.createElement('div');
         sectionDiv.id = 'section-' + section;
         sectionDiv.className = 'magazine-section section-' + section;
-        sectionDiv.style.cssText = 'display: block !important; width: 100%; min-height: 100vh; background: rgba(255,0,0,0.1);'; // Debug red background
+        sectionDiv.style.cssText = 'display: block !important; width: 100%; min-height: 100vh;';
         
         var templateContent = '';
         switch(section) {
@@ -933,17 +933,13 @@
     };
     
     // Initialize router
-    console.log('🚨 MAGAZINE ROUTER: Starting initialization...');
-    
-    // Add visual indicator
-    document.body.style.border = '10px solid red';
-    document.body.insertAdjacentHTML('afterbegin', '<div style="position: fixed; top: 0; left: 0; background: red; color: white; padding: 10px; z-index: 99999;">MAGAZINE ROUTER LOADED</div>');
+    console.log('📰 Magazine Router: Starting initialization...');
     
     var router = new MagazineRouter();
     
     // Export for global access
     window.MagazineRouter = router;
     
-    console.log('🚨 MAGAZINE ROUTER: Completed initialization');
+    console.log('✅ Magazine Router: Initialization complete');
     
 })();
