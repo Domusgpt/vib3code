@@ -3,142 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="VIB3CODE - The cyberpunk digital magazine exploring Exoditical Moral Architecture, digital sovereignty, and the future of ethical technology.">
-    <meta name="keywords" content="EMA, Exoditical Moral Architecture, digital sovereignty, cyberpunk, ethical technology, parserator">
+    <meta name="description" content="VIB3CODE - Where elegant code meets digital freedom. Modern development without vendor lock-in.">
+    <meta name="keywords" content="VIB3CODE, coding, development, digital freedom, parserator, no vendor lock-in">
     
-    <title>VIB3CODE - Digital Sovereignty in the Age of AI</title>
+    <title>VIB3CODE - Code Without Chains</title>
     
-    <!-- Cyberpunk Dark Theme -->
+    <!-- Cyberpunk Dark Theme with Enhanced Parallax -->
     <link rel="stylesheet" href="styles/dark-vib3.css">
+    <link rel="stylesheet" href="styles/parallax.css">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="VIB3CODE - Digital Sovereignty in the Age of AI">
-    <meta property="og:description" content="The cyberpunk digital magazine exploring Exoditical Moral Architecture and the future of ethical technology.">
+    <meta property="og:title" content="VIB3CODE - Code Without Chains">
+    <meta property="og:description" content="Where elegant code meets digital freedom. Modern development without vendor lock-in.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vib3code.com">
     
     <!-- Preload Critical Resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Initializing VIB3CODE...</div>
+        </div>
+    </div>
+
     <!-- 4D Visualizer Background -->
-    <canvas id="visualizer-canvas"></canvas>
+    <canvas id="visualizer-canvas" class="visualizer-canvas"></canvas>
+    
+    <!-- Parallax Layers -->
+    <div class="parallax-layer" data-speed="0.2" id="bg-layer-1"></div>
+    <div class="parallax-layer" data-speed="0.5" id="bg-layer-2"></div>
+    <div class="parallax-layer" data-speed="0.8" id="bg-layer-3"></div>
     
     <!-- Navigation -->
-    <nav class="nav-cyber">
+    <nav class="nav-cyber" id="main-nav">
         <div class="nav-content">
-            <a href="/" class="logo-cyber">VIB3CODE</a>
+            <a href="/" class="logo-cyber">
+                <span class="logo-text">VIB3CODE</span>
+                <span class="logo-pulse"></span>
+            </a>
             
             <div class="nav-links">
-                <a href="/manifesto" class="nav-link">Manifesto</a>
-                <a href="/articles" class="nav-link">Articles</a>
-                <a href="/videos" class="nav-link">Videos</a>
-                <a href="/podcasts" class="nav-link">Podcasts</a>
-                <a href="/parserator" class="nav-link">Parserator</a>
-                <a href="/sovereignty" class="nav-link">Sovereignty</a>
+                <a href="#articles" class="nav-link" data-section="articles">Articles</a>
+                <a href="#videos" class="nav-link" data-section="videos">Videos</a>
+                <a href="#tools" class="nav-link" data-section="tools">Tools</a>
+                <a href="#parserator" class="nav-link" data-section="parserator">Parserator</a>
+                <a href="#freedom" class="nav-link" data-section="freedom">Digital Freedom</a>
             </div>
+            
+            <button class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-cyber">
+    <!-- Hero Section with Parallax -->
+    <section class="hero-cyber parallax-section" id="hero">
         <div class="hero-content">
-            <h1 class="hero-title">
-                Digital Sovereignty<br>
-                in the Age of AI
-            </h1>
-            <p class="hero-subtitle">
-                VIB3CODE explores Exoditical Moral Architecture—the cyberpunk philosophy proving that ethical technology isn't just morally superior, it creates exponentially better user experiences and unstoppable competitive advantages.
-            </p>
-            <div class="hero-cta">
-                <a href="/manifesto" class="btn-cyber btn-primary">
-                    🔓 Read the EMA Manifesto
-                </a>
-                <a href="/parserator" class="btn-cyber btn-secondary">
-                    ⚡ Experience Parserator
-                </a>
+            <div class="hero-text-container">
+                <h1 class="hero-title">
+                    <span class="title-line">Code Without</span>
+                    <span class="title-line title-accent">Chains</span>
+                </h1>
+                <p class="hero-subtitle">
+                    VIB3CODE explores elegant development patterns, data sovereignty, and building technology that serves developers—not corporate interests. Beautiful code, zero lock-in, infinite possibilities.
+                </p>
+                <div class="hero-cta">
+                    <a href="#articles" class="btn-cyber btn-primary">
+                        <span class="btn-icon">💡</span>
+                        <span class="btn-text">Explore Ideas</span>
+                        <span class="btn-glow"></span>
+                    </a>
+                    <a href="#parserator" class="btn-cyber btn-secondary">
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">Try Parserator</span>
+                        <span class="btn-glow"></span>
+                    </a>
+                </div>
             </div>
+            
+            <!-- Floating UI Elements -->
+            <div class="floating-elements">
+                <div class="floating-element" style="--delay: 0s; --duration: 8s;">
+                    <div class="element-content">{ }</div>
+                </div>
+                <div class="floating-element" style="--delay: 2s; --duration: 6s;">
+                    <div class="element-content">λ</div>
+                </div>
+                <div class="floating-element" style="--delay: 4s; --duration: 10s;">
+                    <div class="element-content">∞</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            <div class="scroll-text">Scroll to explore</div>
         </div>
     </section>
 
-    <!-- Featured Content -->
-    <section class="section-cyber">
+    <!-- Featured Content with Parallax -->
+    <section class="section-cyber parallax-section" id="articles">
         <div class="container-cyber">
-            <h2 class="section-title">Latest from the Digital Underground</h2>
+            <div class="section-header">
+                <h2 class="section-title">Latest Insights</h2>
+                <div class="section-subtitle">Exploring the intersection of code, freedom, and innovation</div>
+            </div>
             
             <div class="article-grid">
                 <!-- Featured Article -->
-                <article class="article-featured">
+                <article class="article-featured card-3d">
                     <div class="article-image">
-                        <!-- Placeholder for dynamic visual generated by your visualizer -->
-                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); display: flex; align-items: center; justify-content: center;">
-                            <div style="color: #00d9ff; font-family: 'Orbitron', monospace; font-size: 1.2rem; text-align: center;">
-                                🔮 EMA NEURAL NETWORK<br>
-                                <small style="opacity: 0.7;">Visualizing Digital Liberation</small>
+                        <div class="code-visualization">
+                            <div class="code-lines">
+                                <span>const freedom = () => {</span>
+                                <span>  return noLockIn;</span>
+                                <span>};</span>
                             </div>
+                            <div class="data-flow"></div>
                         </div>
                     </div>
                     <div class="article-content">
-                        <span class="article-badge">Philosophy</span>
+                        <span class="article-badge">Development</span>
                         <h3 class="article-title">
-                            The Five Pillars of Digital Liberation
+                            Building Without Boundaries
                         </h3>
                         <p class="article-excerpt">
-                            Digital Sovereignty, Portability-First Design, Standards Agnosticism, Transparent Competition, and the Sacred Right to Leave—these cyberpunk principles are reshaping how we build technology that serves humans, not corporate overlords.
+                            How thoughtful API design, data portability, and open standards create better developer experiences. When users can export their data easily, everyone wins—including the platform.
                         </p>
                         <div class="article-meta">
-                            <span>⚡ VIB3CODE Core</span>
-                            <span>• 15 min neural download</span>
-                            <span>• Neural Interface Ready</span>
+                            <span>💡 VIB3CODE</span>
+                            <span>• 12 min read</span>
+                            <span>• Code Examples</span>
+                        </div>
+                        <div class="article-progress">
+                            <div class="progress-bar"></div>
                         </div>
                     </div>
                 </article>
                 
                 <!-- Sidebar Articles -->
                 <aside class="sidebar-articles">
-                    <article class="sidebar-article">
+                    <article class="sidebar-article card-3d">
                         <span class="article-badge">Tech Deep-Dive</span>
-                        <h4 class="article-title" style="font-size: 1.2rem; margin-bottom: 0.8rem;">
-                            Parserator: The First EMA-Native Platform
+                        <h4 class="article-title">
+                            Parserator: Parse with Purpose
                         </h4>
-                        <p class="article-excerpt" style="font-size: 0.9rem; margin-bottom: 1rem;">
-                            How we achieved 95% parsing accuracy while maintaining complete user sovereignty and zero vendor lock-in. The technical blueprint for ethical AI.
+                        <p class="article-excerpt">
+                            How we achieved 95% parsing accuracy while keeping everything exportable and migration-friendly. Architecture decisions that prioritize developer freedom.
                         </p>
-                        <div class="article-meta" style="font-size: 0.8rem;">
-                            <span>⚡ Neural Tech</span>
-                            <span>• 12 min</span>
+                        <div class="article-meta">
+                            <span>🔧 Technical</span>
+                            <span>• 8 min</span>
                         </div>
                     </article>
                     
-                    <article class="sidebar-article">
-                        <span class="article-badge">Wall of Openness</span>
-                        <h4 class="article-title" style="font-size: 1.2rem; margin-bottom: 0.8rem;">
-                            Q1 2025 Corporate Freedom Scores
+                    <article class="sidebar-article card-3d">
+                        <span class="article-badge">Design Patterns</span>
+                        <h4 class="article-title">
+                            APIs That Don't Trap Users
                         </h4>
-                        <p class="article-excerpt" style="font-size: 0.9rem; margin-bottom: 1rem;">
-                            Our quarterly hacker assessment of major tech giants' EMA compliance. Green zones, red zones, and who's building walls vs. bridges.
+                        <p class="article-excerpt">
+                            Design patterns for building APIs that users love to integrate with and never fear being locked into. Export-first development philosophy.
                         </p>
-                        <div class="article-meta" style="font-size: 0.8rem;">
-                            <span>🔍 Intelligence</span>
-                            <span>• 8 min scan</span>
+                        <div class="article-meta">
+                            <span>🎨 Patterns</span>
+                            <span>• 10 min</span>
                         </div>
                     </article>
                     
-                    <article class="sidebar-article">
-                        <span class="article-badge">Community</span>
-                        <h4 class="article-title" style="font-size: 1.2rem; margin-bottom: 0.8rem;">
-                            EMA Implementation Toolkit v2.0
+                    <article class="sidebar-article card-3d">
+                        <span class="article-badge">Open Source</span>
+                        <h4 class="article-title">
+                            Developer Freedom Toolkit
                         </h4>
-                        <p class="article-excerpt" style="font-size: 0.9rem; margin-bottom: 1rem;">
-                            Open-source cyberpunk tools, neural templates, and liberation protocols to help developers implement EMA principles in their own digital territories.
+                        <p class="article-excerpt">
+                            Open-source tools and code patterns for building applications that respect user choice and data ownership. Templates and examples included.
                         </p>
-                        <div class="article-meta" style="font-size: 0.8rem;">
+                        <div class="article-meta">
                             <span>🛠️ Tools</span>
-                            <span>• GitHub Release</span>
+                            <span>• GitHub</span>
                         </div>
                     </article>
                 </aside>
@@ -146,88 +201,119 @@
         </div>
     </section>
 
-    <!-- EMA Principles -->
-    <section class="section-cyber" style="background: linear-gradient(135deg, #0a0a0f 0%, #151529 100%);">
+    <!-- Core Principles with Interactive Elements -->
+    <section class="section-cyber parallax-section" id="freedom">
         <div class="container-cyber">
-            <h2 class="section-title">The EMA Neural Framework</h2>
-            <p style="text-align: center; font-size: 1.2rem; color: rgba(0, 217, 255, 0.8); max-width: 800px; margin: 0 auto 4rem; line-height: 1.8;">
-                Five cyberpunk principles that transform technology from corporate control systems into tools of digital liberation. 
-                <span style="color: #ff10f0;">This is the resistance.</span>
-            </p>
+            <div class="section-header">
+                <h2 class="section-title">Development Philosophy</h2>
+                <p class="section-description">
+                    Five principles that make technology more elegant, user-friendly, and developer-focused. 
+                    <span class="highlight">Good design is liberation.</span>
+                </p>
+            </div>
             
             <div class="ema-grid">
-                <div class="ema-card">
-                    <div class="ema-principle">🏛️ Digital Sovereignty</div>
-                    <h3 class="ema-title">Your Data, Your Rules</h3>
+                <div class="ema-card card-3d" data-principle="ownership">
+                    <div class="card-header">
+                        <div class="ema-principle">🏗️ User Ownership</div>
+                        <div class="card-indicator"></div>
+                    </div>
+                    <h3 class="ema-title">Data Belongs to Users</h3>
                     <p class="ema-description">
-                        Neural patterns, behavioral data, and digital artifacts belong to their creators. No platform has the right to hold your consciousness hostage or mine your thoughts for profit.
+                        Build systems where users control their data. Export functionality isn't an afterthought—it's a core feature that demonstrates respect for user choice and builds trust.
                     </p>
+                    <div class="card-glow"></div>
                 </div>
                 
-                <div class="ema-card">
-                    <div class="ema-principle">🚀 Portability-First</div>
-                    <h3 class="ema-title">Export Everything, Always</h3>
+                <div class="ema-card card-3d" data-principle="migration">
+                    <div class="card-header">
+                        <div class="ema-principle">🚀 Migration-Friendly</div>
+                        <div class="card-indicator"></div>
+                    </div>
+                    <h3 class="ema-title">Easy In, Easy Out</h3>
                     <p class="ema-description">
-                        Migration capabilities aren't afterthoughts—they're core features. One-click data exodus should be as prominent as the neural interface signup portal.
+                        Design APIs and data formats that make integration simple and migration painless. When users aren't afraid to leave, they're more likely to stay and evangelize.
                     </p>
+                    <div class="card-glow"></div>
                 </div>
                 
-                <div class="ema-card">
-                    <div class="ema-principle">🌐 Standards Agnostic</div>
-                    <h3 class="ema-title">Universal Protocols Over Walled Gardens</h3>
+                <div class="ema-card card-3d" data-principle="standards">
+                    <div class="card-header">
+                        <div class="ema-principle">🌐 Open Standards</div>
+                        <div class="card-indicator"></div>
+                    </div>
+                    <h3 class="ema-title">Standards Over Lock-in</h3>
                     <p class="ema-description">
-                        Embrace open standards and universal data formats. Compete on innovation and user experience, not proprietary entrapment mechanisms and vendor lock-in.
+                        Use open formats and common protocols. Compete on features and experience, not on making it hard for users to choose alternatives or integrate with other tools.
                     </p>
+                    <div class="card-glow"></div>
                 </div>
                 
-                <div class="ema-card">
-                    <div class="ema-principle">🔍 Transparent Competition</div>
-                    <h3 class="ema-title">Expose Walls, Celebrate Bridges</h3>
+                <div class="ema-card card-3d" data-principle="transparency">
+                    <div class="card-header">
+                        <div class="ema-principle">🔍 Transparent Costs</div>
+                        <div class="card-indicator"></div>
+                    </div>
+                    <h3 class="ema-title">Honest Integration Paths</h3>
                     <p class="ema-description">
-                        Make integration paths crystal clear and migration costs transparent. Help users understand their digital choices and the true cost of switching platforms.
+                        Make integration and migration costs clear upfront. Provide tools and documentation that help users understand their options and make informed decisions.
                     </p>
+                    <div class="card-glow"></div>
                 </div>
                 
-                <div class="ema-card">
-                    <div class="ema-principle">🚪 Right to Leave</div>
-                    <h3 class="ema-title">The Sacred Digital Exodus</h3>
+                <div class="ema-card card-3d" data-principle="exits">
+                    <div class="card-header">
+                        <div class="ema-principle">🎯 Elegant Exits</div>
+                        <div class="card-indicator"></div>
+                    </div>
+                    <h3 class="ema-title">Graceful Offboarding</h3>
                     <p class="ema-description">
-                        Treat user migration with the respect of a cyberpunk ceremony, not the hostility of a corporate data prison. Make leaving as elegant as joining.
+                        When users decide to move on, make the process smooth and complete. Great offboarding experiences turn departing users into advocates and potential future customers.
                     </p>
+                    <div class="card-glow"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Newsletter Section -->
-    <section class="section-cyber">
+    <section class="section-cyber parallax-section" id="newsletter">
         <div class="container-cyber">
             <div class="newsletter-cyber glass-container">
-                <h2 style="font-family: var(--font-cyber); font-size: 2.5rem; margin-bottom: 1rem; background: var(--gradient-electric); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                    Join the Digital Resistance
-                </h2>
-                <p style="font-size: 1.2rem; color: rgba(0, 217, 255, 0.9); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Get weekly neural transmissions on digital sovereignty, ethical hacking, and the latest EMA implementations. 
-                    Plus full data portability—because we practice what we hack.
-                </p>
+                <div class="newsletter-header">
+                    <h2 class="newsletter-title">Join the Community</h2>
+                    <p class="newsletter-description">
+                        Get weekly insights on elegant development patterns, API design, and building technology that respects users. 
+                        Plus complete data export—we practice what we code.
+                    </p>
+                </div>
                 
-                <form class="newsletter-form">
-                    <input 
-                        type="email" 
-                        placeholder="neural.interface@cyberspace.net" 
-                        class="form-input-cyber"
-                        required
-                    >
-                    <button type="submit" class="btn-cyber btn-primary">
-                        🔌 Jack Into the Network
-                    </button>
+                <form class="newsletter-form" id="newsletter-form">
+                    <div class="form-group">
+                        <input 
+                            type="email" 
+                            placeholder="developer@awesome-company.com" 
+                            class="form-input-cyber"
+                            id="email-input"
+                            required
+                        >
+                        <button type="submit" class="btn-cyber btn-primary">
+                            <span class="btn-icon">💡</span>
+                            <span class="btn-text">Get Insights</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="form-status" id="form-status"></div>
                 </form>
                 
-                <p style="margin-top: 2rem; font-size: 0.9rem; color: rgba(0, 217, 255, 0.6);">
-                    <a href="/privacy" style="color: #ff10f0;">Neural Privacy Protocol</a> • 
-                    <a href="/export" style="color: #ff10f0;">Export Your Data</a> • 
-                    <a href="/unsubscribe" style="color: #ff10f0;">Disconnect</a>
-                </p>
+                <div class="newsletter-links">
+                    <a href="/privacy" class="newsletter-link">Privacy Policy</a>
+                    <span class="separator">•</span>
+                    <a href="/export" class="newsletter-link">Export Your Data</a>
+                    <span class="separator">•</span>
+                    <a href="/unsubscribe" class="newsletter-link">Unsubscribe</a>
+                </div>
             </div>
         </div>
     </section>
@@ -237,230 +323,77 @@
         <div class="container-cyber">
             <div class="footer-grid">
                 <div class="footer-section">
-                    <h3>🧠 Neural Framework</h3>
+                    <h3>💡 Development</h3>
                     <div class="footer-links">
-                        <a href="/manifesto" class="footer-link">EMA Manifesto</a>
-                        <a href="/principles" class="footer-link">Core Principles</a>
-                        <a href="/implementation" class="footer-link">Implementation Guide</a>
-                        <a href="/wall-of-openness" class="footer-link">Wall of Openness</a>
+                        <a href="/articles" class="footer-link">Articles</a>
+                        <a href="/patterns" class="footer-link">Design Patterns</a>
+                        <a href="/apis" class="footer-link">API Design</a>
+                        <a href="/migration" class="footer-link">Migration Guides</a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>📡 Digital Content</h3>
+                    <h3>📚 Content</h3>
                     <div class="footer-links">
-                        <a href="/articles" class="footer-link">Neural Articles</a>
-                        <a href="/videos" class="footer-link">Cyber Videos</a>
-                        <a href="/podcasts" class="footer-link">Resistance Podcasts</a>
-                        <a href="/case-studies" class="footer-link">Liberation Stories</a>
+                        <a href="/tutorials" class="footer-link">Tutorials</a>
+                        <a href="/videos" class="footer-link">Video Content</a>
+                        <a href="/podcasts" class="footer-link">Podcasts</a>
+                        <a href="/case-studies" class="footer-link">Case Studies</a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>⚡ Parserator Engine</h3>
+                    <h3>⚡ Parserator</h3>
                     <div class="footer-links">
-                        <a href="/parserator" class="footer-link">Platform Overview</a>
-                        <a href="/parserator/docs" class="footer-link">Neural Docs</a>
-                        <a href="/parserator/examples" class="footer-link">EMA Examples</a>
-                        <a href="/parserator/migration" class="footer-link">Exodus Tools</a>
+                        <a href="/parserator" class="footer-link">Platform</a>
+                        <a href="/parserator/docs" class="footer-link">Documentation</a>
+                        <a href="/parserator/examples" class="footer-link">Examples</a>
+                        <a href="/parserator/export" class="footer-link">Export Tools</a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>🌐 Digital Underground</h3>
+                    <h3>🌐 Community</h3>
                     <div class="footer-links">
-                        <a href="/discord" class="footer-link">Discord Network</a>
-                        <a href="/github" class="footer-link">GitHub Repositories</a>
-                        <a href="/contribute" class="footer-link">Join the Resistance</a>
-                        <a href="/newsletter" class="footer-link">Neural Archive</a>
+                        <a href="/discord" class="footer-link">Discord</a>
+                        <a href="/github" class="footer-link">GitHub</a>
+                        <a href="/contribute" class="footer-link">Contribute</a>
+                        <a href="/newsletter" class="footer-link">Newsletter Archive</a>
                     </div>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p style="margin-bottom: 1rem;">
-                    <strong style="background: var(--gradient-electric); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">VIB3CODE</strong> - Pioneers of Digital Liberation
+                <p class="footer-brand">
+                    <strong class="brand-text">VIB3CODE</strong> - Code Without Chains
                 </p>
-                <p style="font-size: 0.9rem; line-height: 1.6;">
-                    We practice cyberpunk ethics: This neural interface is EMA-compliant with full data portability, 
-                    open source components, and transparent migration protocols. 
-                    <a href="/ema-compliance" style="color: #ff10f0;">View our liberation manifesto</a>.
+                <p class="footer-description">
+                    We build technology that respects developers and users. This site has full data portability, 
+                    open source components, and clear migration paths. 
+                    <a href="/philosophy" class="footer-link-inline">View our development philosophy</a>.
                 </p>
                 
-                <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-                    <a href="/legal" class="footer-link">Legal Framework</a>
-                    <a href="/privacy" class="footer-link">Neural Privacy</a>
-                    <a href="/export-data" class="footer-link">Data Exodus</a>
-                    <a href="/source-code" class="footer-link">Source Liberation</a>
+                <div class="footer-legal">
+                    <a href="/legal" class="footer-link">Legal</a>
+                    <a href="/privacy" class="footer-link">Privacy</a>
+                    <a href="/export-data" class="footer-link">Export Data</a>
+                    <a href="/source-code" class="footer-link">Source Code</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Visualizer Integration Script -->
-    <script type="module">
-        // Initialize the 4D visualizer as background
-        import HypercubeCore from './core/HypercubeCore.js';
-        import ShaderManager from './core/ShaderManager.js';
-        import { SoundInterface } from './sound/SoundInterface.js';
-
-        class VIB3VisualizerBackground {
-            constructor() {
-                this.canvas = document.getElementById('visualizer-canvas');
-                this.initializeVisualizer();
-            }
-
-            async initializeVisualizer() {
-                try {
-                    // Set up canvas
-                    this.canvas.width = window.innerWidth;
-                    this.canvas.height = window.innerHeight;
-                    
-                    // Initialize WebGL and shader manager
-                    const gl = this.canvas.getContext('webgl2') || this.canvas.getContext('webgl');
-                    if (!gl) {
-                        console.warn('WebGL not supported, using fallback background');
-                        return;
-                    }
-
-                    const shaderManager = new ShaderManager(gl);
-                    
-                    // Configure for dark cyberpunk theme
-                    const visualizerConfig = {
-                        geometryType: 'hypercube',
-                        projectionMethod: 'perspective',
-                        colorScheme: {
-                            primary: [0.0, 0.85, 1.0],    // Cyber teal
-                            secondary: [1.0, 0.06, 0.94], // Cyber pink
-                            background: [0.04, 0.04, 0.06] // Dark background
-                        },
-                        rotationSpeed: 0.1,
-                        morphFactor: 0.3,
-                        gridDensity: 6.0,
-                        patternIntensity: 0.8
-                    };
-
-                    this.core = new HypercubeCore(this.canvas, shaderManager, visualizerConfig);
-                    
-                    // Initialize audio reactivity (optional)
-                    this.setupAudioReactivity();
-                    
-                    // Start the visualizer
-                    this.core.start();
-                    
-                    // Handle resize
-                    window.addEventListener('resize', this.handleResize.bind(this));
-                    
-                    console.log('VIB3CODE Visualizer Background: Neural interface activated');
-                    
-                } catch (error) {
-                    console.warn('Visualizer initialization failed:', error);
-                    this.setupFallbackBackground();
-                }
-            }
-
-            async setupAudioReactivity() {
-                try {
-                    this.soundInterface = new SoundInterface();
-                    await this.soundInterface.initialize();
-                    
-                    // Update visualizer with audio data
-                    const updateAudio = () => {
-                        if (this.soundInterface && this.core) {
-                            const audioData = this.soundInterface.getAudioLevels();
-                            this.core.updateParameters({
-                                audioLevels: audioData,
-                                morphFactor: 0.3 + audioData.mid * 0.4,
-                                rotationSpeed: 0.1 + audioData.bass * 0.3
-                            });
-                        }
-                        requestAnimationFrame(updateAudio);
-                    };
-                    updateAudio();
-                    
-                } catch (error) {
-                    console.log('Audio reactivity not available:', error);
-                    // Continue without audio - still looks great
-                }
-            }
-
-            setupFallbackBackground() {
-                // CSS-only animated background fallback
-                this.canvas.style.display = 'none';
-                document.body.style.background = `
-                    linear-gradient(135deg, #0a0a0f 0%, #151529 100%),
-                    radial-gradient(circle at 20% 80%, rgba(0, 217, 255, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(255, 16, 240, 0.1) 0%, transparent 50%)
-                `;
-            }
-
-            handleResize() {
-                if (this.canvas && this.core) {
-                    this.canvas.width = window.innerWidth;
-                    this.canvas.height = window.innerHeight;
-                }
-            }
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                new VIB3VisualizerBackground();
-            });
-        } else {
-            new VIB3VisualizerBackground();
-        }
-
-        // Add some cyberpunk interaction effects
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            // Subtle mouse-reactive effects for cards
-            document.querySelectorAll('.ema-card, .article-featured, .sidebar-article').forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardX = (e.clientX - rect.left) / rect.width;
-                const cardY = (e.clientY - rect.top) / rect.height;
-                
-                if (cardX >= 0 && cardX <= 1 && cardY >= 0 && cardY <= 1) {
-                    const rotateX = (cardY - 0.5) * 10;
-                    const rotateY = (cardX - 0.5) * -10;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                } else {
-                    card.style.transform = '';
-                }
-            });
-        });
-    </script>
+    <!-- Core Scripts -->
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/parallax.js"></script>
+    <script src="js/visualizer-simple.js"></script>
     
-    <!-- Neural loading indicator -->
-    <style>
-        .neural-loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            color: var(--cyber-teal);
-            font-family: var(--font-cyber);
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            opacity: 0;
-            animation: fadeOut 3s ease-out forwards;
-        }
-        
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; pointer-events: none; }
-        }
-    </style>
-    
-    <div class="neural-loading">
-        <div class="loading-cyber"></div>
-        Initializing Neural Interface...
+    <!-- Audio Context Warning for Safari -->
+    <div id="audio-warning" class="audio-warning" style="display: none;">
+        <div class="warning-content">
+            <p>🎵 Click anywhere to enable audio visualization</p>
+            <button id="enable-audio" class="btn-cyber btn-small">Enable Audio</button>
+        </div>
     </div>
 </body>
 </html>
