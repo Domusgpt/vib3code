@@ -1,4 +1,4 @@
-// Clean Parallax Effects Module for VIB3CODE
+// Advanced Parallax Effects Module for VIB3CODE
 
 class ParallaxEngine {
     constructor() {
@@ -18,7 +18,7 @@ class ParallaxEngine {
         this.bindEvents();
         this.start();
         
-        console.log('✅ Parallax Engine initialized with ' + this.elements.length + ' elements');
+        console.log(`✅ Parallax Engine initialized with ${this.elements.length} elements`);
     }
     
     setupElements() {
@@ -31,7 +31,7 @@ class ParallaxEngine {
                 type: 'background',
                 speed: speed,
                 offset: 0,
-                id: 'bg-layer-' + index
+                id: `bg-layer-${index}`
             });
         });
         
@@ -45,7 +45,7 @@ class ParallaxEngine {
                 amplitude: 20 + (index * 10),
                 frequency: 0.001 + (index * 0.0005),
                 offset: 0,
-                id: 'floating-' + index
+                id: `floating-${index}`
             });
         });
         
@@ -56,7 +56,7 @@ class ParallaxEngine {
                 element: section,
                 type: 'section',
                 speed: 0.1,
-                id: 'section-' + index
+                id: `section-${index}`
             });
         });
         
@@ -103,7 +103,7 @@ class ParallaxEngine {
             mouseX: 0,
             mouseY: 0,
             isHovering: false,
-            id: 'card-' + index
+            id: `card-${index}`
         });
     }
     
@@ -116,19 +116,19 @@ class ParallaxEngine {
         const translateX = mouseX * maxTranslation;
         const translateY = mouseY * maxTranslation;
         
-        const transform = 'perspective(1000px) ' +
-            'rotateX(' + rotateX + 'deg) ' +
-            'rotateY(' + rotateY + 'deg) ' +
-            'translateX(' + translateX + 'px) ' +
-            'translateY(' + translateY + 'px) ' +
-            'translateZ(20px)';
-        
-        card.style.transform = transform;
+        card.style.transform = `
+            perspective(1000px) 
+            rotateX(${rotateX}deg) 
+            rotateY(${rotateY}deg) 
+            translateX(${translateX}px) 
+            translateY(${translateY}px) 
+            translateZ(20px)
+        `;
         
         // Update card glow position
         const cardGlow = card.querySelector('.card-glow');
         if (cardGlow) {
-            cardGlow.style.transform = 'translate(' + (mouseX * 20) + 'px, ' + (mouseY * 20) + 'px)';
+            cardGlow.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
         }
     }
     
@@ -239,7 +239,7 @@ class ParallaxEngine {
     
     updateBackgroundLayer(element) {
         const translateY = -(this.scrollY * element.speed);
-        element.element.style.transform = 'translateY(' + translateY + 'px)';
+        element.element.style.transform = `translateY(${translateY}px)`;
     }
     
     updateFloatingElement(element, currentTime) {
@@ -251,7 +251,10 @@ class ParallaxEngine {
         const translateY = scrollInfluence + timeInfluence;
         const rotation = rotationInfluence;
         
-        element.element.style.transform = 'translateY(' + translateY + 'px) rotate(' + rotation + 'deg)';
+        element.element.style.transform = `
+            translateY(${translateY}px) 
+            rotate(${rotation}deg)
+        `;
         
         // Opacity based on scroll position
         const viewportCenter = this.scrollY + this.windowHeight / 2;
@@ -270,7 +273,7 @@ class ParallaxEngine {
         
         if (isInView) {
             const translateY = this.scrollY * element.speed;
-            element.element.style.transform = 'translateY(' + translateY + 'px)';
+            element.element.style.transform = `translateY(${translateY}px)`;
         }
     }
     
@@ -287,8 +290,11 @@ class ParallaxEngine {
             const rotateX = distance * 2;
             const translateY = this.scrollY * element.speed;
             
-            const transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) translateY(' + translateY + 'px)';
-            element.element.style.transform = transform;
+            element.element.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotateX}deg) 
+                translateY(${translateY}px)
+            `;
         }
     }
     
@@ -316,11 +322,10 @@ class ParallaxEngine {
     // Utility functions
     debounce(func, wait) {
         let timeout;
-        return function executedFunction() {
-            const args = arguments;
+        return function executedFunction(...args) {
             const later = () => {
                 clearTimeout(timeout);
-                func.apply(this, args);
+                func(...args);
             };
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
@@ -328,26 +333,25 @@ class ParallaxEngine {
     }
     
     // Public API
-    addElement(element, options) {
-        options = options || {};
+    addElement(element, options = {}) {
         const config = {
             element: element,
             type: options.type || 'custom',
             speed: options.speed || 0.5,
             amplitude: options.amplitude || 20,
             frequency: options.frequency || 0.001,
-            id: options.id || 'custom-' + this.elements.length
+            id: options.id || `custom-${this.elements.length}`
         };
         
         this.elements.push(config);
-        console.log('➕ Added parallax element: ' + config.id);
+        console.log(`➕ Added parallax element: ${config.id}`);
     }
     
     removeElement(id) {
         const index = this.elements.findIndex(el => el.id === id);
         if (index !== -1) {
             this.elements.splice(index, 1);
-            console.log('➖ Removed parallax element: ' + id);
+            console.log(`➖ Removed parallax element: ${id}`);
         }
     }
     
@@ -355,7 +359,7 @@ class ParallaxEngine {
         const element = this.elements.find(el => el.id === id);
         if (element) {
             element.speed = speed;
-            console.log('⚡ Updated speed for ' + id + ': ' + speed);
+            console.log(`⚡ Updated speed for ${id}: ${speed}`);
         }
     }
     

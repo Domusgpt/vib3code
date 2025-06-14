@@ -1,4 +1,4 @@
-// Clean Main JavaScript Module for VIB3CODE
+// Main JavaScript Module for VIB3CODE
 // Handles all interactions, animations, and user experience
 
 class VIB3CODEApp {
@@ -212,8 +212,9 @@ class VIB3CODEApp {
         }, observerOptions);
         
         // Observe all animatable elements
-        const selector = '.ema-card, .article-featured, .sidebar-article, .section-header';
-        const animatableElements = document.querySelectorAll(selector);
+        const animatableElements = document.querySelectorAll(
+            '.ema-card, .article-featured, .sidebar-article, .section-header'
+        );
         
         animatableElements.forEach(element => {
             this.intersectionObserver.observe(element);
@@ -271,8 +272,7 @@ class VIB3CODEApp {
                 const rotateX = deltaY * -10; // Reduced for subtlety
                 const rotateY = deltaX * 10;
                 
-                const transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-                card.style.transform = transform;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
             });
             
             card.addEventListener('mouseleave', () => {
@@ -318,7 +318,7 @@ class VIB3CODEApp {
             }
             
             // Show loading state
-            const submitButton = form.querySelector('button[type="submit"]');
+            const submitButton = form.querySelector('button[type=\"submit\"]');
             const originalText = submitButton.querySelector('.btn-text').textContent;
             submitButton.querySelector('.btn-text').textContent = 'Subscribing...';
             submitButton.disabled = true;
@@ -357,7 +357,7 @@ class VIB3CODEApp {
     }
     
     isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
         return emailRegex.test(email);
     }
     
