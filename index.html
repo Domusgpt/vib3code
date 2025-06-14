@@ -185,6 +185,7 @@
 
     <!-- Core Scripts - Updated 2025-06-14 -->
     <script src="js/holographic-visualizer.js?v=20250614"></script>
+    <script src="js/hyperav-visualizer.js?v=20250614"></script>
     <script src="js/theme-engine-clean.js?v=20250614"></script>
     <script src="js/magazine-router.js?v=20250614"></script>
     <script src="js/editorial-ai-clean.js?v=20250614"></script>
@@ -192,24 +193,15 @@
     <script src="js/main-fixed.js?v=20250614"></script>
     <script src="js/parallax-fixed.js?v=20250614"></script>
     
-    <!-- Debug Script -->
+    <!-- Magazine Router Auto-Load -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔍 DOM loaded, checking magazine router...');
-            
             setTimeout(function() {
                 if (window.MagazineRouter) {
-                    console.log('✅ Magazine Router found:', window.MagazineRouter);
-                    console.log('📍 Current section:', window.MagazineRouter.currentSection);
-                    
-                    // Force load home if nothing is loaded
                     var magazineContent = document.querySelector('.magazine-content');
                     if (magazineContent && !magazineContent.innerHTML.trim()) {
-                        console.log('🔧 Forcing home section load...');
                         window.MagazineRouter.navigateToSection('home');
                     }
-                } else {
-                    console.error('❌ Magazine Router not found!');
                 }
             }, 500);
         });
