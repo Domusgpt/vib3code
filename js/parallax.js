@@ -108,4 +108,292 @@ class ParallaxEngine {
     }
     
     updateCardTransform(card, mouseX, mouseY) {
-        const maxRotation = 15;\n        const maxTranslation = 5;\n        \n        const rotateX = mouseY * -maxRotation;\n        const rotateY = mouseX * maxRotation;\n        const translateX = mouseX * maxTranslation;\n        const translateY = mouseY * maxTranslation;\n        \n        card.style.transform = `\n            perspective(1000px) \n            rotateX(${rotateX}deg) \n            rotateY(${rotateY}deg) \n            translateX(${translateX}px) \n            translateY(${translateY}px) \n            translateZ(20px)\n        `;\n        \n        // Update card glow position\n        const cardGlow = card.querySelector('.card-glow');\n        if (cardGlow) {\n            cardGlow.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;\n        }\n    }\n    \n    bindEvents() {\n        // Optimized scroll handler\n        window.addEventListener('scroll', () => {\n            this.scrollY = window.pageYOffset;\n        }, { passive: true });\n        \n        // Window resize handler\n        window.addEventListener('resize', this.debounce(() => {\n            this.windowHeight = window.innerHeight;\n            this.recalculateElements();\n        }, 250));\n        \n        // Performance monitoring\n        this.setupPerformanceMonitoring();\n    }\n    \n    setupPerformanceMonitoring() {\n        let frameCount = 0;\n        let lastTime = performance.now();\n        \n        const checkPerformance = () => {\n            frameCount++;\n            const currentTime = performance.now();\n            \n            if (currentTime - lastTime >= 1000) {\n                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));\n                \n                // Adjust quality based on performance\n                if (fps < 30) {\n                    this.enablePerformanceMode();\n                } else if (fps > 55) {\n                    this.disablePerformanceMode();\n                }\n                \n                frameCount = 0;\n                lastTime = currentTime;\n            }\n            \n            if (this.isRunning) {\n                requestAnimationFrame(checkPerformance);\n            }\n        };\n        \n        requestAnimationFrame(checkPerformance);\n    }\n    \n    enablePerformanceMode() {\n        // Reduce parallax effects for better performance\n        this.elements.forEach(element => {\n            if (element.type === 'floating') {\n                element.speed *= 0.5;\n                element.amplitude *= 0.7;\n            }\n        });\n        \n        console.log('⚡ Performance mode enabled');\n    }\n    \n    disablePerformanceMode() {\n        // Restore full parallax effects\n        this.recalculateElements();\n        console.log('🚀 Full quality mode restored');\n    }\n    \n    recalculateElements() {\n        // Recalculate element properties after resize\n        this.elements.forEach(element => {\n            if (element.element) {\n                const rect = element.element.getBoundingClientRect();\n                element.elementTop = rect.top + this.scrollY;\n                element.elementHeight = rect.height;\n            }\n        });\n    }\n    \n    update() {\n        if (!this.isRunning) return;\n        \n        const currentTime = performance.now();\n        \n        this.elements.forEach(element => {\n            if (!element.element) return;\n            \n            switch (element.type) {\n                case 'background':\n                    this.updateBackgroundLayer(element);\n                    break;\n                    \n                case 'floating':\n                    this.updateFloatingElement(element, currentTime);\n                    break;\n                    \n                case 'section':\n                    this.updateSection(element);\n                    break;\n                    \n                case 'card':\n                    this.updateCard(element);\n                    break;\n            }\n        });\n        \n        this.rafId = requestAnimationFrame(() => this.update());\n    }\n    \n    updateBackgroundLayer(element) {\n        const translateY = -(this.scrollY * element.speed);\n        element.element.style.transform = `translateY(${translateY}px)`;\n    }\n    \n    updateFloatingElement(element, currentTime) {\n        // Complex motion with sine waves and scroll influence\n        const scrollInfluence = this.scrollY * element.speed;\n        const timeInfluence = Math.sin(currentTime * element.frequency) * element.amplitude;\n        const rotationInfluence = Math.cos(currentTime * element.frequency * 0.5) * 5;\n        \n        const translateY = scrollInfluence + timeInfluence;\n        const rotation = rotationInfluence;\n        \n        element.element.style.transform = `\n            translateY(${translateY}px) \n            rotate(${rotation}deg)\n        `;\n        \n        // Opacity based on scroll position\n        const viewportCenter = this.scrollY + this.windowHeight / 2;\n        const elementCenter = element.element.offsetTop;\n        const distance = Math.abs(viewportCenter - elementCenter);\n        const maxDistance = this.windowHeight;\n        const opacity = Math.max(0.2, 1 - (distance / maxDistance));\n        \n        element.element.style.opacity = opacity;\n    }\n    \n    updateSection(element) {\n        // Subtle section movement\n        const rect = element.element.getBoundingClientRect();\n        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;\n        \n        if (isInView) {\n            const translateY = this.scrollY * element.speed;\n            element.element.style.transform = `translateY(${translateY}px)`;\n        }\n    }\n    \n    updateCard(element) {\n        // Scroll-based card tilting\n        const rect = element.element.getBoundingClientRect();\n        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;\n        \n        if (isInView && !element.isHovering) {\n            const centerY = rect.top + rect.height / 2;\n            const screenCenter = this.windowHeight / 2;\n            const distance = (centerY - screenCenter) / screenCenter;\n            \n            const rotateX = distance * 2;\n            const translateY = this.scrollY * element.speed;\n            \n            element.element.style.transform = `\n                perspective(1000px) \n                rotateX(${rotateX}deg) \n                translateY(${translateY}px)\n            `;\n        }\n    }\n    \n    start() {\n        if (this.isRunning) return;\n        \n        this.isRunning = true;\n        this.recalculateElements();\n        this.update();\n        \n        console.log('🌊 Parallax Engine started');\n    }\n    \n    stop() {\n        this.isRunning = false;\n        \n        if (this.rafId) {\n            cancelAnimationFrame(this.rafId);\n            this.rafId = null;\n        }\n        \n        console.log('⏹️ Parallax Engine stopped');\n    }\n    \n    // Utility functions\n    debounce(func, wait) {\n        let timeout;\n        return function executedFunction(...args) {\n            const later = () => {\n                clearTimeout(timeout);\n                func(...args);\n            };\n            clearTimeout(timeout);\n            timeout = setTimeout(later, wait);\n        };\n    }\n    \n    // Public API\n    addElement(element, options = {}) {\n        const config = {\n            element: element,\n            type: options.type || 'custom',\n            speed: options.speed || 0.5,\n            amplitude: options.amplitude || 20,\n            frequency: options.frequency || 0.001,\n            id: options.id || `custom-${this.elements.length}`\n        };\n        \n        this.elements.push(config);\n        console.log(`➕ Added parallax element: ${config.id}`);\n    }\n    \n    removeElement(id) {\n        const index = this.elements.findIndex(el => el.id === id);\n        if (index !== -1) {\n            this.elements.splice(index, 1);\n            console.log(`➖ Removed parallax element: ${id}`);\n        }\n    }\n    \n    setSpeed(id, speed) {\n        const element = this.elements.find(el => el.id === id);\n        if (element) {\n            element.speed = speed;\n            console.log(`⚡ Updated speed for ${id}: ${speed}`);\n        }\n    }\n    \n    // Cleanup\n    destroy() {\n        this.stop();\n        this.elements = [];\n        console.log('🔥 Parallax Engine destroyed');\n    }\n}\n\n// Reduced motion support\nconst prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\nif (prefersReducedMotion) {\n    console.log('⚠️ Reduced motion preferred - Parallax effects disabled');\n} else {\n    // Initialize parallax engine\n    const parallaxEngine = new ParallaxEngine();\n    \n    // Export for external use\n    window.ParallaxEngine = parallaxEngine;\n    \n    // Cleanup on page unload\n    window.addEventListener('beforeunload', () => {\n        parallaxEngine.destroy();\n    });\n    \n    // Pause/resume based on visibility\n    document.addEventListener('visibilitychange', () => {\n        if (document.hidden) {\n            parallaxEngine.stop();\n        } else {\n            parallaxEngine.start();\n        }\n    });\n}\n\nexport default ParallaxEngine;
+        const maxRotation = 15;
+        const maxTranslation = 5;
+        
+        const rotateX = mouseY * -maxRotation;
+        const rotateY = mouseX * maxRotation;
+        const translateX = mouseX * maxTranslation;
+        const translateY = mouseY * maxTranslation;
+        
+        card.style.transform = `
+            perspective(1000px) 
+            rotateX(${rotateX}deg) 
+            rotateY(${rotateY}deg) 
+            translateX(${translateX}px) 
+            translateY(${translateY}px) 
+            translateZ(20px)
+        `;
+        
+        // Update card glow position
+        const cardGlow = card.querySelector('.card-glow');
+        if (cardGlow) {
+            cardGlow.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
+        }
+    }
+    
+    bindEvents() {
+        // Optimized scroll handler
+        window.addEventListener('scroll', () => {
+            this.scrollY = window.pageYOffset;
+        }, { passive: true });
+        
+        // Window resize handler
+        window.addEventListener('resize', this.debounce(() => {
+            this.windowHeight = window.innerHeight;
+            this.recalculateElements();
+        }, 250));
+        
+        // Performance monitoring
+        this.setupPerformanceMonitoring();
+    }
+    
+    setupPerformanceMonitoring() {
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        const checkPerformance = () => {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                
+                // Adjust quality based on performance
+                if (fps < 30) {
+                    this.enablePerformanceMode();
+                } else if (fps > 55) {
+                    this.disablePerformanceMode();
+                }
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            if (this.isRunning) {
+                requestAnimationFrame(checkPerformance);
+            }
+        };
+        
+        requestAnimationFrame(checkPerformance);
+    }
+    
+    enablePerformanceMode() {
+        // Reduce parallax effects for better performance
+        this.elements.forEach(element => {
+            if (element.type === 'floating') {
+                element.speed *= 0.5;
+                element.amplitude *= 0.7;
+            }
+        });
+        
+        console.log('⚡ Performance mode enabled');
+    }
+    
+    disablePerformanceMode() {
+        // Restore full parallax effects
+        this.recalculateElements();
+        console.log('🚀 Full quality mode restored');
+    }
+    
+    recalculateElements() {
+        // Recalculate element properties after resize
+        this.elements.forEach(element => {
+            if (element.element) {
+                const rect = element.element.getBoundingClientRect();
+                element.elementTop = rect.top + this.scrollY;
+                element.elementHeight = rect.height;
+            }
+        });
+    }
+    
+    update() {
+        if (!this.isRunning) return;
+        
+        const currentTime = performance.now();
+        
+        this.elements.forEach(element => {
+            if (!element.element) return;
+            
+            switch (element.type) {
+                case 'background':
+                    this.updateBackgroundLayer(element);
+                    break;
+                    
+                case 'floating':
+                    this.updateFloatingElement(element, currentTime);
+                    break;
+                    
+                case 'section':
+                    this.updateSection(element);
+                    break;
+                    
+                case 'card':
+                    this.updateCard(element);
+                    break;
+            }
+        });
+        
+        this.rafId = requestAnimationFrame(() => this.update());
+    }
+    
+    updateBackgroundLayer(element) {
+        const translateY = -(this.scrollY * element.speed);
+        element.element.style.transform = `translateY(${translateY}px)`;
+    }
+    
+    updateFloatingElement(element, currentTime) {
+        // Complex motion with sine waves and scroll influence
+        const scrollInfluence = this.scrollY * element.speed;
+        const timeInfluence = Math.sin(currentTime * element.frequency) * element.amplitude;
+        const rotationInfluence = Math.cos(currentTime * element.frequency * 0.5) * 5;
+        
+        const translateY = scrollInfluence + timeInfluence;
+        const rotation = rotationInfluence;
+        
+        element.element.style.transform = `
+            translateY(${translateY}px) 
+            rotate(${rotation}deg)
+        `;
+        
+        // Opacity based on scroll position
+        const viewportCenter = this.scrollY + this.windowHeight / 2;
+        const elementCenter = element.element.offsetTop;
+        const distance = Math.abs(viewportCenter - elementCenter);
+        const maxDistance = this.windowHeight;
+        const opacity = Math.max(0.2, 1 - (distance / maxDistance));
+        
+        element.element.style.opacity = opacity;
+    }
+    
+    updateSection(element) {
+        // Subtle section movement
+        const rect = element.element.getBoundingClientRect();
+        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;
+        
+        if (isInView) {
+            const translateY = this.scrollY * element.speed;
+            element.element.style.transform = `translateY(${translateY}px)`;
+        }
+    }
+    
+    updateCard(element) {
+        // Scroll-based card tilting
+        const rect = element.element.getBoundingClientRect();
+        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;
+        
+        if (isInView && !element.isHovering) {
+            const centerY = rect.top + rect.height / 2;
+            const screenCenter = this.windowHeight / 2;
+            const distance = (centerY - screenCenter) / screenCenter;
+            
+            const rotateX = distance * 2;
+            const translateY = this.scrollY * element.speed;
+            
+            element.element.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotateX}deg) 
+                translateY(${translateY}px)
+            `;
+        }
+    }
+    
+    start() {
+        if (this.isRunning) return;
+        
+        this.isRunning = true;
+        this.recalculateElements();
+        this.update();
+        
+        console.log('🌊 Parallax Engine started');
+    }
+    
+    stop() {
+        this.isRunning = false;
+        
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+            this.rafId = null;
+        }
+        
+        console.log('⏹️ Parallax Engine stopped');
+    }
+    
+    // Utility functions
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // Public API
+    addElement(element, options = {}) {
+        const config = {
+            element: element,
+            type: options.type || 'custom',
+            speed: options.speed || 0.5,
+            amplitude: options.amplitude || 20,
+            frequency: options.frequency || 0.001,
+            id: options.id || `custom-${this.elements.length}`
+        };
+        
+        this.elements.push(config);
+        console.log(`➕ Added parallax element: ${config.id}`);
+    }
+    
+    removeElement(id) {
+        const index = this.elements.findIndex(el => el.id === id);
+        if (index !== -1) {
+            this.elements.splice(index, 1);
+            console.log(`➖ Removed parallax element: ${id}`);
+        }
+    }
+    
+    setSpeed(id, speed) {
+        const element = this.elements.find(el => el.id === id);
+        if (element) {
+            element.speed = speed;
+            console.log(`⚡ Updated speed for ${id}: ${speed}`);
+        }
+    }
+    
+    // Cleanup
+    destroy() {
+        this.stop();
+        this.elements = [];
+        console.log('🔥 Parallax Engine destroyed');
+    }
+}
+
+// Reduced motion support
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (prefersReducedMotion) {
+    console.log('⚠️ Reduced motion preferred - Parallax effects disabled');
+} else {
+    // Initialize parallax engine
+    const parallaxEngine = new ParallaxEngine();
+    
+    // Export for external use
+    window.ParallaxEngine = parallaxEngine;
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+        parallaxEngine.destroy();
+    });
+    
+    // Pause/resume based on visibility
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            parallaxEngine.stop();
+        } else {
+            parallaxEngine.start();
+        }
+    });
+}

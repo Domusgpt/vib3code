@@ -212,7 +212,9 @@ class VIB3CODEApp {
         }, observerOptions);
         
         // Observe all animatable elements
-        const animatableElements = document.querySelectorAll(\n            '.ema-card, .article-featured, .sidebar-article, .section-header'\n        );
+        const animatableElements = document.querySelectorAll(
+            '.ema-card, .article-featured, .sidebar-article, .section-header'
+        );
         
         animatableElements.forEach(element => {
             this.intersectionObserver.observe(element);
