@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperAudioVisualizer v1.0</title>
+    <link rel="stylesheet" href="css/neumorphic-vars.css">
+    <link rel="stylesheet" href="css/neumorphic-style.css">
+    <link rel="stylesheet" href="css/enhanced-styles.css">
+    <style>
+        body { display: flex; flex-direction: column; height: 100vh; background-color: var(--vp-bg-dark); margin: 0; color: var(--vp-text-primary); font-family: var(--font-ui); }
+        .canvas-container { position: relative; flex-grow: 1; width: 100%; border-bottom: 1px solid var(--border-color-base); overflow: hidden; }
+        #hypercube-canvas { display: block; width: 100%; height: 100%; }
+        #status { position: absolute; top: 10px; left: 10px; color: white; font-family: monospace; background: rgba(0,0,0,0.6); padding: 5px 8px; border-radius: 3px; z-index: 10; font-size: 0.8em; }
+        .controls-container { flex-shrink: 0; padding: 10px; background-color: rgba(var(--vp-element-base-rgb), 0.3); max-height: 35vh; overflow-y: auto; border-top: 1px solid var(--border-color-base); }
+        .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px 20px; }
+        .control-group { margin-bottom: 8px; transition: transform 0.2s ease; }
+        .control-group label { display: block; margin-bottom: 4px; font-size: 0.75rem; font-weight: 500; color: var(--accent-color-secondary); text-transform: uppercase; }
+        .control-row { display: flex; align-items: center; gap: 8px; }
+        .slider-wrapper { flex-grow: 1; position: relative; height: var(--slider-thumb-size); display: flex; align-items: center; }
+        .styled-slider { width: 100%; margin: 0; opacity: 0.7; } /* Semi-transparent to indicate they're audio reactive */
+        .value-display { min-width: 45px; text-align: right; font-family: var(--font-terminal); color: var(--vp-text-secondary); font-size: 0.75rem; }
+        .selectors { display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; }
+        .selectors label { font-weight: bold; color: var(--accent-color-secondary); margin-right: 5px; }
+        .selectors select {
+            background-color: rgba(var(--vp-element-base-rgb), 0.5); color: var(--vp-text-primary);
+            border: 1px solid var(--border-color-base); border-radius: 4px; padding: 3px 5px; font-size: 0.8rem;
+            font-family: var(--font-ui);
+        }
+       .controls-container::-webkit-scrollbar { width: 6px; }
+       .controls-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+       .controls-container::-webkit-scrollbar-thumb { background-color: var(--accent-color-primary); border-radius: 3px; }
+       .controls-container { scrollbar-width: thin; scrollbar-color: var(--accent-color-primary) rgba(0,0,0,0.2); }
+       
+       /* Audio reactivity indicator */
+       .reactivity-indicator {
+           position: absolute;
+           top: 10px;
+           right: 10px;
+           font-family: var(--font-terminal);
+           font-size: 0.8em;
+           color: var(--accent-color-primary);
+           background: rgba(0,0,0,0.6);
+           padding: 5px 8px;
+           border-radius: 3px;
+           border: 1px solid var(--accent-color-primary);
+           z-index: 10;
+           text-shadow: 0 0 5px var(--accent-color-primary);
+       }
+    </style>
+</head>
+<body>
+    <div class="canvas-container glass-effect">
+        <canvas id="hypercube-canvas"></canvas>
+        <div id="status">Initializing...</div>
+        <div class="reactivity-indicator">CLICK FOR MIC ACCESS</div>
+        
+        <!-- Visual Touch Indicator -->
+        <div class="touch-indicator" id="touchIndicator"></div>
+        
+        <!-- Parameter Info Overlay -->
+        <div class="parameter-info" id="parameterInfo">
+            <div class="parameter-info-x">X: <span id="paramXValue">Dimension</span></div>
+            <div class="parameter-info-y">Y: <span id="paramYValue">Morph</span></div>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <div class="controls-header">
+            <div class="title">HyperAV Controls</div>
+            <button class="collapse-toggle" id="collapseToggle">
+                <span class="toggle-icon">▲</span>
+            </button>
+        </div>
+        
+        <div class="controls-content" id="controlsContent">
+            <div class="selectors">
+                <div>
+                    <label for="geometryType">Geometry:</label>
+                    <select id="geometryType">
+                        <option value="hypercube" selected>Hypercube</option>
+                        <option value="hypersphere">Hypersphere</option>
+                        <option value="hypertetrahedron">Hypertetrahedron</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="projectionMethod">Projection:</label>
+                    <select id="projectionMethod">
+                        <option value="perspective" selected>Perspective</option>
+                        <option value="orthographic">Orthographic</option>
+                        <option value="stereographic">Stereographic</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="controls-grid">
+                <div class="control-group" data-audio-band="mid">
+                    <label for="morphFactor">Morph Factor</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0" max="1.5" step="0.01" value="0.7" class="styled-slider" id="morphFactor"></div><span class="value-display" id="morphFactor-value">0.70</span></div>
+                </div>
+                <div class="control-group" data-audio-band="bass">
+                    <label for="dimension">Dimension (3D ↔ 4D)</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="3" max="5" step="0.01" value="4.0" class="styled-slider" id="dimension"></div><span class="value-display" id="dimension-value">4.00</span></div>
+                </div>
+                <div class="control-group" data-audio-band="mid">
+                    <label for="rotationSpeed">Rotation Speed</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0" max="2" step="0.01" value="0.5" class="styled-slider" id="rotationSpeed"></div><span class="value-display" id="rotationSpeed-value">0.50</span></div>
+                </div>
+                <div class="control-group" data-audio-band="bass">
+                    <label for="gridDensity">Grid Density</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="2" max="25" step="0.1" value="8.0" class="styled-slider" id="gridDensity"></div><span class="value-display" id="gridDensity-value">8.0</span></div>
+                </div>
+                <div class="control-group" data-audio-band="high">
+                    <label for="lineThickness">Line Thickness</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0.005" max="0.1" step="0.001" value="0.03" class="styled-slider" id="lineThickness"></div><span class="value-display" id="lineThickness-value">0.030</span></div>
+                </div>
+                <div class="control-group" data-audio-band="mid">
+                    <label for="patternIntensity">Pattern Intensity</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0" max="2" step="0.01" value="1.3" class="styled-slider" id="patternIntensity"></div><span class="value-display" id="patternIntensity-value">1.30</span></div>
+                </div>
+                <div class="control-group" data-audio-band="bass">
+                    <label for="universeModifier">Universe Modifier</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0.5" max="2.0" step="0.01" value="1.0" class="styled-slider" id="universeModifier"></div><span class="value-display" id="universeModifier-value">1.00</span></div>
+                </div>
+                <div class="control-group" data-audio-band="dissonance">
+                    <label for="colorShift">Color Shift</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="-1" max="1" step="0.01" value="0.0" class="styled-slider" id="colorShift"></div><span class="value-display" id="colorShift-value">0.00</span></div>
+                </div>
+                <div class="control-group" data-audio-band="high">
+                    <label for="glitchIntensity">Glitch Intensity</label>
+                    <div class="control-row"><div class="slider-wrapper"><input type="range" min="0" max="0.1" step="0.001" value="0.02" class="styled-slider" id="glitchIntensity"></div><span class="value-display" id="glitchIntensity-value">0.020</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Visualizer Core Dependencies -->
+    <script type="module" src="core/GeometryManager.js"></script>
+    <script type="module" src="core/ProjectionManager.js"></script>
+    <script type="module" src="core/ShaderManager.js"></script>
+    <script type="module" src="core/HypercubeCore.js"></script>
+
+    <!-- Load the Main Script -->
+    <script type="module" src="js/visualizer-main.js"></script>
+    
+    <!-- Global Variable Exposer -->
+    <script src="js/visualizer-globals.js"></script>
+    
+    <!-- Flutter Bridge Integration -->
+    <script src="js/flutter-bridge.js"></script>
+    
+    <!-- Enhanced Flutter Bridge for Morph-UI -->
+    <script src="js/enhanced-flutter-bridge.js"></script>
+</body>
+</html>
