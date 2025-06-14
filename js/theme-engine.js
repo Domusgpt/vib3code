@@ -68,6 +68,33 @@
                 background: { h: 270, s: 18, l: 11 }, // Dark purple-grey
                 complexity: 'medium',
                 speed: 1.1
+            },
+            {
+                name: 'Quantum Renaissance', 
+                primary: { h: 340, s: 95, l: 40 },    // Deep rose
+                secondary: { h: 200, s: 100, l: 35 }, // Electric blue
+                accent: { h: 60, s: 100, l: 75 },     // Brilliant gold
+                background: { h: 340, s: 25, l: 6 },  // Deep rose-black
+                complexity: 'maximum',
+                speed: 1.4
+            },
+            {
+                name: 'Neural Elegance',
+                primary: { h: 240, s: 60, l: 45 },    // Sophisticated blue
+                secondary: { h: 15, s: 85, l: 55 },   // Warm copper
+                accent: { h: 135, s: 70, l: 65 },     // Sage green
+                background: { h: 240, s: 30, l: 9 },  // Midnight blue
+                complexity: 'refined',
+                speed: 0.7
+            },
+            {
+                name: 'Code Alchemy',
+                primary: { h: 285, s: 90, l: 38 },    // Mystic purple
+                secondary: { h: 45, s: 95, l: 52 },   // Alchemical gold
+                accent: { h: 165, s: 80, l: 58 },     // Emerald wisdom
+                background: { h: 285, s: 35, l: 7 },  // Deep mystic
+                complexity: 'dynamic',
+                speed: 1.3
             }
         ];
         
