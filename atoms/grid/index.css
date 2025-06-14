@@ -1,0 +1,317 @@
+/* VIB3CODE Grid System - Main Index */
+
+/* Import Grid Components */
+@import 'layout.css';
+@import 'magazine.css';
+@import 'utilities.css';
+
+/* Grid System Base Variables */
+:root {
+  /* Core Grid Configuration */
+  --grid-system-version: '1.0.0';
+  --grid-total-columns: 12;
+  --grid-baseline: 1.5rem;
+  
+  /* Container System */
+  --container-padding: var(--grid-gap);
+  --container-max-width: var(--container-xl);
+  
+  /* Editorial Measurements */
+  --editorial-margin: 4rem;
+  --editorial-gutter: 2rem;
+  --editorial-column-gap: 3rem;
+  
+  /* Performance Settings */
+  --grid-render-optimization: optimizeSpeed;
+  --grid-contain: layout style;
+}
+
+/* Base Grid Reset */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Enable CSS Grid Layout */
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Main Layout Structure */
+.site-layout {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+}
+
+.site-header {
+  grid-area: header;
+}
+
+.site-main {
+  grid-area: main;
+}
+
+.site-footer {
+  grid-area: footer;
+}
+
+/* Base Container */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Grid Performance Optimizations */
+.grid-performant {
+  contain: var(--grid-contain);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Grid Auto-sizing */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: var(--grid-gap);
+}
+
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 1), 1fr);
+  gap: var(--grid-gap);
+}
+
+/* Content-Based Grid Sizing */
+.grid-content-size {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  gap: var(--grid-gap);
+}
+
+.grid-equal-height {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--grid-gap);
+}
+
+/* Intrinsic Grid Layouts */
+.grid-intrinsic {
+  display: grid;
+  grid-template-columns: fit-content(300px) 1fr fit-content(200px);
+  gap: var(--grid-gap);
+}
+
+.grid-sidebar-left {
+  display: grid;
+  grid-template-columns: fit-content(250px) 1fr;
+  gap: var(--grid-gap);
+}
+
+.grid-sidebar-right {
+  display: grid;
+  grid-template-columns: 1fr fit-content(250px);
+  gap: var(--grid-gap);
+}
+
+.grid-sidebar-both {
+  display: grid;
+  grid-template-columns: fit-content(200px) 1fr fit-content(200px);
+  gap: var(--grid-gap);
+}
+
+/* Editorial Specific Grids */
+.editorial-grid {
+  display: grid;
+  grid-template-columns: 
+    [full-start] minmax(var(--editorial-margin), 1fr)
+    [wide-start] minmax(0, 2rem)
+    [content-start] min(var(--content-narrow), 100% - 2 * var(--editorial-margin))
+    [content-end] minmax(0, 2rem)
+    [wide-end] minmax(var(--editorial-margin), 1fr) [full-end];
+  grid-column-gap: var(--editorial-gutter);
+}
+
+.editorial-grid > * {
+  grid-column: content;
+}
+
+.editorial-grid .wide {
+  grid-column: wide;
+}
+
+.editorial-grid .full {
+  grid-column: full;
+}
+
+/* Responsive Grid Columns */
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* Responsive Grid Rows */
+.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+
+/* Responsive Breakpoint Adjustments */
+@media (min-width: 480px) {
+  :root {
+    --grid-columns: 4;
+  }
+  
+  .sm\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --grid-columns: 8;
+    --container-padding: 2rem;
+  }
+  
+  .md\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .md\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .md\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --grid-columns: 12;
+    --container-padding: 2rem;
+    --editorial-margin: 6rem;
+  }
+  
+  .lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .lg\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .lg\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .lg\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+  .lg\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .lg\:grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+  .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --container-padding: 3rem;
+    --editorial-margin: 8rem;
+  }
+  
+  .xl\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .xl\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .xl\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .xl\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .xl\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .xl\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .xl\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+  .xl\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .xl\:grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+  .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+/* Grid System Status Classes */
+.grid-system-loaded {
+  /* Applied when grid system is fully initialized */
+  --grid-status: 'loaded';
+}
+
+.grid-system-error {
+  /* Applied when grid system encounters errors */
+  --grid-status: 'error';
+  outline: 2px solid red;
+}
+
+/* Development and Debug Utilities */
+.grid-development {
+  /* Show grid lines in development */
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent calc(100% / var(--grid-total-columns) - 1px),
+    rgba(233, 69, 96, 0.1) calc(100% / var(--grid-total-columns))
+  );
+}
+
+/* Print Optimizations */
+@media print {
+  .grid-container,
+  .magazine-grid-hero,
+  .magazine-grid-feature {
+    display: block;
+  }
+  
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  .grid-container,
+  .grid-responsive,
+  .grid-auto {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .grid-debug {
+    background: none;
+  }
+  
+  .grid-debug * {
+    outline: 2px solid;
+  }
+}
+
+/* Memory and Performance Optimizations */
+.grid-memory-optimized {
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
+}

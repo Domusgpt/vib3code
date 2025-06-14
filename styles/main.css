@@ -1,0 +1,495 @@
+/* VIB3CODE Design System - Main Stylesheet */
+
+/* Import All Atomic Design Components */
+@import '../atoms/typography/index.css';
+@import '../atoms/grid/index.css';
+@import '../atoms/patterns/index.css';
+
+/* VIB3CODE Master Design System */
+:root {
+  /* System Metadata */
+  --design-system: 'VIB3CODE EMA Design System';
+  --design-version: '1.0.0';
+  --design-status: 'production';
+  --design-philosophy: 'Exoditical Moral Architecture';
+  
+  /* Master Color Palette Enhancement */
+  --color-ema-primary: var(--color-sovereignty);
+  --color-ema-secondary: var(--color-liberation);
+  --color-ema-tertiary: var(--color-bridge);
+  --color-ema-accent: var(--color-accent);
+  --color-ema-wisdom: var(--color-wisdom);
+  
+  /* EMA-Specific Gradients */
+  --gradient-digital-sovereignty: linear-gradient(135deg, 
+    var(--color-sovereignty) 0%, 
+    var(--color-liberation) 50%, 
+    var(--color-bridge) 100%);
+  
+  --gradient-liberation: linear-gradient(45deg,
+    var(--color-liberation) 0%,
+    var(--color-accent) 100%);
+  
+  --gradient-wisdom: linear-gradient(180deg,
+    var(--color-wisdom) 0%,
+    var(--color-neutral-50) 100%);
+  
+  /* Editorial Enhancement Variables */
+  --editorial-hero-height: 80vh;
+  --editorial-feature-height: 60vh;
+  --editorial-card-aspect: 1.618; /* Golden ratio */
+  --editorial-reading-comfort: 1.8; /* Enhanced line height for comfort */
+  
+  /* Premium Animation Curves */
+  --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-premium: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-sophisticated: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Global Enhancement Styles */
+html {
+  /* Enhanced rendering for premium feel */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-ligatures: common-ligatures;
+  
+  /* Smooth scrolling with premium easing */
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+body {
+  /* Enhanced body styling for editorial quality */
+  background: var(--gradient-wisdom);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Premium Selection Styling */
+::selection {
+  background: var(--gradient-liberation);
+  color: var(--color-wisdom);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--gradient-liberation);
+  color: var(--color-wisdom);
+  text-shadow: none;
+}
+
+/* Enhanced Focus Management */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Premium Link Styling */
+a {
+  color: var(--color-bridge);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  transition: all var(--transition-default) var(--ease-editorial);
+}
+
+a:hover {
+  color: var(--color-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
+}
+
+a:focus {
+  color: var(--color-accent);
+  text-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
+}
+
+/* Enhanced Editorial Components */
+
+/* Hero Section Enhancement */
+.hero-editorial {
+  min-height: var(--editorial-hero-height);
+  background: var(--gradient-digital-sovereignty);
+  color: var(--color-wisdom);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-editorial::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(233, 69, 96, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: var(--space-8);
+}
+
+.hero-title {
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-6xl));
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-6);
+  text-shadow: var(--shadow-text);
+}
+
+.hero-subtitle {
+  font-size: clamp(var(--text-lg), 2.5vw, var(--text-2xl));
+  font-family: var(--font-serif);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-relaxed);
+  opacity: 0.9;
+  margin-bottom: var(--space-8);
+}
+
+/* Feature Article Enhancement */
+.article-feature {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-hero);
+  transition: all var(--transition-slow) var(--ease-premium);
+}
+
+.article-feature:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-floating);
+}
+
+.article-feature-image {
+  width: 100%;
+  height: var(--editorial-feature-height);
+  object-fit: cover;
+  transition: transform var(--transition-slower) var(--ease-sophisticated);
+}
+
+.article-feature:hover .article-feature-image {
+  transform: scale(1.05);
+}
+
+.article-feature-content {
+  padding: var(--space-8);
+  position: relative;
+}
+
+.article-feature-title {
+  font-size: var(--text-3xl);
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-emphasis);
+  margin-bottom: var(--space-4);
+}
+
+.article-feature-excerpt {
+  font-size: var(--text-lg);
+  font-family: var(--font-serif);
+  line-height: var(--editorial-reading-comfort);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+/* EMA Philosophy Cards */
+.ema-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-default) var(--ease-editorial);
+}
+
+.ema-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--gradient-liberation);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--transition-default) var(--ease-premium);
+}
+
+.ema-card:hover::before {
+  transform: scaleY(1);
+}
+
+.ema-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-floating);
+  transform: translateY(-4px);
+}
+
+.ema-principle {
+  font-size: var(--text-xs);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-accent);
+  margin-bottom: var(--space-3);
+}
+
+.ema-title {
+  font-size: var(--text-xl);
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--color-text-emphasis);
+  margin-bottom: var(--space-4);
+}
+
+.ema-description {
+  font-size: var(--text-base);
+  font-family: var(--font-serif);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* Navigation Enhancement */
+.navigation-premium {
+  background: var(--color-surface-frosted);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--color-border-light);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-sticky);
+  transition: all var(--transition-default) var(--ease-editorial);
+}
+
+.navigation-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  max-width: var(--container-xl);
+  margin: 0 auto;
+}
+
+.logo-vib3code {
+  font-size: var(--text-2xl);
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  background: var(--gradient-liberation);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all var(--transition-default) var(--ease-editorial);
+}
+
+.logo-vib3code:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 8px rgba(233, 69, 96, 0.2));
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.nav-link-premium {
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  position: relative;
+  transition: all var(--transition-default) var(--ease-editorial);
+}
+
+.nav-link-premium::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-liberation);
+  transition: width var(--transition-default) var(--ease-premium);
+}
+
+.nav-link-premium:hover {
+  color: var(--color-text-primary);
+}
+
+.nav-link-premium:hover::after {
+  width: 100%;
+}
+
+.nav-link-premium.active {
+  color: var(--color-accent);
+}
+
+.nav-link-premium.active::after {
+  width: 100%;
+}
+
+/* Footer Enhancement */
+.footer-editorial {
+  background: var(--gradient-digital-sovereignty);
+  color: var(--color-wisdom);
+  padding: var(--space-20) 0 var(--space-8);
+  margin-top: var(--space-24);
+}
+
+.footer-content {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  text-align: center;
+}
+
+.footer-ema {
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  opacity: 0.8;
+  margin-top: var(--space-8);
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .hero-editorial {
+    min-height: 60vh;
+  }
+  
+  .hero-content {
+    padding: var(--space-6);
+  }
+  
+  .article-feature-content {
+    padding: var(--space-6);
+  }
+  
+  .ema-card {
+    padding: var(--space-6);
+  }
+  
+  .navigation-content {
+    padding: var(--space-3) var(--space-4);
+  }
+  
+  .nav-links {
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+}
+
+/* Print Enhancements */
+@media print {
+  .hero-editorial {
+    min-height: auto;
+    background: none;
+    color: var(--color-text-primary);
+  }
+  
+  .article-feature {
+    box-shadow: none;
+    border: 1px solid var(--color-border);
+  }
+  
+  .navigation-premium {
+    position: static;
+    background: none;
+    border: none;
+  }
+  
+  .footer-editorial {
+    background: none;
+    color: var(--color-text-primary);
+  }
+}
+
+/* Performance Optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+.contain-layout {
+  contain: layout;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* Debug Mode - Development Only */
+.debug-design-system {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--color-surface-overlay);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  z-index: var(--z-index-tooltip);
+  opacity: 0.7;
+}
+
+.debug-design-system::before {
+  content: var(--design-system) ' v' var(--design-version);
+}
+
+/* Component Status Indicators */
+.component-loading {
+  background: var(--gradient-wisdom);
+  animation: loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.component-error {
+  background: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(239, 68, 68, 0.1) 25%,
+    rgba(239, 68, 68, 0.1) 75%,
+    transparent 75%
+  );
+  background-size: 20px 20px;
+}
+
+.component-success {
+  position: relative;
+}
+
+.component-success::after {
+  content: '✓';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--color-success);
+  font-weight: bold;
+}

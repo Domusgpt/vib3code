@@ -1,0 +1,297 @@
+/* VIB3CODE Grid System - Magazine Layout Foundation */
+
+:root {
+  /* Grid System Variables */
+  --grid-columns: 12;
+  --grid-gap: 1.5rem;
+  --grid-gap-small: 1rem;
+  --grid-gap-large: 2rem;
+  
+  /* Container Widths */
+  --container-xs: 100%;
+  --container-sm: 100%;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1440px;
+  --container-xxl: 1680px;
+  
+  /* Breakpoints */
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+  --breakpoint-xxl: 1680px;
+  
+  /* Content Widths for Reading */
+  --content-narrow: 65ch;        /* Optimal reading width */
+  --content-medium: 75ch;        /* Wider content */
+  --content-wide: 85ch;          /* Maximum content width */
+  --content-full: 100%;          /* Full container width */
+}
+
+/* Base Grid Container */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--grid-gap);
+  box-sizing: border-box;
+}
+
+/* Grid Container Variants */
+.grid-container-sm {
+  max-width: var(--container-sm);
+  gap: var(--grid-gap-small);
+  padding: 0 var(--grid-gap-small);
+}
+
+.grid-container-md {
+  max-width: var(--container-md);
+}
+
+.grid-container-lg {
+  max-width: var(--container-lg);
+}
+
+.grid-container-xl {
+  max-width: var(--container-xl);
+}
+
+.grid-container-xxl {
+  max-width: var(--container-xxl);
+  gap: var(--grid-gap-large);
+  padding: 0 var(--grid-gap-large);
+}
+
+.grid-container-full {
+  max-width: none;
+  padding: 0;
+}
+
+/* Magazine Layout Templates */
+.grid-magazine {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  grid-template-areas:
+    "header header header header header header header header header header header header"
+    "main main main main main main main main main sidebar sidebar sidebar"
+    "footer footer footer footer footer footer footer footer footer footer footer footer";
+  min-height: 100vh;
+}
+
+.grid-magazine-hero {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  grid-template-areas:
+    "hero hero hero hero hero hero hero hero hero hero hero hero"
+    "main main main main main main main main main sidebar sidebar sidebar"
+    "related related related related related related related related related related related related"
+    "footer footer footer footer footer footer footer footer footer footer footer footer";
+}
+
+.grid-magazine-feature {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  grid-template-areas:
+    "feature feature feature feature feature feature feature feature feature feature feature feature"
+    "content content content content content content content content meta meta meta meta"
+    "related related related related related related related related related related related related";
+}
+
+/* Grid Areas */
+.grid-header { grid-area: header; }
+.grid-hero { grid-area: hero; }
+.grid-main { grid-area: main; }
+.grid-sidebar { grid-area: sidebar; }
+.grid-footer { grid-area: footer; }
+.grid-feature { grid-area: feature; }
+.grid-content { grid-area: content; }
+.grid-meta { grid-area: meta; }
+.grid-related { grid-area: related; }
+
+/* Column Spanning Classes */
+.col-1 { grid-column: span 1; }
+.col-2 { grid-column: span 2; }
+.col-3 { grid-column: span 3; }
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-6 { grid-column: span 6; }
+.col-7 { grid-column: span 7; }
+.col-8 { grid-column: span 8; }
+.col-9 { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+/* Column Start Positions */
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+
+/* Column End Positions */
+.col-end-1 { grid-column-end: 1; }
+.col-end-2 { grid-column-end: 2; }
+.col-end-3 { grid-column-end: 3; }
+.col-end-4 { grid-column-end: 4; }
+.col-end-5 { grid-column-end: 5; }
+.col-end-6 { grid-column-end: 6; }
+.col-end-7 { grid-column-end: 7; }
+.col-end-8 { grid-column-end: 8; }
+.col-end-9 { grid-column-end: 9; }
+.col-end-10 { grid-column-end: 10; }
+.col-end-11 { grid-column-end: 11; }
+.col-end-12 { grid-column-end: 12; }
+.col-end-13 { grid-column-end: 13; }
+
+/* Row Spanning */
+.row-span-1 { grid-row: span 1; }
+.row-span-2 { grid-row: span 2; }
+.row-span-3 { grid-row: span 3; }
+.row-span-4 { grid-row: span 4; }
+.row-span-5 { grid-row: span 5; }
+.row-span-6 { grid-row: span 6; }
+
+/* Content Width Classes */
+.content-narrow {
+  max-width: var(--content-narrow);
+  margin: 0 auto;
+}
+
+.content-medium {
+  max-width: var(--content-medium);
+  margin: 0 auto;
+}
+
+.content-wide {
+  max-width: var(--content-wide);
+  margin: 0 auto;
+}
+
+.content-full {
+  max-width: var(--content-full);
+}
+
+/* Editorial Layout Variants */
+.layout-article {
+  display: grid;
+  grid-template-columns: 1fr min(var(--content-narrow), 100%) 1fr;
+  gap: var(--grid-gap);
+}
+
+.layout-article > * {
+  grid-column: 2;
+}
+
+.layout-article .full-bleed {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.layout-feature-story {
+  display: grid;
+  grid-template-columns: 1fr min(var(--content-wide), 100%) 1fr;
+  gap: var(--grid-gap);
+}
+
+.layout-feature-story > * {
+  grid-column: 2;
+}
+
+.layout-feature-story .full-bleed {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 1023px) {
+  .grid-magazine,
+  .grid-magazine-hero,
+  .grid-magazine-feature {
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-areas:
+      "header header header header header header header header"
+      "main main main main main main main main"
+      "sidebar sidebar sidebar sidebar sidebar sidebar sidebar sidebar"
+      "footer footer footer footer footer footer footer footer";
+  }
+  
+  .col-9, .col-10, .col-11, .col-12 {
+    grid-column: span 8;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --grid-gap: 1rem;
+    --grid-gap-small: 0.75rem;
+  }
+  
+  .grid-container {
+    padding: 0 1rem;
+  }
+  
+  .grid-magazine,
+  .grid-magazine-hero,
+  .grid-magazine-feature {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "header header header header"
+      "main main main main"
+      "sidebar sidebar sidebar sidebar"
+      "footer footer footer footer";
+  }
+  
+  .col-1, .col-2, .col-3, .col-4,
+  .col-5, .col-6, .col-7, .col-8,
+  .col-9, .col-10, .col-11, .col-12 {
+    grid-column: span 4;
+  }
+  
+  .layout-article,
+  .layout-feature-story {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+  
+  .layout-article > *,
+  .layout-feature-story > * {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --grid-gap: 0.75rem;
+  }
+  
+  .grid-container {
+    padding: 0 0.75rem;
+  }
+  
+  .grid-magazine,
+  .grid-magazine-hero,
+  .grid-magazine-feature {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "sidebar"
+      "footer";
+  }
+}

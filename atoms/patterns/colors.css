@@ -1,0 +1,333 @@
+/* VIB3CODE Color System - EMA-Inspired Palette */
+
+:root {
+  /* Brand Colors - Core EMA Philosophy */
+  --color-sovereignty: #1a1a2e;        /* Deep digital sovereignty */
+  --color-liberation: #16213e;         /* Freedom and movement */
+  --color-bridge: #0f3460;             /* Connecting and building */
+  --color-accent: #e94560;             /* Energy and passion */
+  --color-wisdom: #f5f5f5;             /* Light and knowledge */
+  
+  /* Extended Brand Palette */
+  --color-sovereignty-light: #2d2d4a;
+  --color-sovereignty-lighter: #404066;
+  --color-sovereignty-dark: #0f0f1a;
+  --color-sovereignty-darker: #050508;
+  
+  --color-liberation-light: #293550;
+  --color-liberation-lighter: #3c4762;
+  --color-liberation-dark: #0b1423;
+  --color-liberation-darker: #060a11;
+  
+  --color-bridge-light: #1e4d7a;
+  --color-bridge-lighter: #2d6694;
+  --color-bridge-dark: #082340;
+  --color-bridge-darker: #041120;
+  
+  --color-accent-light: #ed6579;
+  --color-accent-lighter: #f18592;
+  --color-accent-dark: #d63651;
+  --color-accent-darker: #c32742;
+  
+  /* Neutral Palette */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+  
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #34d399;
+  --color-success-dark: #059669;
+  
+  --color-warning: #f59e0b;
+  --color-warning-light: #fbbf24;
+  --color-warning-dark: #d97706;
+  
+  --color-error: #ef4444;
+  --color-error-light: #f87171;
+  --color-error-dark: #dc2626;
+  
+  --color-info: #3b82f6;
+  --color-info-light: #60a5fa;
+  --color-info-dark: #2563eb;
+  
+  /* Editorial Colors */
+  --color-quote: #6b7280;
+  --color-code: #1f2937;
+  --color-highlight: #fef3c7;
+  --color-selection: var(--color-accent);
+  
+  /* Background System */
+  --color-background: var(--color-wisdom);
+  --color-background-secondary: var(--color-neutral-50);
+  --color-background-tertiary: var(--color-neutral-100);
+  --color-background-overlay: rgba(26, 26, 46, 0.8);
+  
+  /* Surface Colors */
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-surface-overlay: rgba(255, 255, 255, 0.95);
+  --color-surface-frosted: rgba(255, 255, 255, 0.8);
+  
+  /* Border System */
+  --color-border: var(--color-neutral-200);
+  --color-border-light: var(--color-neutral-100);
+  --color-border-dark: var(--color-neutral-300);
+  --color-border-accent: var(--color-accent);
+  
+  /* Text Color System */
+  --color-text-primary: var(--color-sovereignty);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-tertiary: var(--color-neutral-400);
+  --color-text-inverse: var(--color-wisdom);
+  --color-text-accent: var(--color-accent);
+  --color-text-link: var(--color-bridge);
+  --color-text-link-hover: var(--color-bridge-light);
+  
+  /* Interactive Colors */
+  --color-interactive: var(--color-bridge);
+  --color-interactive-hover: var(--color-bridge-light);
+  --color-interactive-active: var(--color-bridge-dark);
+  --color-interactive-disabled: var(--color-neutral-300);
+  
+  /* Focus and States */
+  --color-focus: var(--color-accent);
+  --color-focus-ring: rgba(233, 69, 96, 0.3);
+  --color-hover: rgba(15, 52, 96, 0.1);
+  --color-active: rgba(15, 52, 96, 0.2);
+  --color-disabled: var(--color-neutral-400);
+}
+
+/* Dark Mode Color Overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Inverted Brand Colors for Dark Mode */
+    --color-background: var(--color-sovereignty);
+    --color-background-secondary: var(--color-sovereignty-light);
+    --color-background-tertiary: var(--color-sovereignty-lighter);
+    --color-background-overlay: rgba(245, 245, 245, 0.1);
+    
+    /* Surface Colors - Dark */
+    --color-surface: var(--color-liberation);
+    --color-surface-elevated: var(--color-liberation-light);
+    --color-surface-overlay: rgba(22, 33, 62, 0.95);
+    --color-surface-frosted: rgba(22, 33, 62, 0.8);
+    
+    /* Border System - Dark */
+    --color-border: var(--color-neutral-700);
+    --color-border-light: var(--color-neutral-800);
+    --color-border-dark: var(--color-neutral-600);
+    
+    /* Text Colors - Dark */
+    --color-text-primary: var(--color-wisdom);
+    --color-text-secondary: var(--color-neutral-300);
+    --color-text-tertiary: var(--color-neutral-500);
+    --color-text-inverse: var(--color-sovereignty);
+    --color-text-link: var(--color-accent-light);
+    --color-text-link-hover: var(--color-accent);
+    
+    /* Interactive Colors - Dark */
+    --color-interactive: var(--color-accent);
+    --color-interactive-hover: var(--color-accent-light);
+    --color-interactive-active: var(--color-accent-dark);
+    
+    /* States - Dark */
+    --color-hover: rgba(233, 69, 96, 0.1);
+    --color-active: rgba(233, 69, 96, 0.2);
+    
+    /* Editorial Colors - Dark */
+    --color-quote: var(--color-neutral-400);
+    --color-code: var(--color-neutral-900);
+    --color-highlight: rgba(251, 191, 36, 0.2);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text-primary: #000000;
+    --color-text-secondary: #333333;
+    --color-text-tertiary: #666666;
+    --color-background: #ffffff;
+    --color-border: #000000;
+    --color-accent: #0000ff;
+    --color-text-link: #0000ee;
+    --color-text-link-hover: #0000cc;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #cccccc;
+      --color-text-tertiary: #999999;
+      --color-background: #000000;
+      --color-border: #ffffff;
+      --color-accent: #ffff00;
+      --color-text-link: #00ffff;
+      --color-text-link-hover: #66ffff;
+    }
+  }
+}
+
+/* Color Utility Classes */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-inverse { color: var(--color-text-inverse); }
+.text-accent { color: var(--color-text-accent); }
+.text-link { color: var(--color-text-link); }
+
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.text-info { color: var(--color-info); }
+
+/* Background Utility Classes */
+.bg-primary { background-color: var(--color-background); }
+.bg-secondary { background-color: var(--color-background-secondary); }
+.bg-tertiary { background-color: var(--color-background-tertiary); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-elevated { background-color: var(--color-surface-elevated); }
+
+.bg-sovereignty { background-color: var(--color-sovereignty); }
+.bg-liberation { background-color: var(--color-liberation); }
+.bg-bridge { background-color: var(--color-bridge); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-wisdom { background-color: var(--color-wisdom); }
+
+.bg-success { background-color: var(--color-success); }
+.bg-warning { background-color: var(--color-warning); }
+.bg-error { background-color: var(--color-error); }
+.bg-info { background-color: var(--color-info); }
+
+/* Border Utility Classes */
+.border-default { border-color: var(--color-border); }
+.border-light { border-color: var(--color-border-light); }
+.border-dark { border-color: var(--color-border-dark); }
+.border-accent { border-color: var(--color-border-accent); }
+
+.border-success { border-color: var(--color-success); }
+.border-warning { border-color: var(--color-warning); }
+.border-error { border-color: var(--color-error); }
+.border-info { border-color: var(--color-info); }
+
+/* Gradient Utilities */
+.gradient-hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-sovereignty) 0%,
+    var(--color-liberation) 50%,
+    var(--color-bridge) 100%
+  );
+}
+
+.gradient-accent {
+  background: linear-gradient(
+    90deg,
+    var(--color-accent) 0%,
+    var(--color-accent-light) 100%
+  );
+}
+
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--color-bridge) 0%,
+    var(--color-accent) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Color Interaction States */
+.interactive:hover {
+  background-color: var(--color-hover);
+}
+
+.interactive:active {
+  background-color: var(--color-active);
+}
+
+.interactive:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.interactive:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.interactive:disabled,
+.interactive[disabled] {
+  background-color: var(--color-disabled);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+/* Color Theme Classes */
+.theme-sovereignty {
+  --color-primary: var(--color-sovereignty);
+  --color-primary-light: var(--color-sovereignty-light);
+  --color-primary-dark: var(--color-sovereignty-dark);
+}
+
+.theme-liberation {
+  --color-primary: var(--color-liberation);
+  --color-primary-light: var(--color-liberation-light);
+  --color-primary-dark: var(--color-liberation-dark);
+}
+
+.theme-bridge {
+  --color-primary: var(--color-bridge);
+  --color-primary-light: var(--color-bridge-light);
+  --color-primary-dark: var(--color-bridge-dark);
+}
+
+.theme-accent {
+  --color-primary: var(--color-accent);
+  --color-primary-light: var(--color-accent-light);
+  --color-primary-dark: var(--color-accent-dark);
+}
+
+/* Accessibility Enhancements */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Debug Mode - Color Swatches */
+.color-debug {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.color-swatch {
+  height: 60px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: end;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-inverse);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

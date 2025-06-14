@@ -1,0 +1,54 @@
+# VIB3CODE - Cyberpunk Blog .gitignore
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Node modules (if any)
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Backup files
+*.backup
+*.bak
+
+# Audio files (large)
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# Video files (large) 
+*.mp4
+*.avi
+*.mov
+*.webm
+
+# Large images
+*.psd
+*.ai
+*.sketch
