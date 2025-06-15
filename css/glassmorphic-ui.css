@@ -1,0 +1,389 @@
+/* VIB3CODE Glassmorphic UI System */
+/* All UI elements use the visualizer as backdrop */
+
+:root {
+    --glass-blur: 12px;
+    --glass-bg-opacity: 0.08;
+    --glass-border-opacity: 0.2;
+    --glass-shadow-opacity: 0.1;
+    --neon-glow-intensity: 0.5;
+    --interaction-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base glassmorphic mixin for all UI elements */
+.glass-element,
+.nav-header,
+.magazine-nav,
+.content-card,
+.interactive-card,
+.section-header,
+.filter-controls,
+.announcement-card,
+.parserator-card,
+footer,
+.modal-overlay,
+.dropdown-menu {
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    background: rgba(0, 0, 0, var(--glass-bg-opacity));
+    border: 1px solid rgba(255, 255, 255, var(--glass-border-opacity));
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 255, 255, var(--glass-shadow-opacity)),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 -20px 40px -20px rgba(255, 0, 255, 0.05);
+    transition: all var(--interaction-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Neon edge glow based on section */
+[data-section="home"] .glass-element {
+    box-shadow: 
+        0 0 30px rgba(0, 217, 255, var(--neon-glow-intensity)),
+        inset 0 0 20px rgba(255, 0, 128, 0.1);
+}
+
+[data-section="articles"] .glass-element {
+    box-shadow: 
+        0 0 30px rgba(51, 204, 255, var(--neon-glow-intensity)),
+        inset 0 0 20px rgba(204, 77, 255, 0.1);
+}
+
+[data-section="videos"] .glass-element {
+    box-shadow: 
+        0 0 30px rgba(255, 51, 127, var(--neon-glow-intensity)),
+        inset 0 0 20px rgba(51, 255, 127, 0.1);
+}
+
+[data-section="podcasts"] .glass-element {
+    box-shadow: 
+        0 0 30px rgba(255, 127, 0, var(--neon-glow-intensity)),
+        inset 0 0 20px rgba(0, 204, 255, 0.1);
+}
+
+[data-section="ema"] .glass-element {
+    box-shadow: 
+        0 0 30px rgba(127, 0, 255, var(--neon-glow-intensity)),
+        inset 0 0 20px rgba(0, 255, 127, 0.1);
+}
+
+/* Interactive hover states */
+.glass-element:hover,
+.interactive-card:hover,
+.content-card:hover {
+    backdrop-filter: blur(calc(var(--glass-blur) * 1.5));
+    background: rgba(0, 0, 0, calc(var(--glass-bg-opacity) * 1.2));
+    border-color: rgba(255, 255, 255, calc(var(--glass-border-opacity) * 1.5));
+    transform: translateY(-2px);
+}
+
+/* Navigation header with visualizer visible behind */
+.nav-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.1)
+    );
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Magazine navigation tabs */
+.magazine-nav {
+    padding: 10px 20px;
+    margin: 20px 0;
+    border-radius: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.magazine-nav a {
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.magazine-nav a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+}
+
+.magazine-nav a.active {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.5),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+/* Content cards float above visualizer */
+.content-card,
+.interactive-card {
+    margin: 20px 0;
+    padding: 30px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.content-card::before,
+.interactive-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 255, 0.3),
+        rgba(255, 0, 255, 0.3)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.content-card:hover::before,
+.interactive-card:hover::before {
+    opacity: 1;
+}
+
+/* Grid layouts with glass cells */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.grid-item {
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.grid-item:hover {
+    transform: scale(1.02);
+    backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+}
+
+/* Scrollbar styling to match glassmorphic theme */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.3),
+        rgba(255, 0, 255, 0.3)
+    );
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.5),
+        rgba(255, 0, 255, 0.5)
+    );
+}
+
+/* Buttons with glass effect */
+.glass-button,
+button,
+.btn {
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 24px;
+    color: #fff;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.glass-button:hover,
+button:hover,
+.btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+}
+
+/* Input fields with glass effect */
+input,
+textarea,
+select {
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+/* Modal overlays */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    backdrop-filter: blur(30px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(0, 255, 255, 0.2),
+        inset 0 0 40px rgba(255, 0, 255, 0.05);
+}
+
+/* Loading states with visualizer pulse */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 255, 255, 0.3),
+        transparent
+    );
+    animation: loading-pulse 1.5s infinite;
+}
+
+@keyframes loading-pulse {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Section transitions */
+.section-transition-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.section-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.5s ease;
+}
+
+.section-transition-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s ease;
+}
+
+/* Visualizer parameter indicators */
+.parameter-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 100;
+}
+
+.parameter-indicator .param {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.parameter-indicator .param-value {
+    color: #00d9ff;
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    :root {
+        --glass-blur: 8px;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .magazine-nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .magazine-nav a {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}

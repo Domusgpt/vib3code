@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="styles/sections.css">
     <link rel="stylesheet" href="styles/magazine.css">
     <link rel="stylesheet" href="styles/magazine-enhanced.css">
+    <link rel="stylesheet" href="css/glassmorphic-ui.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
@@ -39,7 +40,7 @@
     </div>
 
     <!-- 4D Visualizer Background -->
-    <canvas id="visualizer-canvas" class="visualizer-canvas"></canvas>
+    <!-- HyperAV will create its own canvas dynamically -->
     
     <!-- Parallax Layers -->
     <div class="parallax-layer" data-speed="0.2" id="bg-layer-1"></div>
@@ -183,9 +184,10 @@
     </footer>
 
 
-    <!-- Core Scripts - Updated 2025-06-14 17:30 -->
-    <script src="js/holographic-visualizer.js?v=20250614"></script>
-    <script src="js/hyperav-visualizer.js?v=20250614"></script>
+    <!-- Core Scripts - Updated 2025-06-14 17:45 -->
+    <!-- Full HyperAV Integration -->
+    <script src="js/hyperav-loader.js?v=20250614"></script>
+    <script src="js/vib3-visualizer-integration.js?v=20250614"></script>
     <script src="js/theme-engine-clean.js?v=20250614"></script>
     <script src="js/magazine-router.js?v=20250614"></script>
     <script src="js/editorial-ai-clean.js?v=20250614"></script>
