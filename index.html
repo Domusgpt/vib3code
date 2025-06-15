@@ -14,7 +14,107 @@
     <link rel="stylesheet" href="styles/sections.css">
     <link rel="stylesheet" href="styles/magazine.css">
     <link rel="stylesheet" href="styles/magazine-enhanced.css">
-    <link rel="stylesheet" href="css/glassmorphic-ui.css">
+    <!-- Embedded Glassmorphic UI Styles -->
+    <style>
+        /* VIB3CODE Glassmorphic UI - Context-Aware Design */
+        .glass-element,
+        .nav-header,
+        .magazine-nav,
+        .content-card,
+        .interactive-card,
+        .section-header,
+        .filter-controls,
+        .announcement-card,
+        .parserator-card,
+        footer {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 255, 255, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 -20px 40px -20px rgba(255, 0, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-card:hover,
+        .interactive-card:hover {
+            backdrop-filter: blur(18px);
+            background: rgba(0, 0, 0, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Section-specific neon glows */
+        [data-section="home"] .glass-element {
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        }
+        
+        [data-section="articles"] .glass-element {
+            box-shadow: 0 0 30px rgba(51, 204, 255, 0.5);
+        }
+        
+        [data-section="videos"] .glass-element {
+            box-shadow: 0 0 30px rgba(255, 51, 127, 0.5);
+        }
+        
+        [data-section="podcasts"] .glass-element {
+            box-shadow: 0 0 30px rgba(255, 127, 0, 0.5);
+        }
+        
+        [data-section="ema"] .glass-element {
+            box-shadow: 0 0 30px rgba(127, 0, 255, 0.5);
+        }
+        
+        /* Enhanced visualizer canvas */
+        #visualizer-canvas {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* Magazine content with glassmorphic backdrop */
+        .magazine-content {
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(2px);
+        }
+        
+        /* Parameter indicator */
+        .parameter-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 100;
+        }
+        
+        .parameter-indicator .param {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .parameter-indicator .param-value {
+            color: #00d9ff;
+            font-weight: bold;
+        }
+    </style>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
@@ -195,27 +295,205 @@
     <script src="js/main-fixed.js?v=1749968723"></script>
     <script src="js/parallax-fixed.js?v=1749968723"></script>
     
-    <!-- HyperAV Debug & Magazine Router Auto-Load -->
+    <!-- EMBEDDED HYPERAV INTEGRATION - BYPASS GITHUB PAGES SYNC ISSUE -->
     <script>
-        console.log('🚀 VIB3CODE HYPERAV INTEGRATION v1749968723 LOADING...');
+        console.log('🚀 VIB3CODE HYPERAV INTEGRATION EMBEDDED v1749968723 LOADING...');
         
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔍 Checking for HyperAV components...');
-            console.log('📦 HyperAVLoader:', !!window.HyperAVLoader);
-            console.log('📦 VIB3VisualizerIntegration:', !!window.VIB3VisualizerIntegration);
-            console.log('📦 Old holographic visualizer:', !!window.HolographicVisualizer);
+        // Embedded VIB3 Visualizer Integration
+        window.VIB3VisualizerIntegration = {
+            state: {
+                currentSection: 'home',
+                scrollPosition: 0,
+                scrollVelocity: 0,
+                mousePosition: { x: 0.5, y: 0.5 },
+                clickIntensity: 0
+            },
             
+            sectionPresets: {
+                home: {
+                    primary: '#00d9ff', secondary: '#ff0080', background: '#020010'
+                },
+                articles: {
+                    primary: '#3366ff', secondary: '#cc44ff', background: '#000208'
+                },
+                videos: {
+                    primary: '#ff3366', secondary: '#33ff66', background: '#050005'
+                },
+                podcasts: {
+                    primary: '#ff8800', secondary: '#00ccff', background: '#020200'
+                },
+                ema: {
+                    primary: '#8800ff', secondary: '#00ff88', background: '#000005'
+                }
+            },
+            
+            init: function() {
+                console.log('🎨 Initializing VIB3 Context-Aware Visualizer...');
+                this.setupScrollTracking();
+                this.setupMouseTracking();
+                this.setupClickTracking();
+                this.setupSectionTracking();
+                this.applySectionPreset('home');
+                console.log('✅ VIB3 Visualizer Integration ready');
+            },
+            
+            setupScrollTracking: function() {
+                var self = this;
+                var lastScrollY = window.scrollY;
+                
+                window.addEventListener('scroll', function() {
+                    var currentScrollY = window.scrollY;
+                    self.state.scrollVelocity = currentScrollY - lastScrollY;
+                    self.state.scrollPosition = currentScrollY;
+                    lastScrollY = currentScrollY;
+                    
+                    // Update visualizer based on scroll
+                    if (window.HolographicVisualizer) {
+                        var speed = 0.2 + Math.abs(self.state.scrollVelocity) * 0.001;
+                        window.HolographicVisualizer.config.rotationSpeed = speed;
+                        
+                        if (Math.abs(self.state.scrollVelocity) > 50) {
+                            window.HolographicVisualizer.config.glitchIntensity = 0.3;
+                        }
+                    }
+                    
+                    self.updateParameterDisplay();
+                });
+            },
+            
+            setupMouseTracking: function() {
+                var self = this;
+                
+                document.addEventListener('mousemove', function(e) {
+                    self.state.mousePosition.x = e.clientX / window.innerWidth;
+                    self.state.mousePosition.y = e.clientY / window.innerHeight;
+                    
+                    // Update visualizer based on mouse
+                    if (window.HolographicVisualizer) {
+                        var intensity = Math.sqrt(
+                            Math.pow(self.state.mousePosition.x - 0.5, 2) + 
+                            Math.pow(self.state.mousePosition.y - 0.5, 2)
+                        );
+                        window.HolographicVisualizer.config.patternIntensity = 1.0 - intensity;
+                    }
+                    
+                    self.updateParameterDisplay();
+                });
+            },
+            
+            setupClickTracking: function() {
+                var self = this;
+                
+                document.addEventListener('click', function() {
+                    self.state.clickIntensity = 1.0;
+                    
+                    if (window.HolographicVisualizer) {
+                        window.HolographicVisualizer.config.universeModifier = 1.5;
+                        
+                        setTimeout(function() {
+                            window.HolographicVisualizer.config.universeModifier = 1.0;
+                        }, 500);
+                    }
+                });
+            },
+            
+            setupSectionTracking: function() {
+                var self = this;
+                
+                // Listen for section changes
+                if (window.MagazineRouter) {
+                    var originalNavigate = window.MagazineRouter.prototype.navigateToSection;
+                    if (originalNavigate) {
+                        window.MagazineRouter.prototype.navigateToSection = function(section) {
+                            originalNavigate.call(this, section);
+                            self.applySectionPreset(section);
+                        };
+                    }
+                }
+            },
+            
+            applySectionPreset: function(section) {
+                console.log('🎨 Applying visualizer preset for section:', section);
+                var preset = this.sectionPresets[section] || this.sectionPresets.home;
+                
+                if (window.HolographicVisualizer && window.HolographicVisualizer.updateTheme) {
+                    window.HolographicVisualizer.updateTheme({
+                        primary: preset.primary,
+                        secondary: preset.secondary,
+                        background: preset.background
+                    });
+                }
+                
+                this.state.currentSection = section;
+                this.updateParameterDisplay();
+            },
+            
+            updateParameterDisplay: function() {
+                // Update parameter display widget
+                var sectionEl = document.getElementById('param-section');
+                var scrollEl = document.getElementById('param-scroll');
+                var mouseEl = document.getElementById('param-mouse');
+                var activityEl = document.getElementById('param-activity');
+                
+                if (sectionEl) sectionEl.textContent = this.state.currentSection;
+                if (scrollEl) scrollEl.textContent = Math.round(this.state.scrollVelocity);
+                if (mouseEl) mouseEl.textContent = 
+                    Math.round(this.state.mousePosition.x * 100) / 100 + ', ' + 
+                    Math.round(this.state.mousePosition.y * 100) / 100;
+                
+                if (activityEl) {
+                    var activity = 'idle';
+                    if (Math.abs(this.state.scrollVelocity) > 10) activity = 'scrolling';
+                    else if (this.state.clickIntensity > 0.1) activity = 'clicking';
+                    else if (Math.abs(this.state.mousePosition.x - 0.5) > 0.1 || 
+                            Math.abs(this.state.mousePosition.y - 0.5) > 0.1) activity = 'hovering';
+                    activityEl.textContent = activity;
+                }
+            }
+        };
+        
+        // Auto-initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Checking components...');
+            console.log('📦 VIB3VisualizerIntegration:', !!window.VIB3VisualizerIntegration);
+            console.log('📦 HolographicVisualizer:', !!window.HolographicVisualizer);
+            
+            // Wait for visualizer to load, then initialize integration
             setTimeout(function() {
+                if (window.VIB3VisualizerIntegration) {
+                    window.VIB3VisualizerIntegration.init();
+                }
+                
                 if (window.MagazineRouter) {
                     var magazineContent = document.querySelector('.magazine-content');
                     if (magazineContent && !magazineContent.innerHTML.trim()) {
                         window.MagazineRouter.navigateToSection('home');
                     }
                 }
-            }, 500);
+            }, 1000);
         });
     </script>
     
+    <!-- VIB3 Visualizer Parameter Display -->
+    <div class="parameter-indicator" id="vib3-param-display">
+        <div class="param">
+            <span>Section:</span>
+            <span class="param-value" id="param-section">home</span>
+        </div>
+        <div class="param">
+            <span>Scroll:</span>
+            <span class="param-value" id="param-scroll">0</span>
+        </div>
+        <div class="param">
+            <span>Mouse:</span>
+            <span class="param-value" id="param-mouse">0.5, 0.5</span>
+        </div>
+        <div class="param">
+            <span>Activity:</span>
+            <span class="param-value" id="param-activity">idle</span>
+        </div>
+    </div>
+
     <!-- Audio Context Warning for Safari -->
     <div id="audio-warning" class="audio-warning" style="display: none;">
         <div class="warning-content">
