@@ -203,3 +203,124 @@ function loadShowNotes(audioId, shownotesPath) {
             button.disabled = false;
         });
 }
+
+
+/**
+ * Renders the HTML structure for an interactive post.
+ * @param {object} interactive - The interactive data object. Expected properties:
+ *   id, title, author, date, excerpt (optional), live_url (optional),
+ *   embed_target_div_id (optional, for script-based embeds),
+ *   bootstrap_script_path (optional, for script-based embeds),
+ *   instructions_path (optional), category (optional), tags (optional)
+ * @returns {string} HTML string for the interactive post.
+ */
+function renderInteractivePost(interactive) {
+    if (!interactive || !interactive.id || !interactive.title) {
+        console.error('Invalid interactive object provided to renderInteractivePost', interactive);
+        return '<article class="content-item interactive-post error"><p>Error: Interactive data is incomplete.</p></article>';
+    }
+
+    const s = (str) => String(str || '').replace(/[&<>"']/g, (match) => {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
+    });
+
+    let interactiveContentHtml = '';
+    const targetDivId = s(interactive.embed_target_div_id || `interactive-embed-${s(interactive.id)}`);
+
+    if (interactive.bootstrap_script_path) {
+        // The script itself should be loaded by a more sophisticated mechanism,
+        // possibly when the element enters viewport or by the router.
+        // This template just sets up the target div and a data attribute for the script.
+        interactiveContentHtml = `
+            <div id="${targetDivId}" class="interactive-embed-target" data-bootstrap-script="${s(interactive.bootstrap_script_path)}">
+                <p>Loading interactive content...</p>
+                <!-- The script at ${s(interactive.bootstrap_script_path)} should target this div. -->
+            </div>`;
+        // Later, a script loader could find all divs with 'data-bootstrap-script' and load them.
+    } else if (interactive.live_url) {
+        interactiveContentHtml = `
+            <iframe src="${s(interactive.live_url)}"
+                    width="100%"
+                    height="600px"
+                    frameborder="0"
+                    allowfullscreen
+                    title="${s(interactive.title)} - Live Interactive Content">
+                <p>Your browser does not support iframes. <a href="${s(interactive.live_url)}" target="_blank">Click here to view the content.</a></p>
+            </iframe>
+        `;
+    } else {
+        interactiveContentHtml = '<p>No interactive content source available.</p>';
+    }
+
+    return `
+<article class="content-item interactive-post" id="interactive-${s(interactive.id)}" data-content-id="${s(interactive.id)}" data-content-type="interactive">
+    <header class="interactive-header content-header">
+        <h1>${s(interactive.title)}</h1>
+        <p class="interactive-meta content-meta">
+            ${interactive.author ? `<span>By: ${s(interactive.author)}</span>` : ''}
+            ${interactive.author && interactive.date ? ' | ' : ''}
+            ${interactive.date ? `<span>Date: ${s(interactive.date)}</span>` : ''}
+        </p>
+        ${interactive.category ? `<p class="category-meta">Category: ${s(interactive.category)}</p>` : ''}
+        ${interactive.tags && interactive.tags.length ? `<p class="tags-meta">Tags: ${interactive.tags.map(tag => s(tag)).join(', ')}</p>` : ''}
+    </header>
+    <section class="interactive-content-area">
+        ${interactiveContentHtml}
+    </section>
+    ${interactive.excerpt ? `
+    <section class="interactive-description content-body">
+        <p class="excerpt">${s(interactive.excerpt)}</p>
+    </section>
+    ` : ''}
+    ${interactive.instructions_path ? `
+    <section class="interactive-instructions content-supplementary">
+        <h3>Instructions / About</h3>
+        <div id="instructions-content-${s(interactive.id)}" data-instructions-path="${s(interactive.instructions_path)}">
+            <button class="load-instructions-button" onclick="loadInteractiveInstructions('${s(interactive.id)}', '${s(interactive.instructions_path)}')">Load Instructions</button>
+            <div class="instructions-text" style="display:none;"></div>
+        </div>
+    </section>
+    ` : ''}
+    <footer class="interactive-footer content-footer">
+        <!-- Placeholder for any footer content -->
+    </footer>
+</article>
+`;
+}
+
+/**
+ * Loads instructions for an interactive post.
+ * @param {string} interactiveId - The ID of the interactive post.
+ * @param {string} instructionsPath - The path to the instructions file.
+ */
+function loadInteractiveInstructions(interactiveId, instructionsPath) {
+    const instructionsContainer = document.querySelector(\`#instructions-content-\${interactiveId} .instructions-text\`);
+    const button = document.querySelector(\`#instructions-content-\${interactiveId} .load-instructions-button\`);
+    if (!instructionsContainer || !button) {
+        console.error('Could not find elements for instructions for interactive ID:', interactiveId);
+        return;
+    }
+
+    button.textContent = 'Loading...';
+    button.disabled = true;
+
+    fetch(instructionsPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(\`HTTP error! status: \${response.status} for \${instructionsPath}\`);
+            }
+            return response.text(); // Assuming instructions are plain text or simple HTML
+        })
+        .then(text => {
+            // If instructions are Markdown, they would need to be parsed here.
+            instructionsContainer.innerHTML = text.replace(/\n/g, '<br>'); // Basic formatting
+            instructionsContainer.style.display = 'block';
+            button.style.display = 'none'; // Hide button after loading
+        })
+        .catch(error => {
+            instructionsContainer.innerHTML = \`<p>Error loading instructions: \${error.message}</p>\`;
+            instructionsContainer.style.display = 'block';
+            button.textContent = 'Retry'; // Allow retry
+            button.disabled = false;
+        });
+}

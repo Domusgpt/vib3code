@@ -249,6 +249,22 @@ The `process_audio_post.py` script is responsible for processing these files. It
 
 Similar to other content types, this `_metadata.json` file is then utilized by `finalize_data_and_assets.py` to create the final data structure for `js/magazine-router.js`, and `update_router_article.py` integrates the audio post into the router's data.
 
+
+#### 2.5.4. Processing Interactive Posts (`contentType: "interactive"`)
+
+Interactive posts, which can range from embedded web applications and games to complex visualizations, are defined by Markdown files where the frontmatter specifies `contentType: "interactive"`. The necessary fields for this content type are detailed in Section 2.3 (e.g., `title`, `live_url`, `bootstrap_script_path`, `embed_target_div_id`, `required_assets_paths`, `instructions_path`).
+
+The `process_interactive_post.py` script handles the initial processing of these files. Its main tasks include:
+- Reading the input file and parsing its YAML frontmatter.
+- Validating that `contentType` is correctly set to `"interactive"`.
+- Ensuring essential fields, such as `title` and a source for the interactive content (either `live_url` for iframe embedding or `bootstrap_script_path` for script-based injection), are present.
+- Generating or adopting a unique `id` for the interactive post.
+- Processing placeholder paths for associated assets. This includes single assets like `thumbnail_image_path` and `instructions_path`, as well as potentially local `bootstrap_script_path` files. It also handles lists of paths in `required_assets_paths`, preparing them all for later asset finalization.
+- Capturing any Markdown content following the frontmatter into a `description_markdown_body` field, which can serve as a more detailed explanation or context for the interactive element.
+- Generating an `{interactive_id}_metadata.json` file in the appropriate staging directory. This file contains all processed metadata for the interactive post.
+
+As with other content types, this `_metadata.json` file is subsequently used by `finalize_data_and_assets.py` to assemble the final data structure for `js/magazine-router.js`, and `update_router_article.py` integrates the interactive post into the router's dataset.
+
 ## 3. Jules' AI Suggestion Capabilities
 
 ### 3.1. Overview of AI Assistance
