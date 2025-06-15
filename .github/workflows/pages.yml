@@ -29,6 +29,10 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+          exclude: |
+            editorial_ai_*.json
+            *.py
+            content_pipeline/
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
