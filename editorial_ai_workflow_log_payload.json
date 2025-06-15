@@ -1,0 +1,15 @@
+[
+  {
+    "action_type": "define_workflow",
+    "message": "Defined workflow for presenting staged content and AI suggestions to Paul for review and approval.",
+    "details": {
+      "workflow_name": "Staging Review and Approval Workflow",
+      "key_components": [
+        "Standardized 'Staging Review Package' structure in /content_pipeline/staging/ (includes summary, processed HTML, metadata with AI suggestions, theme suggestions, asset manifest, optional source copy).",
+        "Standardized 'Notification/Report Message' format for informing Paul of staged batches.",
+        "Defined feedback mechanisms (direct edits by Paul, textual instructions, reprocessing requests) and explicit approval trigger for final integration."
+      ],
+      "relevant_plan_steps": ["Phase 4, Step 6 of overall strategy (equivalent to current plan steps 1-3)"]
+    }
+  }
+]

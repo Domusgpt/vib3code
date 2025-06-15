@@ -1,0 +1,3 @@
+This is a dummy PDF file, created as a text file for testing purposes.
+The script will treat it as a PDF and attempt to copy it.
+Its actual content type doesn't matter for the file operation itself.

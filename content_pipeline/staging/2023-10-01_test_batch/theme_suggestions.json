@@ -1,0 +1,27 @@
+{
+    "applies_to_article_id": "sample_article",
+    "source_visual_mood": "dark technical blue_focus",
+    "ai_interpretation": "Interpreting visual mood: 'dark technical blue_focus'. Keyword 'dark' suggests: {\"colorShift.l\": {\"value\": 15, \"op\": \"-\"}, \"intensity\": {\"value\": 0.8, \"op\": \"*\"}}. Keyword 'technical' suggests: {\"animationStyle\": {\"value\": \"structural\", \"op\": null}, \"visualComplexity\": {\"value\": \"medium\", \"op\": null}}. Color name 'blue' suggests Hue: 210.",
+    "suggested_sectionModifier_params": {
+        "colorShift.h": 210,
+        "colorShift.s": 0,
+        "colorShift.l": -15,
+        "intensity": 0.8,
+        "particleCount": 100,
+        "animationStyle": "structural",
+        "visualComplexity": "medium"
+    },
+    "rationale": "Suggestions are based on matching keywords from 'visual_mood' to rules in STYLE_GUIDANCE.md and interpreting explicit color mentions.",
+    "style_guidance_rules_found": true,
+    "parsed_mood_keywords": [
+        "dark",
+        "technical",
+        "focus"
+    ],
+    "parsed_color_hints": {
+        "hex": [],
+        "name": [
+            "blue"
+        ]
+    }
+}

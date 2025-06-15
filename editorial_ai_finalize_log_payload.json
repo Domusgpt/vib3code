@@ -1,0 +1,14 @@
+[
+  {
+    "action_type": "finalize_article_data_assets",
+    "message": "Finalized metadata for 'sample_article', merged AI suggestions. Image/document assets moved to live /assets/ and verified. Audio assets reported moved by script but visibility via ls in /assets/audio/ failed.",
+    "details": {
+      "article_id": "sample_article",
+      "title": "My First Article",
+      "final_metadata_file": "/content_pipeline/staging/2023-10-01_test_batch/sample_article_final_for_router.json",
+      "image_doc_assets_status": "Moved and Verified",
+      "audio_assets_status": "Reported Moved by Script, ls Verification Failed in /assets/audio/",
+      "script_output_message": "Finalized data and assets for 'sample_article'. Output: sample_article_final_for_router.json."
+    }
+  }
+]

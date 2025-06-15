@@ -1,0 +1,14 @@
+[
+  {
+    "action_type": "process_document_assets",
+    "message": "Document asset processing for 'My First Article': 1 TXT file(s) embedded, 1 TXT file(s) failed to read, 1 PDF file(s) copied, 1 PDF file(s) failed to copy. Check logs.",
+    "details": {
+      "article_id": "sample_article",
+      "title": "My First Article",
+      "txt_embedded_count": 1,
+      "txt_error_count": 1,
+      "pdf_copied_count": 1,
+      "pdf_error_count": 1
+    }
+  }
+]

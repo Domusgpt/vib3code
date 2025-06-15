@@ -1,0 +1,57 @@
+{
+    "title": "My First Article",
+    "author": "AI Agent",
+    "date": "2023-10-26",
+    "tags": [
+        "list",
+        "heading",
+        "subheading",
+        "using",
+        "item"
+    ],
+    "description": "A sample article for testing the processing pipeline.",
+    "excerpt": "main heading this is the first paragraph of the article. it has some bold text and some italic text .",
+    "category": "base  palettes",
+    "header_image_path": "/assets/images/sample_article/header.png",
+    "thumbnail_image_path": "",
+    "figure_image_path": null,
+    "inline_images": [
+        "/assets/images/sample_article/inline_image1.jpg",
+        "images/non_existent_image.png",
+        "/assets/images/sample_article/another_header.png"
+    ],
+    "gallery_images": [
+        "/assets/images/sample_article/gallery1.jpg",
+        "",
+        null,
+        "/assets/images/sample_article/gallery2.jpg"
+    ],
+    "audio_clip_path": "/assets/audio/sample_article/sample_song.mp3",
+    "podcast_episode_path": "audio/non_existent_clip.wav",
+    "background_tracks": [
+        "/assets/audio/sample_article/track1.ogg",
+        "/assets/audio/sample_article/track2.mp3"
+    ],
+    "supplementary_text_path": "text/sample_notes.txt",
+    "missing_txt_path": "text/no_such_file.txt",
+    "linked_document_pdf": "/assets/documents/sample_article/datasheet.pdf",
+    "missing_pdf_path": "docs/no_such_pdf.pdf",
+    "supplementary_text_path_content": "These are some supplementary notes for the article.\nThis content should be embedded directly into the metadata JSON.\nIt might contain multiple lines.\n",
+    "supplementary_text_path_status": "processed",
+    "missing_txt_path_status": "error_reading",
+    "ai_suggestions": {
+        "suggested_excerpt": "main heading this is the first paragraph of the article. it has some bold text and some italic text .",
+        "suggested_categories": [
+            "base  palettes",
+            "current visualizers & engine integration"
+        ],
+        "suggested_tags": [
+            "list",
+            "heading",
+            "subheading",
+            "using",
+            "item"
+        ]
+    },
+    "visual_mood": "dark technical blue_focus"
+}
