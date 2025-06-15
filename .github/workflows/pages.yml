@@ -25,14 +25,16 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Clean repository
+        run: |
+          rm -f editorial_ai_*.json
+          rm -f *.py
+          rm -rf content_pipeline/
+          ls -la
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-          exclude: |
-            editorial_ai_*.json
-            *.py
-            content_pipeline/
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
