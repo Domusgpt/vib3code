@@ -184,20 +184,27 @@
     </footer>
 
 
-    <!-- Core Scripts - Updated 2025-06-14 17:45 -->
-    <!-- Full HyperAV Integration -->
-    <script src="js/hyperav-loader.js?v=20250614"></script>
-    <script src="js/vib3-visualizer-integration.js?v=20250614"></script>
-    <script src="js/theme-engine-clean.js?v=20250614"></script>
-    <script src="js/magazine-router.js?v=20250614"></script>
-    <script src="js/editorial-ai-clean.js?v=20250614"></script>
-    <script src="js/interactive-features.js?v=20250614"></script>
-    <script src="js/main-fixed.js?v=20250614"></script>
-    <script src="js/parallax-fixed.js?v=20250614"></script>
+    <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-14 18:05 -->
+    <!-- Full HyperAV Integration System -->
+    <script src="js/hyperav-loader.js?v=1749968723"></script>
+    <script src="js/vib3-visualizer-integration.js?v=1749968723"></script>
+    <script src="js/theme-engine-clean.js?v=1749968723"></script>
+    <script src="js/magazine-router.js?v=1749968723"></script>
+    <script src="js/editorial-ai-clean.js?v=1749968723"></script>
+    <script src="js/interactive-features.js?v=1749968723"></script>
+    <script src="js/main-fixed.js?v=1749968723"></script>
+    <script src="js/parallax-fixed.js?v=1749968723"></script>
     
-    <!-- Magazine Router Auto-Load -->
+    <!-- HyperAV Debug & Magazine Router Auto-Load -->
     <script>
+        console.log('🚀 VIB3CODE HYPERAV INTEGRATION v1749968723 LOADING...');
+        
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Checking for HyperAV components...');
+            console.log('📦 HyperAVLoader:', !!window.HyperAVLoader);
+            console.log('📦 VIB3VisualizerIntegration:', !!window.VIB3VisualizerIntegration);
+            console.log('📦 Old holographic visualizer:', !!window.HolographicVisualizer);
+            
             setTimeout(function() {
                 if (window.MagazineRouter) {
                     var magazineContent = document.querySelector('.magazine-content');
