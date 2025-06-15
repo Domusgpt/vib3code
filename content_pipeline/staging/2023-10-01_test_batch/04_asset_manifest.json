@@ -1,0 +1,100 @@
+[
+    {
+        "metadata_field": "header_image_path",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/sample_article/header.png",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "thumbnail_image_path",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "",
+        "status": "empty_path",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "inline_images",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/sample_article/inline_image1.jpg",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "inline_images",
+        "original_relative_path": "images/non_existent_image.png",
+        "staged_path_or_status": "images/non_existent_image.png",
+        "status": "unknown",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "inline_images",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/sample_article/another_header.png",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "gallery_images",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/sample_article/gallery1.jpg",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "gallery_images",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "",
+        "status": "empty_path_in_list",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "gallery_images",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/sample_article/gallery2.jpg",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "audio_clip_path",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/audio/sample_article/sample_song.mp3",
+        "status": "processed",
+        "asset_type": "audio"
+    },
+    {
+        "metadata_field": "podcast_episode_path",
+        "original_relative_path": "audio/non_existent_clip.wav",
+        "staged_path_or_status": "audio/non_existent_clip.wav",
+        "status": "unknown",
+        "asset_type": "audio"
+    },
+    {
+        "metadata_field": "background_tracks",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/audio/sample_article/track1.ogg",
+        "status": "processed",
+        "asset_type": "audio"
+    },
+    {
+        "metadata_field": "background_tracks",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/audio/sample_article/track2.mp3",
+        "status": "processed",
+        "asset_type": "audio"
+    },
+    {
+        "metadata_field": "supplementary_text_path",
+        "original_relative_path": "text/sample_notes.txt",
+        "staged_path_or_status": "Embedded in metadata as 'supplementary_text_path_content'",
+        "status": "processed",
+        "asset_type": "txt_embedded"
+    },
+    {
+        "metadata_field": "linked_document_pdf",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/documents/sample_article/datasheet.pdf",
+        "status": "processed",
+        "asset_type": "pdf"
+    }
+]

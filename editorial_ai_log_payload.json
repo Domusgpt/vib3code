@@ -1,0 +1,10 @@
+[
+  {
+    "action_type": "markdown_processing_complete",
+    "message": "Processed sample_article.md. Staged metadata and HTML.",
+    "details": {
+      "source_file": "content_pipeline/incoming/2023-10-01_test_batch/sample_article.md",
+      "staging_path": "content_pipeline/staging/2023-10-01_test_batch/"
+    }
+  }
+]

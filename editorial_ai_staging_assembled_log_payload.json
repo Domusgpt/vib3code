@@ -1,0 +1,12 @@
+[
+  {
+    "action_type": "staging_package_assembled",
+    "message": "Assembled Staging Review Package for 'sample_article'.",
+    "details": {
+      "article_id": "sample_article",
+      "title": "My First Article",
+      "staging_package_path": "/content_pipeline/staging/2023-10-01_test_batch/",
+      "script_output_message": "Assembled Staging Review Package for 'sample_article'."
+    }
+  }
+]

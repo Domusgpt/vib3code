@@ -1,0 +1,12 @@
+[
+  {
+    "action_type": "process_image_assets",
+    "message": "Processed image assets for article 'My First Article': 5 succeeded, 1 failed. Check logs.",
+    "details": {
+      "article_id": "sample_article",
+      "title": "My First Article",
+      "success_count": 5,
+      "failure_count": 1
+    }
+  }
+]
