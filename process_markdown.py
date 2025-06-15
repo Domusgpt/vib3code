@@ -59,8 +59,13 @@ def parse_frontmatter_and_body_regex_fallback(content, reason_for_fallback):
         try:
             for line in frontmatter_str.strip().split('\n'):
                 if ':' in line:
-                    key, value = line.split(':', 1)
-                    frontmatter[key.strip()] = value.strip()
+                    key, value_str = line.split(':', 1)
+                    value = value_str.strip()
+                    # If value is quoted, remove quotes
+                    if (value.startswith('"') and value.endswith('"')) or \
+                       (value.startswith("'") and value.endswith("'")):
+                        value = value[1:-1]
+                    frontmatter[key.strip()] = value
         except Exception as e:
             error = f"Fallback regex matched, but basic frontmatter parsing failed: {e}. Original fallback reason: {reason_for_fallback}"
             # Keep body if frontmatter parsing fails

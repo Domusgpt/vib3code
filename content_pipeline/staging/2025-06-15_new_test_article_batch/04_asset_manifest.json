@@ -1,0 +1,16 @@
+[
+    {
+        "metadata_field": "header_image_path",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/images/new_test_article/new_header.png",
+        "status": "processed",
+        "asset_type": "image"
+    },
+    {
+        "metadata_field": "linked_document_pdf",
+        "original_relative_path": "N/A (path is processed or empty)",
+        "staged_path_or_status": "/content_pipeline/processed_assets/documents/new_test_article/new_document.pdf",
+        "status": "processed",
+        "asset_type": "pdf"
+    }
+]

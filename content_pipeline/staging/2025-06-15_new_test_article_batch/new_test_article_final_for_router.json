@@ -1,0 +1,38 @@
+{
+    "title": "My New Test Article",
+    "author": "Jules AI Editor",
+    "date": "2025-06-15",
+    "id": "new-test-article",
+    "tags": [
+        "intended mood",
+        "pipeline",
+        "visual",
+        "guidelines for new s & s",
+        "asset",
+        "test",
+        "new"
+    ],
+    "description": "A new test article to demonstrate full pipeline capabilities.",
+    "header_image_path": "/assets/images/new_test_article/new_header.png",
+    "linked_document_pdf": "/assets/documents/new_test_article/new_document.pdf",
+    "visual_mood": "calm minimalist blue_focus",
+    "theme_modifier_key": "article_new_test_article_custom",
+    "ai_suggestions": {
+        "suggested_excerpt": "my new test article this is a new article created to test the full content pipeline, including asset creation and visual mood processing.",
+        "suggested_categories": [
+            "guidelines for new s & s",
+            "intended mood"
+        ],
+        "suggested_tags": [
+            "intended mood",
+            "pipeline",
+            "visual",
+            "guidelines for new s & s",
+            "asset",
+            "test",
+            "new"
+        ]
+    },
+    "excerpt": "my new test article this is a new article created to test the full content pipeline, including asset creation and visual mood processing.",
+    "category": "guidelines for new s & s"
+}

@@ -1,0 +1,27 @@
+{
+    "applies_to_article_id": "new-test-article",
+    "source_visual_mood": "calm minimalist blue_focus",
+    "ai_interpretation": "Interpreting visual mood: 'calm minimalist blue_focus'. Keyword 'calm' suggests: {\"intensity\": {\"value\": 0.7, \"op\": \"*\"}, \"animationStyle\": {\"value\": \"gentle\", \"op\": null}, \"particleCount\": {\"value\": 0.7, \"op\": \"*\"}}. Keyword 'minimalist' suggests: {\"visualComplexity\": {\"value\": \"low\", \"op\": null}, \"particleCount\": {\"value\": 0.3, \"op\": \"*\"}, \"animationStyle\": {\"value\": \"smooth\", \"op\": null}}. Color name 'blue' suggests Hue: 210.",
+    "suggested_sectionModifier_params": {
+        "colorShift.h": 210,
+        "colorShift.s": 0,
+        "colorShift.l": 0,
+        "intensity": 0.7,
+        "particleCount": 21.0,
+        "animationStyle": "smooth",
+        "visualComplexity": "low"
+    },
+    "rationale": "Suggestions are based on matching keywords from 'visual_mood' to rules in STYLE_GUIDANCE.md and interpreting explicit color mentions.",
+    "style_guidance_rules_found": true,
+    "parsed_mood_keywords": [
+        "calm",
+        "minimalist",
+        "focus"
+    ],
+    "parsed_color_hints": {
+        "hex": [],
+        "name": [
+            "blue"
+        ]
+    }
+}
