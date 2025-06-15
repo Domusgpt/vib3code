@@ -42,7 +42,18 @@ This guide primarily focuses on the **Incoming to Staging** workflow.
     3.  Place the raw Markdown file(s) (e.g., `my_article.md`) and any associated assets (images, audio, documents) in this batch directory. It's good practice to organize assets into subdirectories like `images/`, `audio/`, `docs/` within the batch directory.
 
 ### 2.3. Frontmatter Directives
-The Markdown files should include a YAML frontmatter block at the beginning. Key fields include:
+The Markdown files should include a YAML frontmatter block at the beginning. A key field for all content entries is `contentType`, which defines the nature of the content and influences how it's processed and displayed.
+
+**`contentType` Field:**
+This field is mandatory for all new content submissions and helps the system understand how to handle the associated data and assets.
+Possible values:
+-   `"article"`: (Default for existing content) A standard text-based article, potentially with images, embedded media, and supplementary documents.
+-   `"video"`: A video-centric piece, such as a video essay or recorded presentation.
+-   `"audio"`: An audio-centric piece, like a podcast episode or audio documentary.
+-   `"interactive"`: Content that primarily features an interactive demonstration, simulation, or tool.
+-   `"spotlight"`: A concise feature highlighting a community member, project, or event, often with a mix of text and media.
+
+Key fields common to most types include:
 
 ```yaml
 ---
@@ -50,6 +61,7 @@ title: "My Awesome Article Title"
 author: "Paul Phillips" # Or guest author
 date: "YYYY-MM-DD" # Publication or revision date
 id: "unique-article-id" # Optional: if not provided, will be derived from filename. Used for linking.
+contentType: "article" # Specifies the type of content
 
 # Core Content (Populated by you, can be refined by AI suggestions later)
 excerpt: "A brief, compelling summary of the article, around 150-250 characters."
@@ -88,6 +100,100 @@ Your Markdown content follows this block.
 -   **Asset Paths:** Always use paths relative to the root of the *current batch directory* (e.g., `images/my_image.png`, not `/content_pipeline/incoming/my_batch/images/my_image.png`).
 -   The `id` field, if not provided, will be derived from the filename (e.g., `sample_article.md` -> `sample_article`).
 
+### Video Essay (`contentType: "video"`)
+For content where a video is the primary focus.
+
+```yaml
+contentType: "video"
+title: "Title of the Video Essay"
+author: "Creator Name"
+date: "YYYY-MM-DD"
+id: "unique-video-id"
+excerpt: "Short description of the video content."
+tags: ["video essay", "relevant-topic"]
+video_url: "URL to the video (e.g., YouTube, Vimeo)" # Required: Direct URL for streaming
+embed_code: "<iframe ...></iframe>" # Optional: Full embed code if specific player options are needed
+duration: "HH:MM:SS" # String: Length of the video
+thumbnail_image_path: "images/video_thumbnail.png" # Path to a custom thumbnail
+caption_file_path: "text/video_captions.vtt" # Optional: Path to VTT or SRT caption file
+```
+
+### Podcast Series / Audio Content (`contentType: "audio"`)
+For podcast episodes or other audio-focused content.
+
+```yaml
+contentType: "audio"
+title: "Podcast Episode Title / Audio Piece Title"
+series_title: "Name of the Podcast Series" # Optional: If part of a series
+episode_number: 1 # Optional: Numeric episode number
+author: "Host/Creator Name"
+date: "YYYY-MM-DD"
+id: "unique-audio-id"
+excerpt: "Brief summary of the audio content."
+tags: ["podcast", "audio documentary", "relevant-topic"]
+audio_file_path: "audio/episode_final.mp3" # Required: Path to the primary audio file
+duration: "HH:MM:SS" # String: Length of the audio
+episode_artwork_path: "images/podcast_episode_art.png" # Optional: Specific artwork for this episode
+transcript_path: "text/audio_transcript.txt" # Optional: Path to a plain text transcript
+```
+
+### Interactive Demonstration (`contentType: "interactive"`)
+For content that centers around an interactive element.
+
+```yaml
+contentType: "interactive"
+title: "Title of the Interactive Demo"
+author: "Developer/Creator Name"
+date: "YYYY-MM-DD"
+id: "unique-interactive-id"
+excerpt: "Description of the interactive experience and its purpose."
+tags: ["interactive", "simulation", "tool", "webgl demo"]
+live_url: "URL to the live interactive demo" # Required: Link to where the demo can be accessed
+# For demos embedded or launched via specific JS/HTML:
+embed_target_div_id: "myInteractiveDemoContainer" # Optional: ID of a div where this should be loaded
+bootstrap_script_path: "js/launch_my_demo.js" # Optional: Script to initialize the demo
+required_assets_paths: # Optional: List of essential assets if not managed by the demo itself
+  - "interactive_assets/model.glb"
+  - "interactive_assets/textures/texture.png"
+thumbnail_image_path: "images/interactive_preview.png" # Path to a preview image
+instructions_path: "text/interactive_instructions.md" # Optional: Path to a Markdown file with usage instructions
+```
+
+### Community Spotlight (`contentType: "spotlight"`)
+For brief features on community members, projects, or events.
+
+```yaml
+contentType: "spotlight"
+title: "Spotlight: Name or Event" # e.g., "Spotlight: Project XYZ"
+author: "Interviewer/Compiler Name" # Often Paul or Jules
+date: "YYYY-MM-DD"
+id: "unique-spotlight-id"
+excerpt: "A very brief highlight (1-2 sentences)."
+tags: ["community", "spotlight", "project-showcase", "interview-brief"]
+# Profile/Subject Details
+subject_name: "Name of Person/Project/Event"
+subject_role: "e.g., Developer, Community Lead, Event Name" # Optional
+subject_image_path: "images/subject_photo.jpg" # Path to an image of the subject
+subject_bio_snippet_path: "text/subject_bio.txt" # Optional: Path to a short bio text file
+# Links
+main_link_url: "URL to project/profile"
+secondary_links: # Optional list of other relevant links
+  - name: "GitHub Profile"
+    url: "..."
+  - name: "Website"
+    url: "..."
+# Brief Content (can be a short paragraph or a Q&A)
+spotlight_content_markdown: |
+  ## Key Achievement
+  A short paragraph describing a key achievement or detail.
+
+  ## Quick Q&A
+  **Q: What's your favorite EMA principle?**
+  A: Digital Sovereignty!
+# Or, link to a separate markdown file for longer spotlights
+spotlight_content_md_path: "text/full_spotlight_interview.md" # Optional
+```
+
 ### 2.4. Asset Management
 -   **Placement:** Place all assets for an article within its batch directory in `incoming/`, preferably in type-specific subfolders (e.g., `images/`, `audio/`, `docs/`, `text/`).
 -   **Referencing:** Reference these assets in the frontmatter using paths relative to the batch directory root (e.g., `images/header.png`).
@@ -96,6 +202,36 @@ Your Markdown content follows this block.
     *   **Audio (`.mp3`, `.wav`, `.ogg`, etc.):** Copied to a processed assets directory, paths updated.
     *   **PDFs (`.pdf`):** Copied to a processed assets directory, paths updated.
     *   **Text (`.txt`):** Content is read and embedded directly into the metadata JSON (e.g., under a `fieldname_content` key). The original path field also gets a `fieldname_status` key.
+
+### 2.5. Content Type Specific Processing
+
+While the overall pipeline flow (Incoming -> Staging -> Finalization) is similar for all content types, specific scripts are used to process the unique metadata and assets associated with each `contentType`.
+
+#### 2.5.1. Processing Articles (`contentType: "article"`)
+
+Articles, typically long-form text content, are processed using `process_markdown.py`. This script:
+- Parses the Markdown file, extracting YAML frontmatter and the main body content.
+- Validates standard article fields.
+- Converts the Markdown body to HTML (though this step might be deferred to a later stage or client-side rendering depending on the final architecture for display).
+- Prepares asset paths for images and linked documents.
+- Outputs an `{article_id}_metadata.json` file to the staging directory, containing the processed metadata and HTML body.
+
+(This section summarizes existing implicit knowledge about article processing. Ensure this aligns with actual `process_markdown.py` capabilities if that script is also being updated elsewhere.)
+
+#### 2.5.2. Processing Video Posts (`contentType: "video"`)
+
+Video posts are defined by Markdown files containing primarily frontmatter that details the video and its associated metadata (see Section 2.3 for `contentType: "video"` frontmatter fields).
+
+The processing of these files is handled by the `process_video_post.py` script. Its main responsibilities include:
+- Reading the input file and parsing its YAML frontmatter.
+- Validating that `contentType` is set to `"video"`.
+- Ensuring all required video-specific fields (e.g., `title`, `video_url` or `embed_code`) are present.
+- Generating a unique `id` for the video post if not provided in the frontmatter.
+- Processing placeholder paths for associated assets like `thumbnail_image_path` and `transcript_path`. These paths are marked for later handling by the asset finalization stages.
+- Any Markdown content found after the frontmatter in the video post's source file is typically captured into a field like `description_markdown_body` in the metadata, which can be used for more detailed descriptions if the `excerpt` is too short.
+- Outputting an `{video_id}_metadata.json` file to the staging directory for the batch. This JSON file contains all the extracted and processed metadata for the video post.
+
+This `_metadata.json` file, like those for articles, is then consumed by `finalize_data_and_assets.py` to prepare the final data structure for the `js/magazine-router.js` and by `update_router_article.py` to add the video post to the router's data.
 
 ## 3. Jules' AI Suggestion Capabilities
 
