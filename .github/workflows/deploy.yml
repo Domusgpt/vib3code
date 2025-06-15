@@ -24,6 +24,15 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: List files before upload
+        run: |
+          echo "🔍 Files in js/ directory:"
+          ls -la js/ | grep -E "(hyperav|vib3)"
+          echo "🔍 Total files to upload:"
+          find . -type f | wc -l
+          echo "🔍 Index.html size:"
+          wc -c index.html
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
