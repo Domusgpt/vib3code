@@ -3,78 +3,8 @@ import re
 import os
 import sys
 
-def robust_python_value_to_js_string(value):
-    """
-    Converts a Python value to its JavaScript string representation.
-    Handles strings (with proper escaping for JS template literals),
-    numbers, booleans, lists, and dicts.
-    """
-    if isinstance(value, str):
-        # For JSON compatibility, escape backslashes and double quotes, then wrap in double quotes.
-        escaped_value = value.replace('\\', '\\\\')
-        escaped_value = escaped_value.replace('"', '\\"')
-        # Replace newlines with \n, tabs with \t etc. for JSON string
-        escaped_value = escaped_value.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
-        return f'"{escaped_value}"' # Use double quotes for JSON strings
-    elif isinstance(value, bool):
-        return str(value).lower() # true/false for JSON
-    elif isinstance(value, (int, float)):
-        return str(value)
-    elif isinstance(value, list):
-        return f"[{', '.join(robust_python_value_to_js_string(v) for v in value)}]"
-    elif isinstance(value, dict):
-        return python_to_js_object_string(value) # Recursive call
-    elif value is None:
-        return "null"
-    else:
-        # Fallback for other types: convert to string and wrap in double quotes for JSON
-        return f'"{str(value)}"'
-
-def python_to_js_object_string(py_dict):
-    """
-    Converts a Python dictionary to a JavaScript object literal string
-    that is also valid JSON.
-    """
-    items = []
-    for key, value in py_dict.items():
-        js_key = f'"{key}"' # Always quoting keys for JSON compatibility
-        items.append(f"{js_key}: {robust_python_value_to_js_string(value)}")
-    return f"{{ {', '.join(items)} }}"
-
-def parse_js_object_string(obj_str):
-    """
-    Rudimentary parser for a single JS object string to a Python dict.
-    Attempts to make it JSON compatible.
-    """
-    # 1. Ensure all keys are double-quoted.
-    processed_str = re.sub(r'(?<!["\'])\b([a-zA-Z_]\w*)\s*:(?!["\'])', r'"\1":', obj_str)
-
-    # 2. Convert single-quoted strings to double-quoted strings.
-    def single_to_double_quotes(match):
-        content = match.group(1)
-        content_escaped_double = content.replace('"', '\\"')
-        content_final = content_escaped_double.replace("\\'", "'")
-        return f'"{content_final}"'
-    processed_str = re.sub(r"'((?:\\.|[^'\\])*)'", single_to_double_quotes, processed_str)
-
-    # 3. Convert backticked template literals to double-quoted strings.
-    if '`' in processed_str:
-        def backtick_to_double_quotes(match):
-            content = match.group(1)
-            content = content.replace('\\', '\\\\')
-            content = content.replace('"', '\\"')
-            content = content.replace('\n', '\\n')
-            content = content.replace('\r', '\\r')
-            content = content.replace('\t', '\\t')
-            content = content.replace('`', '')
-            return f'"{content}"'
-        processed_str = re.sub(r'`([\s\S]*?)`', backtick_to_double_quotes, processed_str)
-
-    try:
-        return json.loads(processed_str)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Simplified JS object parsing failed: {e}. Processed: {processed_str[:200]}...")
-
+# robust_python_value_to_js_string, python_to_js_object_string, and parse_js_object_string
+# are removed as per new strategy using json.loads and json.dumps.
 
 def update_router_article_data(router_file_path, final_metadata_file_path, article_id_to_update):
     errors = []
@@ -105,54 +35,124 @@ def update_router_article_data(router_file_path, final_metadata_file_path, artic
     array_content_str = all_articles_match.group(2).strip()
     array_suffix = all_articles_match.group(3)
 
-    # Simplified approach: Since router file currently only contains sample_article (or should),
-    # we will replace the entire content of allArticles with just the new final_article_data.
-    # No need to parse existing objects from the array_content_str in this simplified flow.
-    errors.append("Note: Adopting simplified strategy - allArticles will be overwritten with only the target article's new data.")
-    processed_article_objects_for_js = [final_article_data] # List containing the one article to write
-    found_article_to_update = True # Mark as true since we are directly setting it
+    existing_articles_list = []
+    if array_content_str: # If not empty or just whitespace
+        try:
+            # The content is a list of JS objects, e.g. "{...}, {...}".
+            # To parse as JSON, it needs to be enclosed in '[]'
+            # unless it's already a valid JSON array string (which it might be).
+            # For robustness, we assume it's the content *inside* the array.
+            json_parsable_array_content = f"[{array_content_str}]"
+            existing_articles_list = json.loads(json_parsable_array_content)
+        except json.JSONDecodeError as e:
+            errors.append(f"Error parsing existing allArticles content: {e}. Content preview: {array_content_str[:200]}")
+            # Decide if this is fatal. For now, let's try to continue by overwriting with new article if parsing fails.
+            # Or, return failure. Let's return failure.
+            return "failure", router_file_path, f"Failed to parse existing articles in {router_file_path}", errors, final_article_title
 
-    # obj_matches = re.finditer(r'\{([\s\S]*?)\}', array_content_str) # Not needed for simplified approach
-    # temp_articles_str_list = [] # Not needed
-    # for match in obj_matches: # Not needed
-    #     temp_articles_str_list.append("{" + match.group(1) + "}") # Not needed
+    new_article_id = final_article_data.get('id')
+    if not new_article_id:
+        errors.append("New article data is missing 'id' field.")
+        return "failure", router_file_path, "New article data missing 'id'", errors, final_article_title
 
-    # if not temp_articles_str_list and array_content_str:  # Not needed
-    #     errors.append(f"Could not parse individual objects from allArticles array content: {array_content_str[:100]}") # Not needed
+    article_updated = False
+    for i, existing_article in enumerate(existing_articles_list):
+        if isinstance(existing_article, dict) and existing_article.get('id') == new_article_id:
+            existing_articles_list[i] = final_article_data
+            article_updated = True
+            break
 
-    # The loop below is removed as per simplified strategy
-    # for i, obj_str in enumerate(temp_articles_str_list):
-    #     ...
-    # if not found_article_to_update :
-    #     ...
-
-    # Reconstruct the allArticles array string directly from processed_article_objects_for_js
-    # which now only contains final_article_data (as a Python dict)
-    new_array_content_items = []
-    for item in processed_article_objects_for_js: # Should only be one item
-        if isinstance(item, dict):
-            new_array_content_items.append(python_to_js_object_string(item))
-        else:
-            new_array_content_items.append(item) # Should not happen with simplified strategy
-
-    new_array_content_str = ",\n        ".join(new_array_content_items)
-    if new_array_content_str:
-        new_array_content_str = "\n        " + new_array_content_str + "\n    "
+    if article_updated:
+        changes_summary = f"Updated article with ID '{new_article_id}' ('{final_article_title}') in {os.path.basename(router_file_path)}."
     else:
-        new_array_content_str = "\n    "
+        existing_articles_list.append(final_article_data)
+        changes_summary = f"Added new article with ID '{new_article_id}' ('{final_article_title}') to {os.path.basename(router_file_path)}."
 
-    updated_router_content = array_prefix + new_array_content_str + array_suffix
+    # Convert the list of dictionaries back to a pretty-printed JSON string
+    # Ensure consistent newlines and indentation for array elements.
+    if existing_articles_list:
+        new_array_content_json_str = json.dumps(existing_articles_list, indent=4)
+        # Add a newline after array_prefix if it doesn't end with one (it usually does, e.g. "var allArticles = [")
+        # And a newline before array_suffix if it doesn't start with one (it usually does, e.g. "];")
+        # json.dumps output for a list will start with '[' and end with ']', but we want the content *inside* the main array.
+        # The regex captures `var allArticles = [` as prefix and `];` as suffix.
+        # So, the output of json.dumps (which is a full array string "[\n    {...}\n]") needs to be stripped of its outer brackets
+        # if the prefix and suffix provide them.
+        # Current regex: (var\s+allArticles\s*=\s*\[|this\.allArticles\s*=\s*\[)  <- group 1 (prefix)
+        # ([\s\S]*?)                                                              <- group 2 (content)
+        # (\];)                                                                  <- group 3 (suffix)
+        # So, new_array_content_json_str from json.dumps is already a complete array string.
+        # We need to replace group 2 with the content of this new string.
+        # Example: json.dumps([{"id":"1"}], indent=4) -> "[\n    {\n        \"id\": \"1\"\n    }\n]"
+        # We need to fit this between `array_prefix` (e.g. "var allArticles = [") and `array_suffix` (e.g. "];")
+        # This means `json.dumps` output should be used directly as the new content for the JS array.
+        # However, the current regex extracts the *content* of the array.
+        # Let's adjust: the new_array_content_str should be the content *between* the prefix's '[' and suffix's ']'.
+
+        # If existing_articles_list is not empty, json.dumps will produce "[\n    {...}\n]"
+        # If it's empty, it will produce "[]"
+        # We need to format it nicely.
+        if not existing_articles_list: # Handle empty list explicitly for cleaner output
+             new_array_internal_content_str = ""
+        else:
+            # json.dumps produces a full JSON array string.
+            # We want each object indented.
+            # A common style:
+            # var allArticles = [
+            #     {...},
+            #     {...}
+            # ];
+            # So, each item from json.dumps should be indented.
+            # Let's make each item string, then join with ',\n' and indent.
+            items_str_list = []
+            for article_dict in existing_articles_list:
+                # Convert each dict to a JSON string, compact (no newlines within object) for this style
+                # but then indent each line of the object if we use indent in dumps for the object itself.
+                # Easier: json.dumps the whole list with indent, then adjust.
+                items_str_list.append(json.dumps(article_dict, indent=4)) # Indent objects themselves
+
+            # Indent each item block for the array structure
+            # Example: if an item_str is "{\n    \"id\": \"1\"\n}", it becomes "    {\n        \"id\": \"1\"\n    }"
+            base_indent_for_array_items = "    " # Assuming array content starts after a newline and initial indent
+            formatted_items = []
+            for item_json_str in items_str_list:
+                indented_item_lines = [base_indent_for_array_items + line for line in item_json_str.split('\n')]
+                formatted_items.append('\n'.join(indented_item_lines))
+
+            if formatted_items:
+                new_array_internal_content_str = "\n" + ",\n".join(formatted_items) + "\n"
+            else: # Should not happen if existing_articles_list was not empty
+                new_array_internal_content_str = ""
+
+    else: # existing_articles_list is empty
+        new_array_internal_content_str = "" # Results in `[]`
+
+    # Reconstruct the entire file content
+    # router_content[:all_articles_match.start(0)] # Content before the 'allArticles' definition
+    # + array_prefix # The 'var allArticles = [' part
+    # + new_array_internal_content_str # The new content of the array, like '\n    {...}\n' or '' if empty
+    # + array_suffix.strip() # The '];' part, stripped of any extra whitespace from regex capture
+    # + router_content[all_articles_match.end(0):] # Content after the 'allArticles' definition
+
+    # all_articles_match.group(0) is the entire matched string for `allArticles`
+    # e.g. "var allArticles = [\n    {...}\n];"
+    # We want to replace this whole segment.
+
+    new_all_articles_definition = array_prefix + new_array_internal_content_str + array_suffix.strip()
+
+    updated_router_content = router_content[:all_articles_match.start(0)] + \
+                             new_all_articles_definition + \
+                             router_content[all_articles_match.end(0):]
 
     try:
         with open(router_file_path, 'w', encoding='utf-8') as f:
             f.write(updated_router_content)
         status = "success"
-        # Corrected changes_summary for the simplified strategy
-        changes_summary = f"Replaced allArticles content with data for: {article_id_to_update}"
-
+        # changes_summary is set above based on add/update
     except Exception as e:
         errors.append(f"Error writing updated router file: {e}")
         status = "failure"
+        changes_summary = f"Failed to write changes to {os.path.basename(router_file_path)} for article ID '{new_article_id}'."
 
     return status, router_file_path, changes_summary, errors, final_article_title
 
@@ -173,11 +173,19 @@ if __name__ == "__main__":
 
     ai_msg = ""
     if status_res == "success":
-        # Adjusted message to reflect the replacement of the entire array content
-        ai_msg = f"Set allArticles in magazine-router.js to solely contain updated '{title_res}' (ID: {article_id}) with final data."
+        # summary_res already indicates if added or updated.
+        # Example summary_res: "Updated article with ID '...' in magazine-router.js."
+        # or "Added new article with ID '...' to magazine-router.js."
+        # We can make ai_msg more direct.
+        if "Updated" in summary_res:
+            ai_msg = f"Successfully updated article '{title_res}' (ID: {article_id}) in {os.path.basename(mod_file)}."
+        elif "Added" in summary_res:
+            ai_msg = f"Successfully added new article '{title_res}' (ID: {article_id}) to {os.path.basename(mod_file)}."
+        else: # Fallback, though summary_res should match one of the above
+            ai_msg = f"Successfully processed article '{title_res}' (ID: {article_id}) in {os.path.basename(mod_file)}. Details: {summary_res}"
     else:
-        ai_msg = f"Failed to update '{title_res}' (ID: {article_id}) in magazine-router.js."
-        if err_list: # Ensure err_list is converted to strings if not already
+        ai_msg = f"Failed to process article '{title_res}' (ID: {article_id}) in {os.path.basename(mod_file or r_file_path)}."
+        if err_list:
              ai_msg += f" Errors: {'; '.join(map(str, err_list))}"
 
     print(json.dumps({
