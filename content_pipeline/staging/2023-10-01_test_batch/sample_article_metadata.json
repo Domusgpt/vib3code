@@ -2,50 +2,20 @@
     "title": "My First Article",
     "author": "AI Agent",
     "date": "2023-10-26",
-    "tags": [],
+    "tags": "[test, markdown, ai]",
     "description": "A sample article for testing the processing pipeline.",
-    "excerpt": "",
-    "category": "",
-    "header_image_path": "/content_pipeline/processed_assets/images/sample_article/header.png",
-    "thumbnail_image_path": "",
-    "figure_image_path": null,
-    "inline_images": [
-        "/content_pipeline/processed_assets/images/sample_article/inline_image1.jpg",
-        "images/non_existent_image.png",
-        "/content_pipeline/processed_assets/images/sample_article/another_header.png"
-    ],
-    "gallery_images": [
-        "/content_pipeline/processed_assets/images/sample_article/gallery1.jpg",
-        "",
-        null,
-        "/content_pipeline/processed_assets/images/sample_article/gallery2.jpg"
-    ],
-    "audio_clip_path": "/content_pipeline/processed_assets/audio/sample_article/sample_song.mp3",
-    "podcast_episode_path": "audio/non_existent_clip.wav",
-    "background_tracks": [
-        "/content_pipeline/processed_assets/audio/sample_article/track1.ogg",
-        "/content_pipeline/processed_assets/audio/sample_article/track2.mp3"
-    ],
-    "supplementary_text_path": "text/sample_notes.txt",
-    "missing_txt_path": "text/no_such_file.txt",
-    "linked_document_pdf": "/content_pipeline/processed_assets/documents/sample_article/datasheet.pdf",
-    "missing_pdf_path": "docs/no_such_pdf.pdf",
-    "supplementary_text_path_content": "These are some supplementary notes for the article.\nThis content should be embedded directly into the metadata JSON.\nIt might contain multiple lines.\n",
-    "supplementary_text_path_status": "processed",
-    "missing_txt_path_status": "error_reading",
     "ai_suggestions": {
-        "suggested_excerpt": "main heading this is the first paragraph of the article. it has some bold text and some italic text .",
+        "suggested_excerpt": "main heading this is the first paragraph of the article. subheading this is a second paragraph, following a subheading.",
         "suggested_categories": [
-            "base  palettes",
-            "current visualizers & engine integration"
+            "current visualizers & engine integration",
+            "guidelines for new s & s"
         ],
         "suggested_tags": [
-            "list",
+            "image",
             "heading",
+            "item",
             "subheading",
-            "using",
-            "item"
+            "list"
         ]
-    },
-    "visual_mood": "dark technical blue_focus"
+    }
 }

@@ -60,12 +60,17 @@ def finalize_data(staging_batch_dir_name, base_filename, live_assets_root_dir_on
 
 
         # Tags: merge or replace. For simplicity, let's replace if suggestions exist.
-        original_tags = metadata.get("tags", [])
+        original_tags = metadata.get("tags", []) # Could be a string or list
         suggested_tags = ai_suggestions.get("suggested_tags") # Expected to be a list
-        if suggested_tags and isinstance(suggested_tags, list):
-            metadata["tags"] = list(set(original_tags + suggested_tags)) # Merge and unique, or just assign suggested
-            # For this subtask, let's just use suggested if available, else keep original
-            metadata["tags"] = suggested_tags if suggested_tags else original_tags
+
+        if suggested_tags and isinstance(suggested_tags, list) and len(suggested_tags) > 0:
+            metadata["tags"] = suggested_tags # Prioritize suggested tags if they are a valid list
+        else:
+            # If no suggested tags, or they are not a list, keep original_tags.
+            # No change needed if original_tags is already what we want to keep.
+            # This handles the case where original_tags is the string "[test, markdown, ai]"
+            # without trying to concatenate it.
+            metadata["tags"] = original_tags
 
         # Optionally, remove the ai_suggestions key after merging
         # metadata.pop("ai_suggestions", None)

@@ -46,5 +46,6 @@ this.sectionModifiers = {home: {
                 animationStyle: 'revolutionary',
                 visualComplexity: 'maximum'
             },
-            "article_sample_article_custom": { "intensity": 0.8, "particleCount": 100, "animationStyle": "structural", "visualComplexity": "medium", "colorShift": { "h": 210, "s": 0, "l": -15 } }
+            "article_sample_article_custom": { "intensity": 0.8, "particleCount": 100, "animationStyle": "structural", "visualComplexity": "medium", "colorShift": { "h": 210, "s": 0, "l": -15 } },
+            "article_new_test_article_custom": { "intensity": 0.7, "particleCount": 21.0, "animationStyle": "smooth", "visualComplexity": "low", "colorShift": { "h": 210, "s": 0, "l": 0 } }
         };
