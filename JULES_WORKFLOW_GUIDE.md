@@ -233,6 +233,22 @@ The processing of these files is handled by the `process_video_post.py` script. 
 
 This `_metadata.json` file, like those for articles, is then consumed by `finalize_data_and_assets.py` to prepare the final data structure for the `js/magazine-router.js` and by `update_router_article.py` to add the video post to the router's data.
 
+
+#### 2.5.3. Processing Audio Posts (`contentType: "audio"`)
+
+Audio posts, such as podcast episodes, are defined by Markdown files. The core information is contained within the YAML frontmatter, which should specify `contentType: "audio"` and include fields detailed in Section 2.3 (e.g., `title`, `audio_url`, `duration`, `shownotes_path`, `episode_artwork_path`).
+
+The `process_audio_post.py` script is responsible for processing these files. Its key functions are:
+- Reading the input file and parsing its YAML frontmatter.
+- Validating that `contentType` is correctly set to `"audio"`.
+- Ensuring essential fields for audio content, like `title` and `audio_url`, are present.
+- Generating or adopting a unique `id` for the audio post.
+- Processing placeholder paths for associated assets, such as `episode_artwork_path` (for cover art) and `shownotes_path`. These paths are prepared for subsequent handling during asset finalization.
+- Capturing any Markdown content following the frontmatter into a `description_markdown_body` field within the metadata, suitable for longer descriptions or supplementary text.
+- Generating an `{audio_id}_metadata.json` file in the relevant staging directory. This file contains all the processed metadata for the audio post.
+
+Similar to other content types, this `_metadata.json` file is then utilized by `finalize_data_and_assets.py` to create the final data structure for `js/magazine-router.js`, and `update_router_article.py` integrates the audio post into the router's data.
+
 ## 3. Jules' AI Suggestion Capabilities
 
 ### 3.1. Overview of AI Assistance

@@ -98,3 +98,108 @@ function loadTranscript(videoId, transcriptPath) {
             button.disabled = false;
         });
 }
+
+/**
+ * Renders the HTML structure for an audio post.
+ * @param {object} audio - The audio data object. Expected properties:
+ *   id, title, author, date, audio_url, excerpt (optional), shownotes_path (optional),
+ *   series_title (optional), category (optional), tags (optional)
+ * @returns {string} HTML string for the audio post.
+ */
+function renderAudioPost(audio) {
+    if (!audio || !audio.id || !audio.title) {
+        console.error('Invalid audio object provided to renderAudioPost', audio);
+        return '<article class="content-item audio-post error"><p>Error: Audio data is incomplete.</p></article>';
+    }
+
+    // Sanitize inputs minimally
+    const s = (str) => String(str || '').replace(/[&<>"']/g, (match) => {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
+    });
+
+    let playerHtml = '';
+    if (audio.audio_url) {
+        playerHtml = `
+            <audio controls preload="metadata" style="width: 100%;">
+                <source src="${s(audio.audio_url)}" type="audio/mpeg"> <!-- Common type, adjust if others needed -->
+                Your browser does not support the audio element. Click <a href="${s(audio.audio_url)}" target="_blank">here</a> to listen.
+            </audio>
+        `;
+    } else {
+        playerHtml = '<p>No audio source available.</p>';
+    }
+
+    return `
+<article class="content-item audio-post" id="audio-${s(audio.id)}" data-content-id="${s(audio.id)}" data-content-type="audio">
+    <header class="audio-header content-header">
+        <h1>${s(audio.title)}</h1>
+        <p class="audio-meta content-meta">
+            ${audio.author ? `<span>By: ${s(audio.author)}</span>` : ''}
+            ${audio.author && audio.date ? ' | ' : ''}
+            ${audio.date ? `<span>Date: ${s(audio.date)}</span>` : ''}
+        </p>
+        ${audio.series_title ? `<p class="series-meta">Series: ${s(audio.series_title)}</p>` : ''}
+        ${audio.category ? `<p class="category-meta">Category: ${s(audio.category)}</p>` : ''}
+        ${audio.tags && audio.tags.length ? `<p class="tags-meta">Tags: ${audio.tags.map(tag => s(tag)).join(', ')}</p>` : ''}
+    </header>
+    <section class="audio-player-section">
+        ${playerHtml}
+    </section>
+    ${audio.excerpt ? `
+    <section class="audio-description content-body">
+        <p class="excerpt">${s(audio.excerpt)}</p>
+    </section>
+    ` : ''}
+    ${audio.shownotes_path ? `
+    <section class="audio-shownotes content-supplementary">
+        <h3>Show Notes</h3>
+        <div id="shownotes-content-${s(audio.id)}" data-shownotes-path="${s(audio.shownotes_path)}">
+            <button class="load-shownotes-button" onclick="loadShowNotes('${s(audio.id)}', '${s(audio.shownotes_path)}')">Load Show Notes</button>
+            <div class="shownotes-text" style="display:none;"></div>
+        </div>
+    </section>
+    ` : ''}
+    <footer class="audio-footer content-footer">
+        <!-- Placeholder for any footer content -->
+    </footer>
+</article>
+`;
+}
+
+/**
+ * Loads show notes for an audio post.
+ * @param {string} audioId - The ID of the audio post.
+ * @param {string} shownotesPath - The path to the show notes file.
+ */
+function loadShowNotes(audioId, shownotesPath) {
+    const notesContainer = document.querySelector(\`#shownotes-content-\${audioId} .shownotes-text\`);
+    const button = document.querySelector(\`#shownotes-content-\${audioId} .load-shownotes-button\`);
+    if (!notesContainer || !button) {
+        console.error('Could not find elements for show notes for audio ID:', audioId);
+        return;
+    }
+
+    button.textContent = 'Loading...';
+    button.disabled = true;
+
+    fetch(shownotesPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(\`HTTP error! status: \${response.status} for \${shownotesPath}\`);
+            }
+            return response.text(); // Assuming show notes are plain text or simple HTML
+        })
+        .then(text => {
+            // If show notes are Markdown, they would need to be parsed here.
+            // For now, displaying as pre-formatted text or simple HTML.
+            notesContainer.innerHTML = text.replace(/\n/g, '<br>'); // Basic formatting
+            notesContainer.style.display = 'block';
+            button.style.display = 'none'; // Hide button after loading
+        })
+        .catch(error => {
+            notesContainer.innerHTML = \`<p>Error loading show notes: \${error.message}</p>\`;
+            notesContainer.style.display = 'block';
+            button.textContent = 'Retry'; // Allow retry
+            button.disabled = false;
+        });
+}
