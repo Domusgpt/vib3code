@@ -25,12 +25,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Clean repository
+      - name: Debug deployment
         run: |
-          rm -f editorial_ai_*.json
-          rm -f *.py
-          rm -rf content_pipeline/
-          ls -la
+          echo "🔍 Checking index.html size and content..."
+          ls -la index.html
+          wc -c index.html
+          head -20 index.html
+          echo "🔍 Checking for embedded integration..."
+          grep -n "EMBEDDED HYPERAV" index.html || echo "❌ EMBEDDED INTEGRATION NOT FOUND!"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
