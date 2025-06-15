@@ -114,8 +114,9 @@ tags: ["video essay", "relevant-topic"]
 video_url: "URL to the video (e.g., YouTube, Vimeo)" # Required: Direct URL for streaming
 embed_code: "<iframe ...></iframe>" # Optional: Full embed code if specific player options are needed
 duration: "HH:MM:SS" # String: Length of the video
+header_image_path: "images/video_header.jpg" # Optional: Larger banner image
 thumbnail_image_path: "images/video_thumbnail.png" # Path to a custom thumbnail
-caption_file_path: "text/video_captions.vtt" # Optional: Path to VTT or SRT caption file
+transcript_path: "text/video_transcript.vtt" # Optional: Path to VTT or SRT transcript file
 ```
 
 ### Podcast Series / Audio Content (`contentType: "audio"`)
@@ -131,10 +132,12 @@ date: "YYYY-MM-DD"
 id: "unique-audio-id"
 excerpt: "Brief summary of the audio content."
 tags: ["podcast", "audio documentary", "relevant-topic"]
-audio_file_path: "audio/episode_final.mp3" # Required: Path to the primary audio file
+audio_url: "https://example.com/episode.mp3" # Required: URL to the audio content
+audio_file_path: "audio/source_episode.wav" # Optional: Path to a local source audio file for processing
 duration: "HH:MM:SS" # String: Length of the audio
+header_image_path: "images/audio_header.png" # Optional: Larger banner image
 episode_artwork_path: "images/podcast_episode_art.png" # Optional: Specific artwork for this episode
-transcript_path: "text/audio_transcript.txt" # Optional: Path to a plain text transcript
+shownotes_path: "text/shownotes.txt" # Optional: Path to show notes file
 ```
 
 ### Interactive Demonstration (`contentType: "interactive"`)
@@ -148,6 +151,8 @@ date: "YYYY-MM-DD"
 id: "unique-interactive-id"
 excerpt: "Description of the interactive experience and its purpose."
 tags: ["interactive", "simulation", "tool", "webgl demo"]
+header_image_path: "images/interactive_header.png" # Optional: Larger banner image
+thumbnail_image_path: "images/interactive_preview.png" # Path to a preview image
 live_url: "URL to the live interactive demo" # Required: Link to where the demo can be accessed
 # For demos embedded or launched via specific JS/HTML:
 embed_target_div_id: "myInteractiveDemoContainer" # Optional: ID of a div where this should be loaded
@@ -155,7 +160,6 @@ bootstrap_script_path: "js/launch_my_demo.js" # Optional: Script to initialize t
 required_assets_paths: # Optional: List of essential assets if not managed by the demo itself
   - "interactive_assets/model.glb"
   - "interactive_assets/textures/texture.png"
-thumbnail_image_path: "images/interactive_preview.png" # Path to a preview image
 instructions_path: "text/interactive_instructions.md" # Optional: Path to a Markdown file with usage instructions
 ```
 
@@ -214,7 +218,7 @@ Articles, typically long-form text content, are processed using `process_markdow
 - Validates standard article fields.
 - Converts the Markdown body to HTML (though this step might be deferred to a later stage or client-side rendering depending on the final architecture for display).
 - Prepares asset paths for images and linked documents.
-- Outputs an `{article_id}_metadata.json` file to the staging directory, containing the processed metadata and HTML body.
+- Outputs an `{article_id}_metadata.json` file to the staging directory, containing the processed frontmatter metadata. The Markdown body is converted to HTML and saved in a separate `{article_id}.html` file in the same directory.
 
 (This section summarizes existing implicit knowledge about article processing. Ensure this aligns with actual `process_markdown.py` capabilities if that script is also being updated elsewhere.)
 
@@ -227,7 +231,7 @@ The processing of these files is handled by the `process_video_post.py` script. 
 - Validating that `contentType` is set to `"video"`.
 - Ensuring all required video-specific fields (e.g., `title`, `video_url` or `embed_code`) are present.
 - Generating a unique `id` for the video post if not provided in the frontmatter.
-- Processing placeholder paths for associated assets like `thumbnail_image_path` and `transcript_path`. These paths are marked for later handling by the asset finalization stages.
+- Processing placeholder paths for associated assets like `header_image_path`, `thumbnail_image_path`, and `transcript_path`. These paths are marked for later handling by the asset finalization stages.
 - Any Markdown content found after the frontmatter in the video post's source file is typically captured into a field like `description_markdown_body` in the metadata, which can be used for more detailed descriptions if the `excerpt` is too short.
 - Outputting an `{video_id}_metadata.json` file to the staging directory for the batch. This JSON file contains all the extracted and processed metadata for the video post.
 
@@ -243,7 +247,7 @@ The `process_audio_post.py` script is responsible for processing these files. It
 - Validating that `contentType` is correctly set to `"audio"`.
 - Ensuring essential fields for audio content, like `title` and `audio_url`, are present.
 - Generating or adopting a unique `id` for the audio post.
-- Processing placeholder paths for associated assets, such as `episode_artwork_path` (for cover art) and `shownotes_path`. These paths are prepared for subsequent handling during asset finalization.
+- Processing placeholder paths for associated assets, such as `header_image_path`, `episode_artwork_path` (for cover art), `shownotes_path`, and optionally `audio_file_path` (if a local source is provided). These paths are prepared for subsequent handling during asset finalization.
 - Capturing any Markdown content following the frontmatter into a `description_markdown_body` field within the metadata, suitable for longer descriptions or supplementary text.
 - Generating an `{audio_id}_metadata.json` file in the relevant staging directory. This file contains all the processed metadata for the audio post.
 

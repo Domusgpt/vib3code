@@ -106,6 +106,10 @@ Every design decision, content choice, and technical implementation must exempli
 - **Interactive Demonstrations**: Live Parserator examples showing EMA principles
 - **Community Spotlights**: User stories and case studies
 
+
+
+For detailed frontmatter specifications and processing workflows for these content formats, please refer to the `JULES_WORKFLOW_GUIDE.md` document.
+
 ## Technical Requirements
 
 ### Performance Standards
