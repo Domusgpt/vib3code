@@ -1,0 +1,3 @@
+Placeholder instructions for My Awesome Interactive Game.
+1. Click Start.
+2. Have fun!

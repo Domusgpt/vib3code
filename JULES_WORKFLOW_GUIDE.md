@@ -78,14 +78,17 @@ theme_modifier_key: "" # Optional: Explicit key for a pre-defined sectionModifie
 # Asset Paths (Relative to the batch directory, e.g., "images/my_header.png")
 header_image_path: "images/header_image.jpg"
 thumbnail_image_path: "images/thumbnail.png" # Optional
+# For articles, path to the main HTML content body. This path is typically populated by
+# 'finalize_data_and_assets.py' to reflect the final live location of the HTML file.
+html_content_path: "/assets/articles/unique-article-id/content.html" # Example final path
 inline_images: # For images referenced within the markdown body that need processing
   - "images/figure1.png"
   - "images/chart_a.jpg"
 gallery_images: # For image galleries
   - "images/gallery/img1.jpg"
 audio_clip_path: "audio/intro_segment.mp3" # For an embedded audio clip
-podcast_episode_path: "audio/full_episode.wav" # For a full podcast episode
-background_tracks: ["audio/bgm1.ogg", "audio/bgm2.mp3"] # For background audio options
+# Note: 'podcast_episode_path' was an old field, use 'audio_url' or 'audio_file_path' for dedicated audio content.
+# background_tracks: ["audio/bgm1.ogg", "audio/bgm2.mp3"] # For background audio options
 supplementary_text_path: "text/notes.txt" # Path to a .txt file whose content will be embedded
 linked_document_pdf: "docs/whitepaper.pdf" # Path to a PDF to be linked
 
@@ -99,6 +102,7 @@ Your Markdown content follows this block.
 
 -   **Asset Paths:** Always use paths relative to the root of the *current batch directory* (e.g., `images/my_image.png`, not `/content_pipeline/incoming/my_batch/images/my_image.png`).
 -   The `id` field, if not provided, will be derived from the filename (e.g., `sample_article.md` -> `sample_article`).
+-   The `html_content_path` for articles is a critical field that should point to the final, publicly accessible path of the article's main HTML body. This path is generated and finalized by the `finalize_data_and_assets.py` script (see Section 4.4).
 
 ### Video Essay (`contentType: "video"`)
 For content where a video is the primary focus.
@@ -111,11 +115,11 @@ date: "YYYY-MM-DD"
 id: "unique-video-id"
 excerpt: "Short description of the video content."
 tags: ["video essay", "relevant-topic"]
+header_image_path: "images/video_header.jpg" # Optional: Larger banner image
+thumbnail_image_path: "images/video_thumbnail.png" # Path to a custom thumbnail
 video_url: "URL to the video (e.g., YouTube, Vimeo)" # Required: Direct URL for streaming
 embed_code: "<iframe ...></iframe>" # Optional: Full embed code if specific player options are needed
 duration: "HH:MM:SS" # String: Length of the video
-header_image_path: "images/video_header.jpg" # Optional: Larger banner image
-thumbnail_image_path: "images/video_thumbnail.png" # Path to a custom thumbnail
 transcript_path: "text/video_transcript.vtt" # Optional: Path to VTT or SRT transcript file
 ```
 
@@ -153,10 +157,10 @@ excerpt: "Description of the interactive experience and its purpose."
 tags: ["interactive", "simulation", "tool", "webgl demo"]
 header_image_path: "images/interactive_header.png" # Optional: Larger banner image
 thumbnail_image_path: "images/interactive_preview.png" # Path to a preview image
-live_url: "URL to the live interactive demo" # Required: Link to where the demo can be accessed
+live_url: "URL to the live interactive demo" # Required if no bootstrap_script_path
 # For demos embedded or launched via specific JS/HTML:
 embed_target_div_id: "myInteractiveDemoContainer" # Optional: ID of a div where this should be loaded
-bootstrap_script_path: "js/launch_my_demo.js" # Optional: Script to initialize the demo
+bootstrap_script_path: "js/launch_my_demo.js" # Optional: Script to initialize the demo. Required if no live_url.
 required_assets_paths: # Optional: List of essential assets if not managed by the demo itself
   - "interactive_assets/model.glb"
   - "interactive_assets/textures/texture.png"
@@ -216,11 +220,11 @@ While the overall pipeline flow (Incoming -> Staging -> Finalization) is similar
 Articles, typically long-form text content, are processed using `process_markdown.py`. This script:
 - Parses the Markdown file, extracting YAML frontmatter and the main body content.
 - Validates standard article fields.
-- Converts the Markdown body to HTML (though this step might be deferred to a later stage or client-side rendering depending on the final architecture for display).
+- Converts the Markdown body to HTML.
 - Prepares asset paths for images and linked documents.
 - Outputs an `{article_id}_metadata.json` file to the staging directory, containing the processed frontmatter metadata. The Markdown body is converted to HTML and saved in a separate `{article_id}.html` file in the same directory.
 
-(This section summarizes existing implicit knowledge about article processing. Ensure this aligns with actual `process_markdown.py` capabilities if that script is also being updated elsewhere.)
+The path to this staged HTML body file (e.g., `content_pipeline/staging/{batch_name}/{article_id}.html`) is intended to be an intermediate step. The `finalize_data_and_assets.py` script (see Section 4.4) is responsible for moving this HTML file to its final "live" location (e.g., `/assets/articles/{article_id}/content.html`) and updating the `html_content_path` field in the article's metadata to this final, publicly accessible path.
 
 #### 2.5.2. Processing Video Posts (`contentType: "video"`)
 
@@ -342,7 +346,7 @@ When a batch is processed and ready for your review, its directory in the stagin
 
 -   **`00_PROCESSING_SUMMARY.md`**: A human-readable summary of all processing steps, asset statuses, AI suggestions made, and any errors encountered for the batch. *This should be your first point of reference.*
 -   **`01_processed_content/`**: This subdirectory contains the main processed content.
-    -   `{base_filename}.html`: The Markdown body converted to HTML.
+    -   `{base_filename}.html`: For `contentType: "article"`, this is the Markdown body converted to HTML. For other contentTypes, this directory might contain relevant processed assets or be less emphasized.
 -   **`{base_filename}_metadata.json`**: The article's metadata, now potentially including an `ai_suggestions` field if generated by `suggest_metadata.py`. This file will also reflect updated paths for any assets that were processed (e.g., embedded TXT content, `_status` fields for TXT files). This is the metadata *before* AI suggestions are merged and before asset paths are finalized for live deployment.
 -   **`theme_suggestions.json`**: (If `visual_mood` was provided and processed by `suggest_visuals.py`) Contains suggested `ThemeEngine` parameters.
 -   **`04_asset_manifest.json`**: A JSON file listing all identified assets from the frontmatter, their original paths, their new staged paths (if copied to `processed_assets`), or their embedded status (for TXT), and their processing status (e.g., "processed", "error_reading", "error_copying").
@@ -359,14 +363,19 @@ When a batch is processed and staged, I will provide a notification message (typ
 -   A request for your review and feedback.
 
 ### 4.4. Feedback, Iteration, and Approval
--   **Your Review:** Please examine the `00_PROCESSING_SUMMARY.md`, the staged HTML, the metadata (including `ai_suggestions`), and any `theme_suggestions.json`.
+-   **Your Review:** Please examine the `00_PROCESSING_SUMMARY.md`, the staged HTML (for articles), the metadata (including `ai_suggestions`), and any `theme_suggestions.json`.
 -   **Feedback Mechanisms:**
-    1.  **Direct Edits:** You can directly edit the staged files (e.g., `_metadata.json` to accept/reject/modify AI suggestions, or even the HTML). If you edit `_metadata.json` (e.g., by changing `visual_mood` or clearing AI suggestions you don't want), these changes can be picked up in subsequent steps.
+    1.  **Direct Edits:** You can directly edit the staged files (e.g., `_metadata.json` to accept/reject/modify AI suggestions, or even the HTML for articles). If you edit `_metadata.json` (e.g., by changing `visual_mood` or clearing AI suggestions you don't want), these changes can be picked up in subsequent steps.
     2.  **Textual Instructions:** Provide feedback as textual instructions (e.g., "Accept suggested excerpt but change tags to X, Y, Z. Re-process theme with mood 'calm minimalist'."). I will do my best to apply these.
     3.  **Reprocessing Requests:** If changes are needed to frontmatter or assets, you can update the files in the `incoming` directory and request a full reprocessing of the batch.
 -   **Approval:** Once you are satisfied with the staged content, metadata, and any theme modifications:
     1.  Provide an explicit approval instruction (e.g., "Staging for sample_article approved. Proceed to finalize and integrate into router.").
-    2.  I will then run `finalize_data_and_assets.py` to consolidate suggestions and move assets to their "live" locations, producing the `_final_for_router.json`.
+    2.  I will then run `finalize_data_and_assets.py`. This script has several key responsibilities:
+        *   It merges accepted AI suggestions into the main metadata.
+        *   It processes all assets listed in the frontmatter (images, documents, audio files, etc.), copying them from their batch directory location to their final "live" locations within the `/assets/` directory structure (e.g., `/assets/images/{article_id}/`, `/assets/audio/{article_id}/`, etc.).
+        *   **For articles (`contentType: "article"`)**: It specifically handles the staged HTML body file (e.g., `content_pipeline/staging/{batch_name}/{article_id}.html`). This HTML file is copied to its final live location (e.g., `assets/articles/{article_id}/content.html`). The exact naming (`content.html`) and subfolder structure (`assets/articles/{article_id}/`) should be consistent.
+        *   It updates all relevant path fields in the metadata (e.g., `header_image_path`, `audio_file_path`, and critically for articles, `html_content_path`) to reflect these final, publicly accessible URLs. The `html_content_path` is particularly important as `js/magazine-router.js` uses it to dynamically fetch and display the article's main body.
+        *   It generates the `_final_for_router.json` file, which contains the complete and finalized metadata ready for integration into the website.
     3.  A subsequent step (e.g., `update_router_article.py`) would use this final JSON to update `js/magazine-router.js`.
 
 ## 5. Key Files & Systems I Interact With
