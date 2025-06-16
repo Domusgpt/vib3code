@@ -7,7 +7,7 @@
     console.log('🎮 Loading VIB3CODE Interactive Demo Game...');
     
     // Find the target container
-    var gameContainer = document.getElementById('interactive-embed-my_game_01');
+    var gameContainer = document.getElementById('game-container-div');
     if (!gameContainer) {
         console.error('Game container not found');
         return;
@@ -26,7 +26,7 @@
     function createGameUI() {
         gameContainer.innerHTML = 
             '<div class="vib3-game-wrapper" style="' +
-                'background: linear-gradient(135deg, rgba(10,10,46,0.9), rgba(22,33,62,0.9));' +
+                'background: linear-gradient(135deg, rgba(10,10,46,0.7), rgba(22,33,62,0.7));' +
                 'border: 2px solid #00d9ff;' +
                 'border-radius: 12px;' +
                 'padding: 20px;' +
