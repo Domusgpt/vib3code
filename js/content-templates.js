@@ -347,7 +347,12 @@ function renderArticlePost(article) {
 
     var headerImageHtml = ''; // Converted
     if (article.header_image_path) {
-        headerImageHtml = '<img src="' + s(article.header_image_path) + '" alt="' + s(article.title) + ' header image" class="article-header-image">';
+        var imagePath = article.header_image_path;
+        // Use base path resolver if available in MagazineRouter
+        if (window.MagazineRouter && typeof window.MagazineRouter.resolveAssetPath === 'function') {
+            imagePath = window.MagazineRouter.resolveAssetPath(article.header_image_path);
+        }
+        headerImageHtml = '<img src="' + s(imagePath) + '" alt="' + s(article.title) + ' header image" class="article-header-image">';
     }
 
     return (

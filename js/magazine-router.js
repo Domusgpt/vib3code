@@ -3,6 +3,35 @@ var MagazineRouter = { // Converted const
     articlesData: [], // Will be assigned allArticles
     navLinks: [],
     currentRoute: { section: null, itemId: null },
+    
+    // Base path resolver for GitHub Pages
+    getBasePath: function() {
+        var hostname = window.location.hostname;
+        var pathname = window.location.pathname;
+        
+        // GitHub Pages detection
+        if (hostname.includes('.github.io')) {
+            var pathParts = pathname.split('/').filter(function(part) { return part.length > 0; });
+            if (pathParts.length > 0) {
+                return '/' + pathParts[0] + '/';
+            }
+        }
+        
+        // Default to root
+        return '/';
+    },
+    
+    // Resolve asset path with correct base
+    resolveAssetPath: function(path) {
+        if (!path) return path;
+        if (path.startsWith('http')) return path; // Already absolute
+        
+        var basePath = this.getBasePath();
+        if (path.startsWith('/')) {
+            return basePath + path.substring(1);
+        }
+        return basePath + path;
+    },
 
     // NEW HELPER METHODS FIRST
     loadArticleContent: function(articleElement, htmlPath) {
@@ -17,7 +46,7 @@ var MagazineRouter = { // Converted const
 
         targetDiv.innerHTML = '<p><em>Loading full article...</em></p>';
 
-        fetch(htmlPath + '?v=' + Date.now())
+        fetch(this.resolveAssetPath(htmlPath) + '?v=' + Date.now())
             .then(function(response) {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status + ' fetching ' + htmlPath);
@@ -41,7 +70,7 @@ var MagazineRouter = { // Converted const
         }
 
         var script = document.createElement('script');
-        script.src = scriptPath;
+        script.src = this.resolveAssetPath(scriptPath);
         script.async = true;
         script.defer = true;
         script.setAttribute('data-interactive-id', interactiveElement.dataset.contentId);
