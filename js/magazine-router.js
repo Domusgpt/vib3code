@@ -305,8 +305,8 @@ var allArticles = [
         "html_content_path": "/assets/articles/new-test-article/content.html",
         "tags": ["intended mood", "pipeline", "visual", "guidelines for new s & s", "asset", "test", "new"],
         "description": "A new test article to demonstrate full pipeline capabilities.",
-        "header_image_path": "/assets/images/new_test_article/new_header.png",
-        "linked_document_pdf": "/assets/documents/new_test_article/new_document.pdf",
+        "header_image_path": "/assets/images/new_test_article/new_header.svg",
+        "linked_document_pdf": "/assets/documents/new_test_article/new_document.txt",
         "visual_mood": "calm minimalist blue_focus",
         "theme_modifier_key": "article_new_test_article_custom",
         "ai_suggestions": {
