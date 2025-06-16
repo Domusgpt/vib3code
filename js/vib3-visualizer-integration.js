@@ -370,12 +370,18 @@
         }
     };
     
-    // Auto-initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
+    // Auto-initialize when DOM is ready and MagazineRouter is available
+    function initWhenReady() {
+        if (window.MagazineRouter) {
             window.VIB3VisualizerIntegration.init();
-        });
+        } else {
+            setTimeout(initWhenReady, 100);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWhenReady);
     } else {
-        window.VIB3VisualizerIntegration.init();
+        initWhenReady();
     }
 })();

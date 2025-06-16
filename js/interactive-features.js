@@ -220,7 +220,7 @@
             if (card && card.hasAttribute('data-section')) {
                 e.preventDefault();
                 var section = card.getAttribute('data-section');
-                if (window.MagazineRouter) {
+                if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
                     window.MagazineRouter.navigateToSection(section);
                 }
             }

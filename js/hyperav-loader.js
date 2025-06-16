@@ -209,10 +209,10 @@
             }
             
             // Connect to magazine router events
-            if (window.MagazineRouter) {
-                var originalNavigate = window.MagazineRouter.prototype.navigateToSection;
-                window.MagazineRouter.prototype.navigateToSection = function(section) {
-                    originalNavigate.call(this, section);
+            if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
+                var originalNavigate = window.MagazineRouter.navigateToSection;
+                window.MagazineRouter.navigateToSection = function(section, itemId) {
+                    originalNavigate.call(window.MagazineRouter, section, itemId);
                     
                     // Dispatch custom event for visualizer
                     document.dispatchEvent(new CustomEvent('section-changed', {
