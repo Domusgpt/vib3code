@@ -102,6 +102,63 @@ class EditorialGeometry {
 }
 
 // Enhanced projection manager with editorial modes
+// Core projection classes (from GEN-RL-MillZ)
+class PerspectiveProjection {
+    constructor(viewDistance = 2.5) {
+        this.viewDistance = Math.max(0.1, viewDistance);
+    }
+    
+    getShaderCode() {
+        return `vec3 project4Dto3D(vec4 p) { 
+            float baseDistance = ${this.viewDistance.toFixed(2)}; 
+            float dynamicDistance = max(0.2, baseDistance * (1.0 + u_morphFactor * 0.4 - u_audioMid * 0.35)); 
+            float denominator = dynamicDistance + p.w; 
+            float w_factor = dynamicDistance / max(0.1, denominator); 
+            return p.xyz * w_factor; 
+        }`;
+    }
+}
+
+class OrthographicProjection {
+    getShaderCode() {
+        return `vec3 project4Dto3D(vec4 p) { 
+            vec3 orthoP = p.xyz; 
+            float basePerspectiveDistance = 2.5; 
+            float dynamicPerspectiveDistance = max(0.2, basePerspectiveDistance * (1.0 - u_audioMid * 0.4)); 
+            float perspDenominator = dynamicPerspectiveDistance + p.w; 
+            float persp_w_factor = dynamicPerspectiveDistance / max(0.1, perspDenominator); 
+            vec3 perspP = p.xyz * persp_w_factor; 
+            float morphT = smoothstep(0.0, 1.0, u_morphFactor); 
+            return mix(orthoP, perspP, morphT); 
+        }`;
+    }
+}
+
+class StereographicProjection {
+    constructor(projectionPoleW = -1.5) {
+        this.baseProjectionPoleW = Math.abs(projectionPoleW) < 0.01 ? -1.0 : projectionPoleW;
+    }
+    
+    getShaderCode() {
+        return `vec3 project4Dto3D(vec4 p) { 
+            float basePoleW = ${this.baseProjectionPoleW.toFixed(2)}; 
+            float dynamicPoleW = sign(basePoleW) * max(0.1, abs(basePoleW + u_audioHigh * 0.4 * sign(basePoleW))); 
+            float denominator = p.w - dynamicPoleW; 
+            vec3 projectedP; 
+            float epsilon = 0.001; 
+            if (abs(denominator) < epsilon) { 
+                projectedP = normalize(p.xyz + vec3(epsilon)) * 1000.0; 
+            } else { 
+                float scale = (-dynamicPoleW) / denominator; 
+                projectedP = p.xyz * scale; 
+            } 
+            float morphT = smoothstep(0.0, 1.0, u_morphFactor * 0.8); 
+            vec3 orthoP = p.xyz; 
+            return mix(projectedP, orthoP, morphT); 
+        }`;
+    }
+}
+
 class ProjectionManager {
     constructor() {
         this.projections = {};
@@ -736,6 +793,15 @@ class VIB3CodeEnhancedVisualizerIntegration {
         try {
             console.log('🚀 Initializing VIB3CODE Enhanced Visualizer...');
             
+            // Check for WebGL support first
+            const testCanvas = document.createElement('canvas');
+            const testGl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl');
+            if (!testGl) {
+                console.warn('❌ WebGL not supported, skipping enhanced visualizer');
+                return false;
+            }
+            console.log('✅ WebGL support detected');
+            
             // Create canvas
             this.canvas = document.createElement('canvas');
             this.canvas.id = 'vib3code-enhanced-canvas';
@@ -753,47 +819,84 @@ class VIB3CodeEnhancedVisualizerIntegration {
             
             // Insert into DOM
             document.body.appendChild(this.canvas);
+            console.log('✅ Canvas created and added to DOM');
 
-            // Get WebGL context
-            const gl = this.canvas.getContext('webgl2') || this.canvas.getContext('webgl');
+            // Get WebGL context with error handling
+            const gl = this.canvas.getContext('webgl2', { 
+                alpha: true,
+                antialias: true,
+                depth: false,
+                failIfMajorPerformanceCaveat: false
+            }) || this.canvas.getContext('webgl', {
+                alpha: true,
+                antialias: true,
+                depth: false,
+                failIfMajorPerformanceCaveat: false
+            });
+            
             if (!gl) {
-                console.warn('WebGL not supported for enhanced effects');
+                console.error('❌ Failed to get WebGL context');
+                this.canvas.remove();
                 return false;
             }
+            console.log('✅ WebGL context acquired:', gl.constructor.name);
 
             // Set canvas size
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
+            console.log('✅ Canvas sized:', this.canvas.width, 'x', this.canvas.height);
 
-            // Initialize enhanced system
-            this.geometryManager = new GeometryManager();
-            this.projectionManager = new ProjectionManager();
-            this.shaderManager = new EnhancedShaderManager(gl, this.geometryManager, this.projectionManager);
-            
-            // Create enhanced core
-            this.core = new EnhancedHypercubeCore(this.canvas, this.shaderManager, {
-                geometryType: 'editorial',
-                projectionMethod: 'editorial',
-                colorScheme: {
-                    primary: [0.1, 0.8, 1.0],
-                    secondary: [1.0, 0.2, 0.6],
-                    background: [0.05, 0.05, 0.15]
+            try {
+                // Initialize enhanced system components
+                console.log('🔧 Initializing geometry manager...');
+                this.geometryManager = new GeometryManager();
+                
+                console.log('🔧 Initializing projection manager...');
+                this.projectionManager = new ProjectionManager();
+                
+                console.log('🔧 Initializing shader manager...');
+                this.shaderManager = new EnhancedShaderManager(gl, this.geometryManager, this.projectionManager);
+                
+                console.log('🔧 Initializing hypercube core...');
+                // Create enhanced core with simpler initial settings
+                this.core = new EnhancedHypercubeCore(this.canvas, this.shaderManager, {
+                    geometryType: 'hypercube', // Start with basic geometry
+                    projectionMethod: 'perspective', // Start with basic projection
+                    colorScheme: {
+                        primary: [0.1, 0.8, 1.0],
+                        secondary: [1.0, 0.2, 0.6],
+                        background: [0.05, 0.05, 0.15]
+                    }
+                });
+                
+                console.log('🔧 Initializing agentic controller...');
+                // Create agentic controller
+                this.controller = new AgenticVisualizerController(this.core);
+
+                this.isInitialized = true;
+                
+                console.log('🔧 Starting system...');
+                this.startSystem();
+                
+                console.log('🔧 Setting up event listeners...');
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                console.log('✅ VIB3CODE Enhanced Visualizer Integration ready');
+                return true;
+                
+            } catch (componentError) {
+                console.error('❌ Enhanced visualizer component initialization failed:', componentError);
+                console.error('Stack trace:', componentError.stack);
+                if (this.canvas) {
+                    this.canvas.remove();
                 }
-            });
-
-            // Create agentic controller
-            this.controller = new AgenticVisualizerController(this.core);
-
-            this.isInitialized = true;
-            this.startSystem();
+                return false;
+            }
             
-            // Setup event listeners
-            this.setupEventListeners();
-            
-            console.log('✅ VIB3CODE Enhanced Visualizer Integration ready');
-            return true;
         } catch (error) {
             console.error('❌ Enhanced visualizer initialization failed:', error);
+            console.error('Stack trace:', error.stack);
             return false;
         }
     }
