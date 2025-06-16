@@ -1,0 +1,3 @@
+This is the transcript for "My First Video".
+Line 1 of transcript.
+Line 2 of transcript.
