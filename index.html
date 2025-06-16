@@ -402,14 +402,12 @@
                 var self = this;
                 
                 // Listen for section changes
-                if (window.MagazineRouter) {
-                    var originalNavigate = window.MagazineRouter.prototype.navigateToSection;
-                    if (originalNavigate) {
-                        window.MagazineRouter.prototype.navigateToSection = function(section) {
-                            originalNavigate.call(this, section);
-                            self.applySectionPreset(section);
-                        };
-                    }
+                if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
+                    var originalNavigate = window.MagazineRouter.navigateToSection;
+                    window.MagazineRouter.navigateToSection = function(section, itemId) {
+                        originalNavigate.call(window.MagazineRouter, section, itemId);
+                        self.applySectionPreset(section);
+                    };
                 }
             },
             
@@ -465,7 +463,7 @@
                     window.VIB3VisualizerIntegration.init();
                 }
                 
-                if (window.MagazineRouter) {
+                if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
                     var magazineContent = document.querySelector('.magazine-content');
                     if (magazineContent && !magazineContent.innerHTML.trim()) {
                         window.MagazineRouter.navigateToSection('home');
