@@ -33,6 +33,11 @@ jobs:
           echo "🔍 Index.html size:"
           wc -c index.html
       
+      - name: Clean up broken symlinks
+        run: |
+          echo "🧹 Removing any broken symlinks..."
+          find . -type l ! -exec test -e {} \; -delete || true
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
