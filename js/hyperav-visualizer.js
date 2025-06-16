@@ -16,7 +16,6 @@
         this.isAudioActive = false;
         this.animationFrame = null;
         
-        // Audio analysis data
         this.analysisData = { 
             bass: 0, mid: 0, high: 0, 
             bassSmooth: 0, midSmooth: 0, highSmooth: 0,
@@ -24,20 +23,19 @@
             dominantPitchValue: 0
         };
         
-        // Visual parameters - optimized for magazine integration
         this.visualParams = {
             morphFactor: 0.7, 
             dimension: 4.0, 
-            rotationSpeed: 0.3,  // Slower for magazine
-            gridDensity: 6.0,    // Less dense for performance
+            rotationSpeed: 0.3,
+            gridDensity: 6.0,
             lineThickness: 0.025,
-            patternIntensity: 0.8, // Reduced for subtlety
+            patternIntensity: 0.8,
             universeModifier: 1.0,
             colorShift: 0.0,
-            glitchIntensity: 0.01, // Very subtle
+            glitchIntensity: 0.01,
             hue: 0.5,
             saturation: 0.8,
-            brightness: 0.7      // Dimmer for background use
+            brightness: 0.7
         };
         
         this.init();
@@ -46,21 +44,19 @@
     HyperAVVisualizer.prototype.init = function() {
         console.log('🎵 Initializing HyperAV Visualizer...');
         
-        // Find or create canvas
         this.canvas = document.getElementById('hyperav-canvas');
         if (!this.canvas) {
             this.canvas = document.createElement('canvas');
             this.canvas.id = 'hyperav-canvas';
-            this.canvas.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                z-index: -1;
-                pointer-events: none;
-                opacity: 0.3;
-            `;
+            this.canvas.style.cssText =
+                'position: fixed;' +
+                'top: 0;' +
+                'left: 0;' +
+                'width: 100vw;' +
+                'height: 100vh;' +
+                'z-index: -1;' +
+                'pointer-events: none;' +
+                'opacity: 0.3;';
             document.body.appendChild(this.canvas);
         }
         
@@ -79,7 +75,6 @@
                 return;
             }
             
-            // Basic WebGL setup
             this.resize();
             this.gl.enable(this.gl.DEPTH_TEST);
             this.gl.enable(this.gl.BLEND);
@@ -92,28 +87,26 @@
     };
     
     HyperAVVisualizer.prototype.setupAudio = function() {
-        // Only setup on user interaction to avoid autoplay issues
         document.addEventListener('click', this.initAudio.bind(this), { once: true });
     };
     
     HyperAVVisualizer.prototype.initAudio = function() {
+        var self = this;
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.analyser = this.audioContext.createAnalyser();
             this.analyser.fftSize = 2048;
             this.analyser.smoothingTimeConstant = 0.8;
             
-            // Request microphone access
             navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    const source = this.audioContext.createMediaStreamSource(stream);
-                    source.connect(this.analyser);
-                    this.isAudioActive = true;
+                .then(function(stream) {
+                    var source = self.audioContext.createMediaStreamSource(stream); // Converted
+                    source.connect(self.analyser);
+                    self.isAudioActive = true;
                     console.log('🎤 HyperAV audio reactive mode activated');
                 })
-                .catch(error => {
+                .catch(function(error) {
                     console.log('🎵 HyperAV running in visual-only mode');
-                    // Continue without audio - still looks amazing
                 });
                 
         } catch (error) {
@@ -133,74 +126,64 @@
     };
     
     HyperAVVisualizer.prototype.bindEvents = function() {
+        var self = this;
         window.addEventListener('resize', this.resize.bind(this));
         
-        // Listen for theme changes from VIB3CODE
-        window.addEventListener('themeChange', (event) => {
+        window.addEventListener('themeChange', function(event) {
             if (event.detail && event.detail.theme) {
-                this.updateTheme(event.detail.theme);
+                self.updateTheme(event.detail.theme);
             }
         });
     };
     
     HyperAVVisualizer.prototype.updateTheme = function(theme) {
-        // Update HyperAV colors based on VIB3CODE theme
         if (theme.colors) {
-            // Extract hue from theme colors for reactive visualization
             this.visualParams.hue = this.extractHueFromTheme(theme.colors);
             console.log('🎨 HyperAV theme updated:', theme.name);
         }
     };
     
     HyperAVVisualizer.prototype.extractHueFromTheme = function(colors) {
-        // Simple hue extraction - can be enhanced
         if (colors.primary && typeof colors.primary === 'string') {
-            // Convert hex/rgb to hue value (simplified)
-            if (colors.primary.includes('#00d9ff')) return 0.5; // Cyan
-            if (colors.primary.includes('#ff10f0')) return 0.8; // Magenta
-            if (colors.primary.includes('#ffcc00')) return 0.15; // Yellow
+            if (colors.primary.includes('#00d9ff')) return 0.5;
+            if (colors.primary.includes('#ff10f0')) return 0.8;
+            if (colors.primary.includes('#ffcc00')) return 0.15;
         }
-        return 0.5; // Default cyan
+        return 0.5;
     };
     
     HyperAVVisualizer.prototype.analyzeAudio = function() {
         if (!this.analyser || !this.isAudioActive) {
-            // Generate subtle patterns without audio
-            const time = Date.now() * 0.001;
+            var time = Date.now() * 0.001; // Converted
             this.analysisData.bass = 0.3 + Math.sin(time * 0.5) * 0.2;
             this.analysisData.mid = 0.4 + Math.sin(time * 0.8) * 0.3;
             this.analysisData.high = 0.2 + Math.sin(time * 1.2) * 0.1;
             return;
         }
         
-        const freqData = new Uint8Array(this.analyser.frequencyBinCount);
+        var freqData = new Uint8Array(this.analyser.frequencyBinCount); // Converted
         this.analyser.getByteFrequencyData(freqData);
         
-        // Analyze frequency bands
-        const bassEnd = Math.floor(freqData.length * 0.1);
-        const midEnd = Math.floor(freqData.length * 0.4);
+        var bassEnd = Math.floor(freqData.length * 0.1); // Converted
+        var midEnd = Math.floor(freqData.length * 0.4); // Converted
         
-        let bass = 0, mid = 0, high = 0;
+        var bass = 0, mid = 0, high = 0; // Converted let to var
         
-        // Bass analysis (0-10% of frequency range)
-        for (let i = 0; i < bassEnd; i++) {
+        for (var i = 0; i < bassEnd; i++) { // Converted let to var
             bass += freqData[i];
         }
         bass = (bass / bassEnd) / 255;
         
-        // Mid analysis (10-40% of frequency range)
-        for (let i = bassEnd; i < midEnd; i++) {
+        for (var i = bassEnd; i < midEnd; i++) { // Converted let to var
             mid += freqData[i];
         }
         mid = (mid / (midEnd - bassEnd)) / 255;
         
-        // High analysis (40-100% of frequency range)
-        for (let i = midEnd; i < freqData.length; i++) {
+        for (var i = midEnd; i < freqData.length; i++) { // Converted let to var
             high += freqData[i];
         }
         high = (high / (freqData.length - midEnd)) / 255;
         
-        // Smooth the values
         this.analysisData.bassSmooth += (bass - this.analysisData.bassSmooth) * 0.3;
         this.analysisData.midSmooth += (mid - this.analysisData.midSmooth) * 0.3;
         this.analysisData.highSmooth += (high - this.analysisData.highSmooth) * 0.3;
@@ -215,53 +198,40 @@
         
         this.analyzeAudio();
         
-        // Clear with dark background
         this.gl.clearColor(0.02, 0.02, 0.08, 1.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         
-        // Render simplified 4D hypercube visualization
         this.renderHypercube();
         
         this.animationFrame = requestAnimationFrame(this.render.bind(this));
     };
     
     HyperAVVisualizer.prototype.renderHypercube = function() {
-        const time = Date.now() * 0.001;
+        var time = Date.now() * 0.001; // Converted
         
-        // Audio-reactive parameters
-        const audioBoost = this.analysisData.bass * 2 + this.analysisData.mid;
-        const rotationSpeed = this.visualParams.rotationSpeed * (1 + audioBoost);
-        const morphing = this.visualParams.morphFactor + this.analysisData.high * 0.5;
+        var audioBoost = this.analysisData.bass * 2 + this.analysisData.mid; // Converted
+        var rotationSpeed = this.visualParams.rotationSpeed * (1 + audioBoost); // Converted
+        var morphing = this.visualParams.morphFactor + this.analysisData.high * 0.5; // Converted
         
-        // Simplified WebGL rendering - basic line hypercube
-        // This is a simplified version of the full HyperAV system
-        // The full implementation would include all the complex 4D math
-        
-        // For now, render basic animated lines that react to audio
         this.renderAudioLines(time, audioBoost);
     };
     
     HyperAVVisualizer.prototype.renderAudioLines = function(time, audioBoost) {
-        const gl = this.gl;
+        var gl = this.gl; // Converted
         
-        // Create simple vertex buffer for lines
-        const vertices = [];
-        const lineCount = 50;
+        var vertices = []; // Converted
+        var lineCount = 50; // Converted
         
-        for (let i = 0; i < lineCount; i++) {
-            const angle = (i / lineCount) * Math.PI * 2;
-            const radius = 0.5 + audioBoost * 0.3;
-            const x1 = Math.cos(angle + time) * radius;
-            const y1 = Math.sin(angle + time) * radius;
-            const x2 = Math.cos(angle + time + Math.PI) * radius * 0.5;
-            const y2 = Math.sin(angle + time + Math.PI) * radius * 0.5;
+        for (var i = 0; i < lineCount; i++) { // Converted let to var
+            var angle = (i / lineCount) * Math.PI * 2; // Converted
+            var radius = 0.5 + audioBoost * 0.3; // Converted
+            var x1 = Math.cos(angle + time) * radius; // Converted
+            var y1 = Math.sin(angle + time) * radius; // Converted
+            var x2 = Math.cos(angle + time + Math.PI) * radius * 0.5; // Converted
+            var y2 = Math.sin(angle + time + Math.PI) * radius * 0.5; // Converted
             
             vertices.push(x1, y1, x2, y2);
         }
-        
-        // Basic line rendering (simplified)
-        // Full implementation would use proper shaders and 4D projection
-        console.log('🔮 HyperAV rendering frame with audio level:', audioBoost.toFixed(2));
     };
     
     HyperAVVisualizer.prototype.start = function() {
@@ -291,18 +261,14 @@
         console.log('🔥 HyperAV Visualizer destroyed');
     };
     
-    // Initialize HyperAV system
     var hyperAV = new HyperAVVisualizer();
     
-    // Auto-start when page loads
     document.addEventListener('DOMContentLoaded', function() {
         hyperAV.start();
     });
     
-    // Export for global access
     window.HyperAVVisualizer = hyperAV;
     
-    // Page visibility handling
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             hyperAV.stop();

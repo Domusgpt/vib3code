@@ -1,8 +1,9 @@
-// Clean Main JavaScript Module for VIB3CODE
-// Handles all interactions, animations, and user experience
+// VIB3CODE Main App - Fixed Version
+(function() {
+    'use strict';
 
-class VIB3CODEApp {
-    constructor() {
+    // Main App Class
+    function VIB3CODEApp() {
         this.isLoaded = false;
         this.scrollY = 0;
         this.ticking = false;
@@ -13,19 +14,21 @@ class VIB3CODEApp {
         this.init();
     }
     
-    init() {
-        // Wait for DOM to be fully loaded
+    VIB3CODEApp.prototype.init = function() {
+        var self = this;
+
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setup());
+            document.addEventListener('DOMContentLoaded', function() {
+                self.setup();
+            });
         } else {
-            this.setup();
+            self.setup();
         }
-    }
+    };
     
-    setup() {
+    VIB3CODEApp.prototype.setup = function() {
         console.log('🚀 VIB3CODE initializing...');
         
-        // Initialize all modules
         this.setupLoadingScreen();
         this.setupNavigation();
         this.setupScrollEffects();
@@ -34,21 +37,20 @@ class VIB3CODEApp {
         this.setupNewsletterForm();
         this.setupAudioContext();
         
-        // Mark as loaded after a brief delay
-        setTimeout(() => {
-            this.hideLoadingScreen();
+        var self = this;
+        setTimeout(function() {
+            self.hideLoadingScreen();
         }, 2000);
         
         console.log('✅ VIB3CODE initialized successfully');
-    }
+    };
     
-    setupLoadingScreen() {
-        const loadingScreen = document.getElementById('loading-screen');
+    VIB3CODEApp.prototype.setupLoadingScreen = function() {
+        var loadingScreen = document.getElementById('loading-screen');
         if (!loadingScreen) return;
         
-        // Simulate loading progress
-        const loadingText = loadingScreen.querySelector('.loading-text');
-        const messages = [
+        var loadingText = loadingScreen.querySelector('.loading-text');
+        var messages = [
             'Initializing VIB3CODE...',
             'Loading cyberpunk aesthetic...',
             'Connecting to the matrix...',
@@ -56,8 +58,8 @@ class VIB3CODEApp {
             'Code without chains ready!'
         ];
         
-        let messageIndex = 0;
-        const messageInterval = setInterval(() => {
+        var messageIndex = 0;
+        var messageInterval = setInterval(function() {
             if (messageIndex < messages.length - 1) {
                 messageIndex++;
                 if (loadingText) {
@@ -67,70 +69,68 @@ class VIB3CODEApp {
                 clearInterval(messageInterval);
             }
         }, 400);
-    }
+    };
     
-    hideLoadingScreen() {
-        const loadingScreen = document.getElementById('loading-screen');
+    VIB3CODEApp.prototype.hideLoadingScreen = function() {
+        var loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) {
             loadingScreen.classList.add('hidden');
-            setTimeout(() => {
+            var self = this;
+            setTimeout(function() {
                 loadingScreen.style.display = 'none';
             }, 1000);
         }
         this.isLoaded = true;
         this.triggerLoadedAnimations();
-    }
+    };
     
-    triggerLoadedAnimations() {
-        // Trigger hero animations
-        const heroTitle = document.querySelector('.hero-title');
+    VIB3CODEApp.prototype.triggerLoadedAnimations = function() {
+        var heroTitle = document.querySelector('.hero-title');
         if (heroTitle) {
             heroTitle.style.animation = 'none';
-            heroTitle.offsetHeight; // Trigger reflow
+            heroTitle.offsetHeight;
             heroTitle.style.animation = null;
         }
         
-        // Start floating elements
-        const floatingElements = document.querySelectorAll('.floating-element');
-        floatingElements.forEach((element, index) => {
-            setTimeout(() => {
-                element.style.opacity = '1';
-                element.style.animation = `float ${8 + index * 2}s ease-in-out infinite`;
-                element.style.animationDelay = `${index * 0.5}s`;
-            }, index * 200);
-        });
-    }
+        var floatingElements = document.querySelectorAll('.floating-element');
+        for (var i = 0; i < floatingElements.length; i++) {
+            (function(element, index) {
+                setTimeout(function() {
+                    element.style.opacity = '1';
+                    element.style.animation = 'float ' + (8 + index * 2) + 's ease-in-out infinite';
+                    element.style.animationDelay = (index * 0.5) + 's';
+                }, index * 200);
+            })(floatingElements[i], i);
+        }
+    };
     
-    setupNavigation() {
-        const nav = document.getElementById('main-nav');
-        const navToggle = document.getElementById('nav-toggle');
-        const navLinks = document.querySelector('.nav-links');
+    VIB3CODEApp.prototype.setupNavigation = function() {
+        var nav = document.getElementById('main-nav');
+        var navToggle = document.getElementById('nav-toggle');
+        var navLinks = document.querySelector('.nav-links');
         
-        // Mobile navigation toggle
         if (navToggle && navLinks) {
-            navToggle.addEventListener('click', () => {
+            navToggle.addEventListener('click', function() {
                 navLinks.classList.toggle('active');
                 navToggle.classList.toggle('active');
             });
         }
         
-        // Smooth scrolling for navigation links
-        const navLinkElements = document.querySelectorAll('.nav-link[data-section]');
-        navLinkElements.forEach(link => {
-            link.addEventListener('click', (e) => {
+        var navLinkElements = document.querySelectorAll('.nav-link[data-section]');
+        for (var i = 0; i < navLinkElements.length; i++) {
+            navLinkElements[i].addEventListener('click', function(e) {
                 e.preventDefault();
-                const sectionId = link.getAttribute('data-section');
-                const section = document.getElementById(sectionId);
+                var sectionId = this.getAttribute('data-section');
+                var section = document.getElementById(sectionId);
                 
                 if (section) {
-                    const offsetTop = section.offsetTop - 80; // Account for fixed nav
+                    var offsetTop = section.offsetTop - 80;
                     window.scrollTo({
                         top: offsetTop,
                         behavior: 'smooth'
                     });
                 }
                 
-                // Close mobile menu if open
                 if (navLinks) {
                     navLinks.classList.remove('active');
                 }
@@ -138,215 +138,203 @@ class VIB3CODEApp {
                     navToggle.classList.remove('active');
                 }
             });
-        });
+        }
         
-        // Add scroll effect to navigation
-        window.addEventListener('scroll', () => {
-            if (!this.ticking) {
-                requestAnimationFrame(() => {
-                    const scrolled = window.scrollY > 100;
+        var self = this;
+        window.addEventListener('scroll', function() {
+            if (!self.ticking) {
+                requestAnimationFrame(function() {
+                    var scrolled = window.scrollY > 100;
                     if (nav) {
                         nav.classList.toggle('scrolled', scrolled);
                     }
-                    this.ticking = false;
+                    self.ticking = false;
                 });
-                this.ticking = true;
+                self.ticking = true;
             }
         });
-    }
+    };
     
-    setupScrollEffects() {
-        // Parallax effect for background layers
-        const parallaxLayers = document.querySelectorAll('.parallax-layer');
+    VIB3CODEApp.prototype.setupScrollEffects = function() {
+        var parallaxLayers = document.querySelectorAll('.parallax-layer');
+        var self = this;
         
-        const updateParallax = () => {
-            if (!this.isLoaded) return;
+        function updateParallax() {
+            if (!self.isLoaded) return;
             
-            const scrollTop = window.pageYOffset;
+            var scrollTop = window.pageYOffset;
             
-            parallaxLayers.forEach(layer => {
-                const speed = parseFloat(layer.dataset.speed) || 0.5;
-                const yPos = -(scrollTop * speed);
-                layer.style.transform = `translateY(${yPos}px)`;
-            });
-        };
+            for (var i = 0; i < parallaxLayers.length; i++) {
+                var layer = parallaxLayers[i];
+                var speed = parseFloat(layer.dataset.speed) || 0.5;
+                var yPos = -(scrollTop * speed);
+                layer.style.transform = 'translateY(' + yPos + 'px)';
+            }
+        }
         
-        // Optimized scroll handler
-        window.addEventListener('scroll', () => {
-            this.scrollY = window.scrollY;
-            if (!this.ticking) {
-                requestAnimationFrame(() => {
+        window.addEventListener('scroll', function() {
+            self.scrollY = window.scrollY;
+            if (!self.ticking) {
+                requestAnimationFrame(function() {
                     updateParallax();
-                    this.ticking = false;
+                    self.ticking = false;
                 });
-                this.ticking = true;
+                self.ticking = true;
             }
         });
         
-        // Initial parallax setup
         updateParallax();
-    }
+    };
     
-    setupIntersectionObserver() {
-        // Animate elements as they come into view
-        const observerOptions = {
+    VIB3CODEApp.prototype.setupIntersectionObserver = function() {
+        var observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
         
-        this.intersectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        var self = this;
+        this.intersectionObserver = new IntersectionObserver(function(entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
                 if (entry.isIntersecting) {
                     entry.target.classList.add('in-view');
                     
-                    // Special animations for specific elements
                     if (entry.target.classList.contains('ema-card')) {
-                        this.animateEMACard(entry.target);
+                        self.animateEMACard(entry.target);
                     }
                     
                     if (entry.target.classList.contains('article-featured')) {
-                        this.animateCodeVisualization(entry.target);
+                        self.animateCodeVisualization(entry.target);
                     }
                 }
-            });
+            }
         }, observerOptions);
         
-        // Observe all animatable elements
-        const selector = '.ema-card, .article-featured, .sidebar-article, .section-header';
-        const animatableElements = document.querySelectorAll(selector);
+        var animatableElements = document.querySelectorAll('.ema-card, .article-featured, .sidebar-article, .section-header');
         
-        animatableElements.forEach(element => {
-            this.intersectionObserver.observe(element);
-        });
-    }
+        for (var i = 0; i < animatableElements.length; i++) {
+            this.intersectionObserver.observe(animatableElements[i]);
+        }
+    };
     
-    animateEMACard(card) {
-        const indicator = card.querySelector('.card-indicator');
-        const principle = card.dataset.principle;
+    VIB3CODEApp.prototype.animateEMACard = function(card) {
+        var indicator = card.querySelector('.card-indicator');
         
-        // Animate the indicator
         if (indicator) {
             indicator.style.animation = 'pulse-indicator 1s ease-out';
         }
         
-        // Add specific animations based on principle type
-        setTimeout(() => {
+        setTimeout(function() {
             card.style.transform = 'translateY(0) scale(1)';
             card.style.opacity = '1';
         }, 100);
-    }
+    };
     
-    animateCodeVisualization(article) {
-        const codeLines = article.querySelectorAll('.code-lines span');
-        const dataFlow = article.querySelector('.data-flow');
+    VIB3CODEApp.prototype.animateCodeVisualization = function(article) {
+        var codeLines = article.querySelectorAll('.code-lines span');
+        var dataFlow = article.querySelector('.data-flow');
+
+        for (var i = 0; i < codeLines.length; i++) {
+            (function(line, index) {
+                setTimeout(function() {
+                    line.style.animation = 'type-in 0.8s ease-out forwards';
+                }, index * 300);
+            })(codeLines[i], i);
+        }
         
-        // Animate code lines typing effect
-        codeLines.forEach((line, index) => {
-            setTimeout(() => {
-                line.style.animation = `type-in 0.8s ease-out forwards`;
-            }, index * 300);
-        });
-        
-        // Start data flow animation
         if (dataFlow) {
-            setTimeout(() => {
+            setTimeout(function() {
                 dataFlow.style.animation = 'flow 3s ease-in-out infinite';
             }, 1000);
         }
-    }
+    };
     
-    setupCardAnimations() {
-        // 3D card tilt effects
-        const cards3D = document.querySelectorAll('.card-3d');
-        
-        cards3D.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
+    VIB3CODEApp.prototype.setupCardAnimations = function() {
+        var cards3D = document.querySelectorAll('.card-3d');
+
+        for (var i = 0; i < cards3D.length; i++) {
+            var card = cards3D[i];
+
+            card.addEventListener('mousemove', function(e) {
+                var rect = this.getBoundingClientRect();
+                var centerX = rect.left + rect.width / 2;
+                var centerY = rect.top + rect.height / 2;
                 
-                const deltaX = (e.clientX - centerX) / (rect.width / 2);
-                const deltaY = (e.clientY - centerY) / (rect.height / 2);
+                var deltaX = (e.clientX - centerX) / (rect.width / 2);
+                var deltaY = (e.clientY - centerY) / (rect.height / 2);
                 
-                const rotateX = deltaY * -10; // Reduced for subtlety
-                const rotateY = deltaX * 10;
+                var rotateX = deltaY * -10;
+                var rotateY = deltaX * 10;
                 
-                const transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-                card.style.transform = transform;
+                this.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateZ(10px)';
             });
             
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
             });
-        });
+        }
         
-        // Button hover effects
-        const cyberButtons = document.querySelectorAll('.btn-cyber');
-        cyberButtons.forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                const glow = button.querySelector('.btn-glow');
+        var cyberButtons = document.querySelectorAll('.btn-cyber');
+        for (var i = 0; i < cyberButtons.length; i++) {
+            var button = cyberButtons[i];
+
+            button.addEventListener('mouseenter', function() {
+                var glow = this.querySelector('.btn-glow');
                 if (glow) {
                     glow.style.left = '100%';
                 }
             });
             
-            button.addEventListener('mouseleave', () => {
-                const glow = button.querySelector('.btn-glow');
+            button.addEventListener('mouseleave', function() {
+                var glow = this.querySelector('.btn-glow');
                 if (glow) {
-                    setTimeout(() => {
+                    setTimeout(function() {
                         glow.style.left = '-100%';
                     }, 500);
                 }
             });
-        });
-    }
+        }
+    };
     
-    setupNewsletterForm() {
-        const form = document.getElementById('newsletter-form');
-        const emailInput = document.getElementById('email-input');
-        const formStatus = document.getElementById('form-status');
+    VIB3CODEApp.prototype.setupNewsletterForm = function() {
+        var form = document.getElementById('newsletter-form');
+        var emailInput = document.getElementById('email-input');
+        var formStatus = document.getElementById('form-status');
         
         if (!form || !emailInput || !formStatus) return;
         
-        form.addEventListener('submit', async (e) => {
+        var self = this;
+
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = emailInput.value.trim();
-            if (!email || !this.isValidEmail(email)) {
-                this.showFormStatus('Please enter a valid email address', 'error');
+            var email = emailInput.value.trim();
+            if (!email || !self.isValidEmail(email)) {
+                self.showFormStatus('Please enter a valid email address', 'error');
                 return;
             }
             
-            // Show loading state
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.querySelector('.btn-text').textContent;
+            var submitButton = form.querySelector('button[type="submit"]');
+            var originalText = submitButton.querySelector('.btn-text').textContent;
             submitButton.querySelector('.btn-text').textContent = 'Subscribing...';
             submitButton.disabled = true;
             
-            try {
-                // Simulate API call (replace with actual newsletter service)
-                await this.simulateSubscription(email);
+            setTimeout(function() {
+                if (Math.random() < 0.95) {
+                    self.showFormStatus('Welcome to the VIB3CODE community! Check your email for confirmation.', 'success');
+                    emailInput.value = '';
+                } else {
+                    self.showFormStatus('Something went wrong. Please try again later.', 'error');
+                }
                 
-                this.showFormStatus('Welcome to the VIB3CODE community! Check your email for confirmation.', 'success');
-                emailInput.value = '';
-                
-                // Analytics tracking (if needed)
-                this.trackNewsletterSignup(email);
-                
-            } catch (error) {
-                console.error('Newsletter subscription error:', error);
-                this.showFormStatus('Something went wrong. Please try again later.', 'error');
-            } finally {
-                // Reset button state
                 submitButton.querySelector('.btn-text').textContent = originalText;
                 submitButton.disabled = false;
-            }
+            }, 1500);
         });
         
-        // Email validation on input
-        emailInput.addEventListener('input', () => {
-            const email = emailInput.value.trim();
-            if (email && !this.isValidEmail(email)) {
+        emailInput.addEventListener('input', function() {
+            var email = emailInput.value.trim();
+            if (email && !self.isValidEmail(email)) {
                 emailInput.style.borderColor = 'var(--cyber-pink)';
                 emailInput.style.boxShadow = '0 0 10px rgba(255, 16, 240, 0.3)';
             } else {
@@ -354,156 +342,101 @@ class VIB3CODEApp {
                 emailInput.style.boxShadow = 'none';
             }
         });
-    }
+    };
     
-    isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    VIB3CODEApp.prototype.isValidEmail = function(email) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-    }
+    };
     
-    async simulateSubscription(email) {
-        // Simulate API delay
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate 95% success rate
-                if (Math.random() < 0.95) {
-                    resolve({ success: true, email });
-                } else {
-                    reject(new Error('Subscription failed'));
-                }
-            }, 1500);
-        });
-    }
-    
-    showFormStatus(message, type) {
-        const formStatus = document.getElementById('form-status');
+    VIB3CODEApp.prototype.showFormStatus = function(message, type) {
+        var formStatus = document.getElementById('form-status');
         if (!formStatus) return;
         
         formStatus.textContent = message;
-        formStatus.className = `form-status ${type}`;
+        formStatus.className = 'form-status ' + type;
         formStatus.style.opacity = '1';
         
-        // Auto-hide success messages after 5 seconds
         if (type === 'success') {
-            setTimeout(() => {
+            setTimeout(function() {
                 formStatus.style.opacity = '0';
             }, 5000);
         }
-    }
+    };
     
-    trackNewsletterSignup(email) {
-        // Analytics tracking - replace with your preferred service
-        console.log('Newsletter signup tracked:', email);
+    VIB3CODEApp.prototype.setupAudioContext = function() {
+        var enableAudioBtn = document.getElementById('enable-audio');
+        var audioWarning = document.getElementById('audio-warning');
+        var self = this;
         
-        // Example: Google Analytics
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'newsletter_signup', {
-                'event_category': 'engagement',
-                'event_label': 'newsletter',
-                'value': 1
-            });
-        }
-    }
-    
-    setupAudioContext() {
-        // Audio context for visualizer (user activation required)
-        const enableAudioBtn = document.getElementById('enable-audio');
-        const audioWarning = document.getElementById('audio-warning');
-        
-        // Check if we need user interaction for audio
         this.checkAudioContextSupport();
         
         if (enableAudioBtn) {
-            enableAudioBtn.addEventListener('click', () => {
-                this.initializeAudioContext();
+            enableAudioBtn.addEventListener('click', function() {
+                self.initializeAudioContext();
                 if (audioWarning) {
                     audioWarning.style.display = 'none';
                 }
             });
         }
         
-        // Auto-initialize on first user interaction
-        document.addEventListener('click', () => {
-            if (!this.audioInitialized) {
-                this.initializeAudioContext();
+        document.addEventListener('click', function() {
+            if (!self.audioInitialized) {
+                self.initializeAudioContext();
             }
         }, { once: true });
-    }
+    };
     
-    checkAudioContextSupport() {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
+    VIB3CODEApp.prototype.checkAudioContextSupport = function() {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) {
             console.warn('Web Audio API not supported');
             return false;
         }
         
-        // Check if we need user gesture (Safari, mobile browsers)
-        const needsUserGesture = /iPad|iPhone|iPod|Safari/.test(navigator.userAgent);
+        var needsUserGesture = /iPad|iPhone|iPod|Safari/.test(navigator.userAgent);
         if (needsUserGesture) {
-            const audioWarning = document.getElementById('audio-warning');
+            var audioWarning = document.getElementById('audio-warning');
             if (audioWarning) {
                 audioWarning.style.display = 'flex';
             }
         }
         
         return true;
-    }
+    };
     
-    async initializeAudioContext() {
+    VIB3CODEApp.prototype.initializeAudioContext = function() {
         if (this.audioInitialized) return;
         
+        var self = this;
+
         try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            var AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();
             
             if (this.audioContext.state === 'suspended') {
-                await this.audioContext.resume();
+                this.audioContext.resume().then(function() {
+                    self.audioInitialized = true;
+                    console.log('🎵 Audio context initialized');
+
+                    window.dispatchEvent(new CustomEvent('audioContextReady', {
+                        detail: { audioContext: self.audioContext }
+                    }));
+                });
+            } else {
+                this.audioInitialized = true;
+                console.log('🎵 Audio context initialized');
+
+                window.dispatchEvent(new CustomEvent('audioContextReady', {
+                    detail: { audioContext: this.audioContext }
+                }));
             }
-            
-            this.audioInitialized = true;
-            console.log('🎵 Audio context initialized');
-            
-            // Dispatch event for visualizer
-            window.dispatchEvent(new CustomEvent('audioContextReady', {
-                detail: { audioContext: this.audioContext }
-            }));
-            
         } catch (error) {
             console.error('Failed to initialize audio context:', error);
         }
-    }
+    };
     
-    // Utility methods
-    throttle(func, limit) {
-        let inThrottle;
-        return function() {
-            const args = arguments;
-            const context = this;
-            if (!inThrottle) {
-                func.apply(context, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        }
-    }
-    
-    debounce(func, wait, immediate) {
-        let timeout;
-        return function() {
-            const context = this, args = arguments;
-            const later = function() {
-                timeout = null;
-                if (!immediate) func.apply(context, args);
-            };
-            const callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(context, args);
-        };
-    }
-    
-    // Cleanup
-    destroy() {
+    VIB3CODEApp.prototype.destroy = function() {
         if (this.intersectionObserver) {
             this.intersectionObserver.disconnect();
         }
@@ -513,16 +446,17 @@ class VIB3CODEApp {
         }
         
         console.log('🔥 VIB3CODE app destroyed');
-    }
-}
+    };
 
-// Initialize the app
-const vib3codeApp = new VIB3CODEApp();
+    // Initialize the app
+    var vib3codeApp = new VIB3CODEApp();
 
-// Export for use by other modules
-window.VIB3CODE = vib3codeApp;
+    // Export for use by other modules
+    window.VIB3CODE = vib3codeApp;
 
-// Handle page unload
-window.addEventListener('beforeunload', () => {
-    vib3codeApp.destroy();
-});
+    // Handle page unload
+    window.addEventListener('beforeunload', function() {
+        vib3codeApp.destroy();
+    });
+
+})();
