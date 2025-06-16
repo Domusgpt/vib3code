@@ -7,35 +7,35 @@ const MagazineRouter = {
     // NEW HELPER METHODS FIRST
     loadArticleContent: function(articleElement, htmlPath) {
         if (!articleElement || !htmlPath) return;
-        const targetDivId = `article-body-${articleElement.dataset.contentId}`;
-        const targetDiv = articleElement.querySelector(`#${targetDivId}`);
+        var targetDivId = 'article-body-' + articleElement.dataset.contentId;
+        var targetDiv = articleElement.querySelector('#' + targetDivId);
 
         if (!targetDiv) {
-            console.error(`MagazineRouter: Target div #${targetDivId} for article content not found.`);
+            console.error('MagazineRouter: Target div #' + targetDivId + ' for article content not found.');
             return;
         }
 
         targetDiv.innerHTML = '<p><em>Loading full article...</em></p>';
 
         fetch(htmlPath)
-            .then(response => {
+            .then(function(response) {
                 if (!response.ok) {
-                    throw new Error(`HTTP error ${response.status} fetching ${htmlPath}`);
+                    throw new Error('HTTP error ' + response.status + ' fetching ' + htmlPath);
                 }
                 return response.text();
             })
-            .then(html => {
+            .then(function(html) {
                 targetDiv.innerHTML = html;
             })
-            .catch(error => {
-                console.error(`MagazineRouter: Error loading article content from ${htmlPath}:`, error);
-                targetDiv.innerHTML = `<p style="color:red;"><em>Error loading article: ${error.message}. Please try again later.</em></p>`;
+            .catch(function(error) {
+                console.error('MagazineRouter: Error loading article content from ' + htmlPath + ':', error);
+                targetDiv.innerHTML = '<p style="color:red;"><em>Error loading article: ' + error.message + '. Please try again later.</em></p>';
             });
     },
     loadInteractiveScript: function(interactiveElement, scriptPath) {
         if (!interactiveElement || !scriptPath) return;
 
-        const existingScript = document.querySelector(`script[src="${scriptPath}"][data-interactive-id="${interactiveElement.dataset.contentId}"]`);
+        var existingScript = document.querySelector('script[src="' + scriptPath + '"][data-interactive-id="' + interactiveElement.dataset.contentId + '"]');
         if (existingScript) {
             return;
         }
@@ -125,9 +125,12 @@ const MagazineRouter = {
     },
 
     handleRouteChange: function() {
-        const { section, itemId, isArticleIdRoute } = this.parseRoute();
-        this.currentRoute = { section, itemId, isArticleIdRoute };
-        console.log(\`MagazineRouter: Routing to section: \${section}, item ID: \${itemId}, (isArticleIdRoute: \${isArticleIdRoute})\`);
+        var routeInfo = this.parseRoute();
+        var section = routeInfo.section;
+        var itemId = routeInfo.itemId;
+        var isArticleIdRoute = routeInfo.isArticleIdRoute;
+        this.currentRoute = { section: section, itemId: itemId, isArticleIdRoute: isArticleIdRoute };
+        console.log('MagazineRouter: Routing to section: ' + section + ', item ID: ' + itemId + ', (isArticleIdRoute: ' + isArticleIdRoute + ')');
         this.updateNavActiveState(section);
 
         this.renderContent(section, itemId, isArticleIdRoute);
