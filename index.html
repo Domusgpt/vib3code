@@ -297,15 +297,15 @@
     <script src="js/main-fixed.js?v=1749968723"></script>
     <script src="js/parallax-fixed.js?v=1749968723"></script>
     
-    <!-- ENHANCED HYPERAV INTEGRATION - PPPkernel + GEN-RL-MillZ Fusion -->
-    <script src="js/hyperav-integration-enhanced.js?v=2.0"></script>
+    <!-- SIMPLE WORKING VISUALIZER - Direct GEN-RL-MillZ Port -->
+    <script src="js/simple-working-visualizer.js?v=1.0"></script>
     <script>
-        console.log('🚀 VIB3CODE ENHANCED HYPERAV INTEGRATION v2.0 LOADING...');
+        console.log('🚀 VIB3CODE SIMPLE WORKING VISUALIZER LOADING...');
         
-        // Enhanced VIB3 Visualizer Integration with Agentic Control
+        // Simple Working Visualizer Integration
         class VIB3VisualizerIntegration {
             constructor() {
-                this.enhancedSystem = null;
+                this.simpleSystem = null;
                 this.isActive = false;
                 this.state = {
                     currentSection: 'home',
@@ -352,23 +352,23 @@
             
             async init() {
                 try {
-                    console.log('🎨 Initializing Enhanced VIB3 Visualizer...');
+                    console.log('🎨 Initializing Simple Working Visualizer...');
                     
-                    // Initialize enhanced PPPkernel + GEN-RL-MillZ fusion system
-                    this.enhancedSystem = new VIB3CodeEnhancedVisualizerIntegration();
-                    const success = await this.enhancedSystem.init();
+                    // Initialize simple working system (direct GEN-RL-MillZ copy)
+                    this.simpleSystem = new SimpleWorkingVisualizerIntegration();
+                    const success = await this.simpleSystem.init();
                     
                     if (success) {
                         this.isActive = true;
                         this.setupAdvancedTracking();
                         this.setupReadingMetrics();
-                        console.log('✅ Enhanced VIB3 Visualizer Integration ready');
+                        console.log('✅ Simple Working Visualizer Integration ready');
                     } else {
-                        console.warn('🎨 Enhanced system failed, using fallback mode');
+                        console.warn('🎨 Simple system failed, using fallback mode');
                         this.setupFallbackMode();
                     }
                 } catch (error) {
-                    console.warn('🎨 Enhanced visualizer error:', error);
+                    console.warn('🎨 Simple visualizer error:', error);
                     this.setupFallbackMode();
                 }
                 
@@ -391,10 +391,10 @@
                     
                     lastScrollY = currentScrollY;
                     
-                    // Send to enhanced system
-                    if (self.enhancedSystem) {
-                        self.enhancedSystem.readingMetrics = self.state.readingMetrics;
-                        self.enhancedSystem.updateVisualizerData();
+                    // Send to simple system
+                    if (self.simpleSystem) {
+                        // Simple system doesn't need complex metrics
+                        console.log('📊 Scroll progress:', self.state.readingMetrics.scrollProgress);
                     }
                     
                     // Fallback to legacy system
@@ -525,13 +525,9 @@
                 console.log('🎨 Applying enhanced visualizer preset for section:', section);
                 var preset = this.sectionPresets[section] || this.sectionPresets.home;
                 
-                if (this.enhancedSystem && this.isActive) {
-                    // Use enhanced system with agentic control
-                    this.enhancedSystem.applySectionPreset(section);
-                    
-                    if (preset.mood) {
-                        this.enhancedSystem.setEditorialMood(preset.mood);
-                    }
+                if (this.simpleSystem && this.isActive) {
+                    // Simple system just works
+                    console.log('🎨 Simple system running for section:', section);
                 } else {
                     // Fallback to legacy system
                     if (window.HolographicVisualizer && window.HolographicVisualizer.updateTheme) {
@@ -582,11 +578,11 @@
         
         // Auto-initialize enhanced system
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🔍 Checking enhanced components...');
-            console.log('📦 VIB3CodeEnhancedVisualizerIntegration:', !!window.VIB3CodeEnhancedVisualizerIntegration);
+            console.log('🔍 Checking simple components...');
+            console.log('📦 SimpleWorkingVisualizerIntegration:', !!window.SimpleWorkingVisualizerIntegration);
             console.log('📦 HolographicVisualizer:', !!window.HolographicVisualizer);
             
-            // Initialize enhanced visualizer
+            // Initialize simple working visualizer
             window.VIB3VisualizerIntegration = new VIB3VisualizerIntegration();
             await window.VIB3VisualizerIntegration.init();
             
