@@ -9,14 +9,11 @@
             basePath: './visualizer/',
             modules: [
                 'core/ShaderManager.js',
-                'core/GeometryManager.js',
+                'core/GeometryManager.js', 
                 'core/ProjectionManager.js',
                 'core/HypercubeCore.js',
-                'sound/SoundInterface.js',
-                'sound/modules/AnalysisModule.js',
-                'sound/modules/EffectsModule.js',
-                'js/visualizer-globals.js',
-                'js/visualizer-main.js'
+                'js/VisualizerController.js',
+                'js/hyperav-main.js'
             ],
             styles: [
                 'css/neumorphic-vars.css',
@@ -170,6 +167,7 @@
                 
                 // Wait for visualizer to initialize
                 setTimeout(function() {
+                    self.initializeHyperAV();
                     self.integrateWithMagazine();
                     self.setupParameterDisplay();
                 }, 1000);
@@ -179,6 +177,31 @@
                 // Fall back to simple visualizer
                 self.loadFallbackVisualizer();
             });
+        },
+        
+        // Initialize HyperAV controller
+        initializeHyperAV: function() {
+            try {
+                var canvas = document.getElementById('hypercube-canvas');
+                if (!canvas) {
+                    console.error('HyperAV canvas not found');
+                    return;
+                }
+                
+                // Initialize core system if available
+                if (window.HypercubeCore) {
+                    var core = new window.HypercubeCore(canvas);
+                    
+                    // Initialize controller if available
+                    if (window.VisualizerController) {
+                        window.HyperAVController = new window.VisualizerController(core);
+                        console.log('✅ HyperAV Controller initialized');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Failed to initialize HyperAV:', error);
+            }
         },
         
         // Integrate with magazine router

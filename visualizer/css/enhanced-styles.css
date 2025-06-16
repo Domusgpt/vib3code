@@ -1,4 +1,4 @@
-/* css/enhanced-styles.css - v1.5 VP */
+/* css/enhanced-styles.css - v1.4 VP */
 /* Applying Neon/Vaporwave styles to enhanced features */
 
 /* --- Base Enhancements --- */
@@ -7,16 +7,6 @@
   --vp-glow-secondary-rgb: var(--accent-color-secondary-rgb);
   --vp-glow-tertiary-rgb: var(--accent-color-tertiary-rgb);
   --vp-focus-outline: var(--accent-color-secondary); /* Cyan focus */
-  
-  /* Glassmorphism Variables */
-  --glass-bg-color: rgba(15, 7, 30, 0.55);
-  --glass-border-color: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  --glass-blur: 8px;
-  
-  /* Magnification Effect */
-  --magnify-scale: 1.05;
-  --magnify-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Remove base glass overrides if any */
@@ -354,169 +344,11 @@
 }
 
 
-/* --- Collapsible Controls --- */
-.controls-container {
-    position: relative;
-    transition: max-height 0.4s ease-in-out;
-    overflow: hidden;
-}
-
-.controls-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    background: var(--glass-bg-color);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-top: 1px solid var(--glass-border-color);
-    border-bottom: 1px solid var(--glass-border-color);
-    z-index: 10;
-}
-
-.controls-header .title {
-    color: var(--accent-color-primary);
-    font-family: var(--font-ui);
-    font-weight: 600;
-    font-size: 1.1rem;
-    text-shadow: 0 0 8px var(--glow-primary);
-}
-
-.collapse-toggle {
-    background: transparent;
-    border: 1px solid rgba(var(--accent-color-secondary-rgb), 0.4);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--accent-color-secondary);
-    padding: 0;
-}
-
-.collapse-toggle:hover {
-    border-color: var(--accent-color-secondary);
-    box-shadow: 0 0 10px var(--glow-secondary);
-}
-
-.toggle-icon {
-    transition: transform 0.3s ease;
-    display: block;
-    font-size: 12px;
-}
-
-.controls-content {
-    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, opacity 0.4s ease;
-    overflow: hidden;
-}
-
-.controls-container.collapsed .controls-content {
-    max-height: 0 !important;
-    padding-top: 0;
-    padding-bottom: 0;
-    opacity: 0;
-}
-
-.controls-container.collapsed .toggle-icon {
-    transform: rotate(180deg);
-}
-
-/* Glassmorphism Effects */
-.glass-effect {
-    background: var(--glass-bg-color);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border-color);
-    border-radius: 10px;
-    box-shadow: var(--glass-shadow);
-}
-
-.canvas-container {
-    position: relative;
-}
-
-/* Direct Touch Controls */
-.canvas-container {
-    cursor: crosshair; /* Indicate it's interactive */
-}
-
-.touch-indicator {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: radial-gradient(
-        circle,
-        rgba(var(--accent-color-primary-rgb), 0.8) 0%,
-        rgba(var(--accent-color-secondary-rgb), 0.3) 70%,
-        transparent 100%
-    );
-    box-shadow: 0 0 15px var(--glow-primary), 
-                0 0 25px var(--glow-secondary);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    opacity: 0;
-    z-index: 25;
-    transition: opacity 0.2s ease;
-}
-
-.touch-indicator.active {
-    opacity: 1;
-}
-
-/* Parameter Info */
-.parameter-info {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    background: var(--glass-bg-color);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border-color);
-    border-radius: 10px;
-    font-family: var(--font-terminal);
-    font-size: 0.8rem;
-    color: var(--accent-color-secondary);
-    text-shadow: 0 0 5px var(--glow-secondary);
-    z-index: 30;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-}
-
-.parameter-info:hover {
-    opacity: 1;
-}
-
-.parameter-info-x, .parameter-info-y {
-    margin: 3px 0;
-}
-
-.parameter-info-x span, .parameter-info-y span {
-    color: var(--accent-color-primary);
-    text-shadow: 0 0 5px var(--glow-primary);
-    font-weight: bold;
-}
-
-.magnify-effect {
-    transition: var(--magnify-transition);
-}
-
-.magnify-effect:hover {
-    transform: scale(var(--magnify-scale));
-    z-index: 15;
-}
-
 /* --- Responsive Adjustments --- */
 @media (max-width: 1024px) and (min-aspect-ratio: 1/1) { /* Landscape on medium screens */
      /* Sidebar adjustments already in main CSS */
      .module-title { font-size: 15px; }
-     .touch-control { width: 60px; height: 60px; }
 }
-
 @media (max-width: 480px) { /* Small screens (likely portrait) */
      .preset-wheel { max-width: 95%; } /* Allow slightly more width */
      .preset-label { font-size: 11px; padding: 0 6px;}
@@ -524,8 +356,4 @@
      .module-title { font-size: 12px; }
      .visualizer-mode-toggle { font-size: 10px; padding: 3px 6px; }
      .maleficarum-tooltip { font-size: 12px; padding: 8px 15px; }
-     .touch-control { width: 50px; height: 50px; }
-     .touch-control-label { font-size: 8px; }
-     .touch-control-icon { font-size: 16px; }
-     .controls-header .title { font-size: 0.9rem; }
 }

@@ -226,24 +226,77 @@
         
         // Update visualizer based on all tracked interactions
         updateVisualizerParameters: function() {
-            if (!window.HyperAVCore || !window.HyperAVCore.instance) return;
+            // Try HyperAV first, fall back to simple visualizer
+            if (window.HyperAVController) {
+                this.updateHyperAV();
+            } else if (window.VisualizerSimple) {
+                this.updateSimpleVisualizer();
+            }
+        },
+        
+        // Update HyperAV visualizer specifically
+        updateHyperAV: function() {
+            var section = this.sectionPresets[this.state.currentSection] || this.sectionPresets.home;
             
-            var params = {};
+            try {
+                // Set geometry type based on section
+                window.HyperAVController.setPolytope(section.geometryType);
+                
+                // Calculate dynamic parameters
+                var scrollMappings = this.interactions.scroll;
+                var rotationSpeed = section.baseRotationSpeed + (this.state.scrollVelocity * scrollMappings.rotationSpeed.factor);
+                var morphFactor = Math.max(0, Math.min(1, 
+                    section.morphFactor + (this.state.scrollVelocity * scrollMappings.morphFactor.factor)
+                ));
+                var colorShift = Math.abs(this.state.scrollVelocity * scrollMappings.colorShift.factor);
+                
+                // Mouse-based dimensions
+                var mouseMappings = this.interactions.mouse;
+                var dimensions = 4 + Math.floor((this.state.mousePosition.x - mouseMappings.dimensions.center.x) * mouseMappings.dimensions.factorX * 4);
+                dimensions = Math.max(3, Math.min(8, dimensions));
+                
+                // Update visual style parameters
+                var styleParams = {
+                    morphFactor: morphFactor,
+                    rotationSpeed: rotationSpeed,
+                    lineThickness: 0.01 + (this.state.mousePosition.y * mouseMappings.lineThickness.factor),
+                    colorShift: colorShift,
+                    dimensions: dimensions,
+                    projectionMethod: section.projectionMethod
+                };
+                
+                window.HyperAVController.setVisualStyle(styleParams);
+                
+                // Update colors
+                window.HyperAVController.setColors({
+                    primary: section.colorScheme.primary,
+                    secondary: section.colorScheme.secondary,
+                    background: section.colorScheme.background
+                });
+                
+            } catch (error) {
+                console.warn('HyperAV update failed:', error);
+            }
+        },
+        
+        // Update simple visualizer (fallback)
+        updateSimpleVisualizer: function() {
             var section = this.sectionPresets[this.state.currentSection] || this.sectionPresets.home;
             
             // Scroll-based parameters
             var scrollMappings = this.interactions.scroll;
-            params.rotationSpeed = section.baseRotationSpeed + (this.state.scrollVelocity * scrollMappings.rotationSpeed.factor);
-            params.morphFactor = Math.max(0, Math.min(1, 
-                section.morphFactor + (this.state.scrollVelocity * scrollMappings.morphFactor.factor)
-            ));
-            params.colorShift = Math.abs(this.state.scrollVelocity * scrollMappings.colorShift.factor);
+            var params = {
+                rotationSpeed: section.baseRotationSpeed + (this.state.scrollVelocity * scrollMappings.rotationSpeed.factor),
+                morphFactor: Math.max(0, Math.min(1, 
+                    section.morphFactor + (this.state.scrollVelocity * scrollMappings.morphFactor.factor)
+                )),
+                colorShift: Math.abs(this.state.scrollVelocity * scrollMappings.colorShift.factor),
+                glitchIntensity: 0
+            };
             
             // Add glitch on fast scroll
             if (Math.abs(this.state.scrollVelocity) > scrollMappings.glitchIntensity.threshold) {
                 params.glitchIntensity = Math.min(0.5, Math.abs(this.state.scrollVelocity) * scrollMappings.glitchIntensity.factor);
-            } else {
-                params.glitchIntensity = 0;
             }
             
             // Mouse-based parameters
