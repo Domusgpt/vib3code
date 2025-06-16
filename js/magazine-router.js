@@ -40,7 +40,7 @@ var MagazineRouter = { // Converted const
             return;
         }
 
-        var script = document.createElement('script'); // Converted const
+        var script = document.createElement('script');
         script.src = scriptPath;
         script.async = true;
         script.defer = true;
@@ -48,7 +48,7 @@ var MagazineRouter = { // Converted const
 
         script.onerror = function() {
             console.error('MagazineRouter: Failed to load script ' + scriptPath + '.');
-            var targetDiv = interactiveElement.querySelector('.interactive-embed-target'); // Converted const
+            var targetDiv = interactiveElement.querySelector('.interactive-embed-target');
             if (targetDiv) {
                 targetDiv.innerHTML = '<p style="color:red;"><em>Failed to load interactive content script.</em></p>';
             }
@@ -232,7 +232,7 @@ var MagazineRouter = { // Converted const
         }
 
         if (itemsToRender.length === 0) {
-             this.contentContainer.innerHTML = '<div class="container-cyber" style="padding: 40px 20px; text-align: center;"><h2 class="section-title">No Content Found</h2><p>Sorry, there\'s no content available for this section or item.</p></div>';
+             this.contentContainer.innerHTML = '<div class="container-cyber" style="padding: 40px 20px; text-align: center;"><h2 class="section-title">No Content Found</h2><p>Sorry, there is no content available for this section or item.</p></div>';
              return;
         }
 
@@ -242,7 +242,7 @@ var MagazineRouter = { // Converted const
             if (!item || typeof item.id === 'undefined') { console.error("MagazineRouter: Attempting to render invalid item.", item); return; }
             var effectiveContentType = item.contentType; // Converted let
             if (typeof effectiveContentType === 'undefined') {
-                console.warn("MagazineRouter: Item '" + item.id + "' missing contentType, defaulting to 'article'.", item);
+                console.warn('MagazineRouter: Item \'' + item.id + '\' missing contentType, defaulting to \'article\'.', item);
                 effectiveContentType = 'article';
             }
             switch (effectiveContentType) {
@@ -263,8 +263,8 @@ var MagazineRouter = { // Converted const
                     else { console.error('renderInteractivePost not defined.'); itemHtml = '<p>Error: Interactive renderer missing.</p>'; }
                     break;
                 default:
-                    console.warn("Router: No renderer for contentType '" + effectiveContentType + "' (item ID " + item.id + ").");
-                    itemHtml = "<div class=\"content-item error-item glass-element\" style=\"padding:20px; margin:10px;\"><h2>" + (item.title || 'Unknown Title') + "</h2><p>Cannot display contentType ('" + effectiveContentType + "') yet.</p></div>";
+                    console.warn('Router: No renderer for contentType \'' + effectiveContentType + '\' (item ID ' + item.id + ').');
+                    itemHtml = '<div class="content-item error-item glass-element" style="padding:20px; margin:10px;"><h2>' + (item.title || 'Unknown Title') + '</h2><p>Cannot display contentType (\'' + effectiveContentType + '\') yet.</p></div>';
                     break;
             }
             if (itemHtml) {

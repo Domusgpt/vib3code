@@ -190,4 +190,214 @@
             background: background
         };
         
-        console.log('🎨 Applied base theme:', theme.name);\n    };\n    \n    // Calculate section-specific colors maintaining relationships\n    ThemeEngine.prototype.getSectionColors = function(sectionId) {\n        var modifier = this.sectionModifiers[sectionId] || this.sectionModifiers.hero;\n        var base = this.baseTheme;\n        \n        // Apply mathematical transformations while maintaining relationships\n        var sectionColors = {\n            primary: this.transformColor(base.primary, modifier.colorShift),\n            secondary: this.transformColor(base.secondary, modifier.colorShift),\n            accent: this.transformColor(base.accent, modifier.colorShift),\n            background: this.transformColor(base.background, modifier.colorShift)\n        };\n        \n        return {\n            colors: sectionColors,\n            intensity: modifier.intensity,\n            particleCount: modifier.particleCount,\n            animationStyle: modifier.animationStyle,\n            visualComplexity: modifier.visualComplexity,\n            name: modifier.name\n        };\n    };\n    \n    // Transform HSL color maintaining mathematical relationships\n    ThemeEngine.prototype.transformColor = function(baseColor, shift) {\n        return {\n            h: (baseColor.h + shift.h + 360) % 360,\n            s: Math.max(0, Math.min(100, baseColor.s + shift.s)),\n            l: Math.max(0, Math.min(100, baseColor.l + shift.l))\n        };\n    };\n    \n    // Convert HSL object to CSS string\n    ThemeEngine.prototype.hslToString = function(hsl) {\n        return 'hsl(' + Math.round(hsl.h) + ', ' + Math.round(hsl.s) + '%, ' + Math.round(hsl.l) + '%)';\n    };\n    \n    // Setup intersection observer for section detection\n    ThemeEngine.prototype.setupSectionObserver = function() {\n        var self = this;\n        var options = {\n            threshold: 0.3,\n            rootMargin: '-20% 0px -20% 0px'\n        };\n        \n        this.sectionObserver = new IntersectionObserver(function(entries) {\n            for (var i = 0; i < entries.length; i++) {\n                var entry = entries[i];\n                if (entry.isIntersecting) {\n                    var sectionId = entry.target.id || 'hero';\n                    self.transitionToSection(sectionId);\n                }\n            }\n        }, options);\n        \n        // Observe all sections\n        var sections = document.querySelectorAll('section, .parallax-section');\n        for (var i = 0; i < sections.length; i++) {\n            this.sectionObserver.observe(sections[i]);\n        }\n    };\n    \n    // Transition visualizer to section-specific theme\n    ThemeEngine.prototype.transitionToSection = function(sectionId) {\n        if (this.currentSection === sectionId) return;\n        \n        console.log('🎭 Transitioning to section:', sectionId);\n        \n        var sectionTheme = this.getSectionColors(sectionId);\n        this.currentSection = sectionId;\n        \n        // Apply section colors to CSS\n        this.applySectionTheme(sectionTheme);\n        \n        // Notify visualizer of section change\n        this.notifyVisualizer(sectionTheme);\n        \n        // Update page elements\n        this.updatePageElements(sectionId, sectionTheme);\n    };\n    \n    // Apply section theme to CSS custom properties\n    ThemeEngine.prototype.applySectionTheme = function(theme) {\n        var root = document.documentElement;\n        \n        // Convert colors to CSS strings\n        var primary = this.hslToString(theme.colors.primary);\n        var secondary = this.hslToString(theme.colors.secondary);\n        var accent = this.hslToString(theme.colors.accent);\n        \n        // Smooth transition\n        root.style.transition = 'all ' + (this.transitionDuration / 1000) + 's ease-out';\n        \n        // Update theme properties\n        root.style.setProperty('--section-primary', primary);\n        root.style.setProperty('--section-secondary', secondary);\n        root.style.setProperty('--section-accent', accent);\n        root.style.setProperty('--section-intensity', theme.intensity);\n        \n        console.log('🎨 Applied section theme:', theme.name);\n    };\n    \n    // Notify visualizer of theme change\n    ThemeEngine.prototype.notifyVisualizer = function(theme) {\n        if (window.SimpleVisualizer) {\n            var visualizerConfig = {\n                colors: {\n                    primary: this.hslToString(theme.colors.primary),\n                    secondary: this.hslToString(theme.colors.secondary),\n                    accent: this.hslToString(theme.colors.accent),\n                    background: this.hslToString(theme.colors.background)\n                },\n                intensity: theme.intensity,\n                particleCount: theme.particleCount,\n                animationStyle: theme.animationStyle,\n                complexity: theme.visualComplexity\n            };\n            \n            window.SimpleVisualizer.updateTheme(visualizerConfig);\n        }\n        \n        // Dispatch custom event for other components\n        window.dispatchEvent(new CustomEvent('themeChange', {\n            detail: {\n                section: this.currentSection,\n                theme: theme\n            }\n        }));\n    };\n    \n    // Update page elements based on section\n    ThemeEngine.prototype.updatePageElements = function(sectionId, theme) {\n        // Add section-specific body class\n        document.body.className = document.body.className.replace(/section-\\w+/g, '');\n        document.body.classList.add('section-' + sectionId);\n        \n        // Update navigation indicator\n        var navLinks = document.querySelectorAll('.nav-link');\n        for (var i = 0; i < navLinks.length; i++) {\n            navLinks[i].classList.remove('active-section');\n        }\n        \n        var currentLink = document.querySelector('.nav-link[data-section=\"' + sectionId + '\"]');\n        if (currentLink) {\n            currentLink.classList.add('active-section');\n        }\n    };\n    \n    // Bind visualizer-specific events\n    ThemeEngine.prototype.bindVisualizerEvents = function() {\n        var self = this;\n        \n        // Listen for visualizer ready event\n        window.addEventListener('visualizerReady', function() {\n            // Initialize with current section theme\n            var initialTheme = self.getSectionColors(self.currentSection);\n            self.notifyVisualizer(initialTheme);\n        });\n        \n        // Listen for manual theme regeneration\n        window.addEventListener('regenerateTheme', function() {\n            self.regenerateTheme();\n        });\n    };\n    \n    // Regenerate entire theme with new base colors\n    ThemeEngine.prototype.regenerateTheme = function() {\n        console.log('🔄 Regenerating theme...');\n        \n        this.baseTheme = this.generateBaseTheme();\n        this.applyBaseTheme();\n        \n        // Re-apply current section theme\n        var sectionTheme = this.getSectionColors(this.currentSection);\n        this.applySectionTheme(sectionTheme);\n        this.notifyVisualizer(sectionTheme);\n        \n        console.log('✨ Theme regenerated:', this.baseTheme.name);\n    };\n    \n    // Get current theme info for debugging\n    ThemeEngine.prototype.getThemeInfo = function() {\n        return {\n            baseTheme: this.baseTheme,\n            currentSection: this.currentSection,\n            sectionTheme: this.getSectionColors(this.currentSection)\n        };\n    };\n    \n    // Public API\n    ThemeEngine.prototype.setSection = function(sectionId) {\n        this.transitionToSection(sectionId);\n    };\n    \n    // Initialize theme engine\n    var themeEngine = new ThemeEngine();\n    \n    // Export for global access\n    window.ThemeEngine = themeEngine;\n    \n    // Expose regenerate function globally for development\n    window.regenerateTheme = function() {\n        themeEngine.regenerateTheme();\n    };\n    \n    console.log('🎨 VIB3CODE Theme Engine loaded');\n    \n})();
+        console.log('🎨 Applied base theme:', theme.name);
+    };
+    
+    // Calculate section-specific colors maintaining relationships
+    ThemeEngine.prototype.getSectionColors = function(sectionId) {
+        var modifier = this.sectionModifiers[sectionId] || this.sectionModifiers.hero;
+        var base = this.baseTheme;
+        
+        // Apply mathematical transformations while maintaining relationships
+        var sectionColors = {
+            primary: this.transformColor(base.primary, modifier.colorShift),
+            secondary: this.transformColor(base.secondary, modifier.colorShift),
+            accent: this.transformColor(base.accent, modifier.colorShift),
+            background: this.transformColor(base.background, modifier.colorShift)
+        };
+        
+        return {
+            colors: sectionColors,
+            intensity: modifier.intensity,
+            particleCount: modifier.particleCount,
+            animationStyle: modifier.animationStyle,
+            visualComplexity: modifier.visualComplexity,
+            name: modifier.name
+        };
+    };
+    
+    // Transform HSL color maintaining mathematical relationships
+    ThemeEngine.prototype.transformColor = function(baseColor, shift) {
+        return {
+            h: (baseColor.h + shift.h + 360) % 360,
+            s: Math.max(0, Math.min(100, baseColor.s + shift.s)),
+            l: Math.max(0, Math.min(100, baseColor.l + shift.l))
+        };
+    };
+    
+    // Convert HSL object to CSS string
+    ThemeEngine.prototype.hslToString = function(hsl) {
+        return 'hsl(' + Math.round(hsl.h) + ', ' + Math.round(hsl.s) + '%, ' + Math.round(hsl.l) + '%)';
+    };
+    
+    // Setup intersection observer for section detection
+    ThemeEngine.prototype.setupSectionObserver = function() {
+        var self = this;
+        var options = {
+            threshold: 0.3,
+            rootMargin: '-20% 0px -20% 0px'
+        };
+        
+        this.sectionObserver = new IntersectionObserver(function(entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                if (entry.isIntersecting) {
+                    var sectionId = entry.target.id || 'hero';
+                    self.transitionToSection(sectionId);
+                }
+            }
+        }, options);
+        
+        // Observe all sections
+        var sections = document.querySelectorAll('section, .parallax-section');
+        for (var i = 0; i < sections.length; i++) {
+            this.sectionObserver.observe(sections[i]);
+        }
+    };
+    
+    // Transition visualizer to section-specific theme
+    ThemeEngine.prototype.transitionToSection = function(sectionId) {
+        if (this.currentSection === sectionId) return;
+        
+        console.log('🎭 Transitioning to section:', sectionId);
+        
+        var sectionTheme = this.getSectionColors(sectionId);
+        this.currentSection = sectionId;
+        
+        // Apply section colors to CSS
+        this.applySectionTheme(sectionTheme);
+        
+        // Notify visualizer of section change
+        this.notifyVisualizer(sectionTheme);
+        
+        // Update page elements
+        this.updatePageElements(sectionId, sectionTheme);
+    };
+    
+    // Apply section theme to CSS custom properties
+    ThemeEngine.prototype.applySectionTheme = function(theme) {
+        var root = document.documentElement;
+        
+        // Convert colors to CSS strings
+        var primary = this.hslToString(theme.colors.primary);
+        var secondary = this.hslToString(theme.colors.secondary);
+        var accent = this.hslToString(theme.colors.accent);
+        
+        // Smooth transition
+        root.style.transition = 'all ' + (this.transitionDuration / 1000) + 's ease-out';
+        
+        // Update theme properties
+        root.style.setProperty('--section-primary', primary);
+        root.style.setProperty('--section-secondary', secondary);
+        root.style.setProperty('--section-accent', accent);
+        root.style.setProperty('--section-intensity', theme.intensity);
+        
+        console.log('🎨 Applied section theme:', theme.name);
+    };
+    
+    // Notify visualizer of theme change
+    ThemeEngine.prototype.notifyVisualizer = function(theme) {
+        if (window.SimpleVisualizer) {
+            var visualizerConfig = {
+                colors: {
+                    primary: this.hslToString(theme.colors.primary),
+                    secondary: this.hslToString(theme.colors.secondary),
+                    accent: this.hslToString(theme.colors.accent),
+                    background: this.hslToString(theme.colors.background)
+                },
+                intensity: theme.intensity,
+                particleCount: theme.particleCount,
+                animationStyle: theme.animationStyle,
+                complexity: theme.visualComplexity
+            };
+            
+            window.SimpleVisualizer.updateTheme(visualizerConfig);
+        }
+        
+        // Dispatch custom event for other components
+        window.dispatchEvent(new CustomEvent('themeChange', {
+            detail: {
+                section: this.currentSection,
+                theme: theme
+            }
+        }));
+    };
+    
+    // Update page elements based on section
+    ThemeEngine.prototype.updatePageElements = function(sectionId, theme) {
+        // Add section-specific body class
+        document.body.className = document.body.className.replace(/section-\w+/g, '');
+        document.body.classList.add('section-' + sectionId);
+        
+        // Update navigation indicator
+        var navLinks = document.querySelectorAll('.nav-link');
+        for (var i = 0; i < navLinks.length; i++) {
+            navLinks[i].classList.remove('active-section');
+        }
+        
+        var currentLink = document.querySelector('.nav-link[data-section="' + sectionId + '"]');
+        if (currentLink) {
+            currentLink.classList.add('active-section');
+        }
+    };
+    
+    // Bind visualizer-specific events
+    ThemeEngine.prototype.bindVisualizerEvents = function() {
+        var self = this;
+        
+        // Listen for visualizer ready event
+        window.addEventListener('visualizerReady', function() {
+            // Initialize with current section theme
+            var initialTheme = self.getSectionColors(self.currentSection);
+            self.notifyVisualizer(initialTheme);
+        });
+        
+        // Listen for manual theme regeneration
+        window.addEventListener('regenerateTheme', function() {
+            self.regenerateTheme();
+        });
+    };
+    
+    // Regenerate entire theme with new base colors
+    ThemeEngine.prototype.regenerateTheme = function() {
+        console.log('🔄 Regenerating theme...');
+        
+        this.baseTheme = this.generateBaseTheme();
+        this.applyBaseTheme();
+        
+        // Re-apply current section theme
+        var sectionTheme = this.getSectionColors(this.currentSection);
+        this.applySectionTheme(sectionTheme);
+        this.notifyVisualizer(sectionTheme);
+        
+        console.log('✨ Theme regenerated:', this.baseTheme.name);
+    };
+    
+    // Get current theme info for debugging
+    ThemeEngine.prototype.getThemeInfo = function() {
+        return {
+            baseTheme: this.baseTheme,
+            currentSection: this.currentSection,
+            sectionTheme: this.getSectionColors(this.currentSection)
+        };
+    };
+    
+    // Public API
+    ThemeEngine.prototype.setSection = function(sectionId) {
+        this.transitionToSection(sectionId);
+    };
+    
+    // Initialize theme engine
+    var themeEngine = new ThemeEngine();
+    
+    // Export for global access
+    window.ThemeEngine = themeEngine;
+    
+    // Expose regenerate function globally for development
+    window.regenerateTheme = function() {
+        themeEngine.regenerateTheme();
+    };
+    
+    console.log('🎨 VIB3CODE Theme Engine loaded');
+    
+})();
