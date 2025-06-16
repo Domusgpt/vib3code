@@ -31,9 +31,9 @@ class SimpleVisualizer {
     
     setupCanvas() {
         this.resizeCanvas();
-        
-        window.addEventListener('resize', () => {
-            this.resizeCanvas();
+        var self = this; // For 'this' context
+        window.addEventListener('resize', function() { // Converted arrow function
+            self.resizeCanvas(); // Used self
         });
         
         // Try WebGL first, fallback to 2D
@@ -48,7 +48,7 @@ class SimpleVisualizer {
     }
     
     resizeCanvas() {
-        const rect = this.canvas.getBoundingClientRect();
+        var rect = this.canvas.getBoundingClientRect();
         this.canvas.width = rect.width;
         this.canvas.height = rect.height;
         
@@ -58,85 +58,62 @@ class SimpleVisualizer {
     }
     
     setupWebGL() {
-        const gl = this.gl;
+        var gl = this.gl;
         
         // Simple vertex shader
-        const vsSource = `
-            attribute vec2 a_position;
-            varying vec2 v_uv;
-            void main() {
-                v_uv = a_position * 0.5 + 0.5;
-                gl_Position = vec4(a_position, 0.0, 1.0);
-            }
-        `;
+        var vsSource =
+            'attribute vec2 a_position;\n' +
+            'varying vec2 v_uv;\n' +
+            'void main() {\n' +
+            '    v_uv = a_position * 0.5 + 0.5;\n' +
+            '    gl_Position = vec4(a_position, 0.0, 1.0);\n' +
+            '}\n';
         
         // Fragment shader with 4D-inspired effects
-        const fsSource = `
-            precision mediump float;
-            uniform vec2 u_resolution;
-            uniform float u_time;
-            uniform float u_bass;
-            uniform float u_mid;
-            uniform float u_high;
-            varying vec2 v_uv;
-            
-            // Simple 4D rotation matrices
-            mat2 rot2D(float a) {
-                float c = cos(a), s = sin(a);
-                return mat2(c, -s, s, c);
-            }
-            
-            float hypercubePattern(vec2 p, float t) {
-                // Simulate 4D projection
-                vec2 p1 = p * 3.0;
-                vec2 p2 = p1 * rot2D(t * 0.1);
-                
-                // Grid pattern
-                vec2 grid = abs(fract(p2) - 0.5);
-                float lines = min(grid.x, grid.y);
-                
-                // 4D influence
-                float w = sin(p.x * 2.0 + t * 0.2) * cos(p.y * 2.0 + t * 0.3);
-                vec2 p3 = (p2 + w * 0.2) * rot2D(w * 0.5);
-                vec2 grid2 = abs(fract(p3) - 0.5);
-                float lines2 = min(grid2.x, grid2.y);
-                
-                return mix(lines, lines2, 0.6);
-            }
-            
-            void main() {
-                vec2 uv = (v_uv * 2.0 - 1.0) * vec2(u_resolution.x / u_resolution.y, 1.0);
-                
-                float pattern = hypercubePattern(uv, u_time);
-                
-                // Audio reactive coloring
-                vec3 color = vec3(0.0);
-                
-                // Base grid
-                float grid = 1.0 - smoothstep(0.02, 0.1, pattern);
-                
-                // Audio reactive effects
-                color.r = grid * (0.0 + u_high * 2.0);
-                color.g = grid * (0.85 + u_mid * 0.5);
-                color.b = grid * (1.0 + u_bass * 0.3);
-                
-                // Background gradient
-                vec3 bg = mix(
-                    vec3(0.04, 0.04, 0.06),
-                    vec3(0.08, 0.02, 0.1),
-                    length(uv) * 0.5
-                );
-                
-                // Combine
-                color = mix(bg, color, grid);
-                
-                // Audio glow
-                float glow = u_bass * 0.3 + u_mid * 0.2 + u_high * 0.1;
-                color += vec3(0.0, 0.2, 0.4) * glow;
-                
-                gl_FragColor = vec4(color, 1.0);
-            }
-        `;
+        var fsSource =
+            'precision mediump float;\n' +
+            'uniform vec2 u_resolution;\n' +
+            'uniform float u_time;\n' +
+            'uniform float u_bass;\n' +
+            'uniform float u_mid;\n' +
+            'uniform float u_high;\n' +
+            'varying vec2 v_uv;\n' +
+            '\n' +
+            'mat2 rot2D(float a) {\n' +
+            '    float c = cos(a), s = sin(a);\n' +
+            '    return mat2(c, -s, s, c);\n' +
+            '}\n' +
+            '\n' +
+            'float hypercubePattern(vec2 p, float t) {\n' +
+            '    vec2 p1 = p * 3.0;\n' +
+            '    vec2 p2 = p1 * rot2D(t * 0.1);\n' +
+            '    vec2 grid = abs(fract(p2) - 0.5);\n' +
+            '    float lines = min(grid.x, grid.y);\n' +
+            '    float w = sin(p.x * 2.0 + t * 0.2) * cos(p.y * 2.0 + t * 0.3);\n' +
+            '    vec2 p3 = (p2 + w * 0.2) * rot2D(w * 0.5);\n' +
+            '    vec2 grid2 = abs(fract(p3) - 0.5);\n' +
+            '    float lines2 = min(grid2.x, grid2.y);\n' +
+            '    return mix(lines, lines2, 0.6);\n' +
+            '}\n' +
+            '\n' +
+            'void main() {\n' +
+            '    vec2 uv = (v_uv * 2.0 - 1.0) * vec2(u_resolution.x / u_resolution.y, 1.0);\n' +
+            '    float pattern = hypercubePattern(uv, u_time);\n' +
+            '    vec3 color = vec3(0.0);\n' +
+            '    float grid = 1.0 - smoothstep(0.02, 0.1, pattern);\n' +
+            '    color.r = grid * (0.0 + u_high * 2.0);\n' +
+            '    color.g = grid * (0.85 + u_mid * 0.5);\n' +
+            '    color.b = grid * (1.0 + u_bass * 0.3);\n' +
+            '    vec3 bg = mix(\n' +
+            '        vec3(0.04, 0.04, 0.06),\n' +
+            '        vec3(0.08, 0.02, 0.1),\n' +
+            '        length(uv) * 0.5\n' +
+            '    );\n' +
+            '    color = mix(bg, color, grid);\n' +
+            '    float glow = u_bass * 0.3 + u_mid * 0.2 + u_high * 0.1;\n' +
+            '    color += vec3(0.0, 0.2, 0.4) * glow;\n' +
+            '    gl_FragColor = vec4(color, 1.0);\n' +
+            '}\n';
         
         // Create shaders
         this.program = this.createShaderProgram(vsSource, fsSource);
@@ -167,16 +144,16 @@ class SimpleVisualizer {
     }
     
     createShaderProgram(vsSource, fsSource) {
-        const gl = this.gl;
+        var gl = this.gl;
         
-        const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource);
-        const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource);
+        var vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource);
+        var fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource);
         
         if (!vertexShader || !fragmentShader) {
             return null;
         }
         
-        const shaderProgram = gl.createProgram();
+        var shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
         gl.attachShader(shaderProgram, fragmentShader);
         gl.linkProgram(shaderProgram);
@@ -190,8 +167,8 @@ class SimpleVisualizer {
     }
     
     loadShader(type, source) {
-        const gl = this.gl;
-        const shader = gl.createShader(type);
+        var gl = this.gl;
+        var shader = gl.createShader(type);
         
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
@@ -211,18 +188,19 @@ class SimpleVisualizer {
     }
     
     generateSyntheticAudio() {
-        const updateAudio = () => {
-            const t = this.time * 0.001;
+        var self = this; // Added for 'this' context
+        var updateAudio = function() { // Converted arrow function
+            var t = self.time * 0.001; // Used self
             
             // Generate audio levels
-            this.audioLevels.bass = (Math.sin(t * 2) + Math.sin(t * 3.2)) * 0.25 + 0.5;
-            this.audioLevels.mid = (Math.sin(t * 5) + Math.sin(t * 7.3)) * 0.2 + 0.3;
-            this.audioLevels.high = (Math.sin(t * 15) + Math.sin(t * 23.7)) * 0.15 + 0.2;
+            self.audioLevels.bass = (Math.sin(t * 2) + Math.sin(t * 3.2)) * 0.25 + 0.5; // Used self
+            self.audioLevels.mid = (Math.sin(t * 5) + Math.sin(t * 7.3)) * 0.2 + 0.3; // Used self
+            self.audioLevels.high = (Math.sin(t * 15) + Math.sin(t * 23.7)) * 0.15 + 0.2; // Used self
             
             // Add randomness
-            this.audioLevels.bass *= (0.8 + Math.random() * 0.4);
-            this.audioLevels.mid *= (0.8 + Math.random() * 0.4);
-            this.audioLevels.high *= (0.8 + Math.random() * 0.4);
+            self.audioLevels.bass *= (0.8 + Math.random() * 0.4); // Used self
+            self.audioLevels.mid *= (0.8 + Math.random() * 0.4); // Used self
+            self.audioLevels.high *= (0.8 + Math.random() * 0.4); // Used self
             
             setTimeout(updateAudio, 50); // 20 FPS
         };
@@ -240,12 +218,12 @@ class SimpleVisualizer {
         } else if (this.ctx) {
             this.render2D();
         }
-        
-        this.animationId = requestAnimationFrame(() => this.render());
+        var self = this; // Added for 'this' context
+        this.animationId = requestAnimationFrame(function() { self.render(); }); // Converted arrow function
     }
     
     renderWebGL() {
-        const gl = this.gl;
+        var gl = this.gl;
         
         gl.clearColor(0.04, 0.04, 0.06, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -264,21 +242,21 @@ class SimpleVisualizer {
     }
     
     render2D() {
-        const ctx = this.ctx;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
-        const t = this.time * 0.001;
+        var ctx = this.ctx;
+        var w = this.canvas.width;
+        var h = this.canvas.height;
+        var t = this.time * 0.001;
         
         // Clear canvas
-        ctx.fillStyle = `rgb(${Math.floor(10 + this.audioLevels.bass * 20)}, ${Math.floor(10 + this.audioLevels.mid * 15)}, ${Math.floor(15 + this.audioLevels.high * 25)})`;
+        ctx.fillStyle = 'rgb(' + Math.floor(10 + this.audioLevels.bass * 20) + ', ' + Math.floor(10 + this.audioLevels.mid * 15) + ', ' + Math.floor(15 + this.audioLevels.high * 25) + ')';
         ctx.fillRect(0, 0, w, h);
         
         // Draw grid pattern
-        ctx.strokeStyle = `rgba(0, ${Math.floor(150 + this.audioLevels.mid * 105)}, 255, 0.6)`;
+        ctx.strokeStyle = 'rgba(0, ' + Math.floor(150 + this.audioLevels.mid * 105) + ', 255, 0.6)';
         ctx.lineWidth = 1 + this.audioLevels.bass * 2;
         
-        const gridSize = 50 + this.audioLevels.high * 30;
-        const rotation = t * 0.1;
+        var gridSize = 50 + this.audioLevels.high * 30;
+        var rotation = t * 0.1;
         
         ctx.save();
         ctx.translate(w / 2, h / 2);
@@ -286,29 +264,29 @@ class SimpleVisualizer {
         
         // Draw grid
         ctx.beginPath();
-        for (let x = -w; x < w; x += gridSize) {
+        for (var x = -w; x < w; x += gridSize) { // Converted let
             ctx.moveTo(x, -h);
             ctx.lineTo(x, h);
         }
-        for (let y = -h; y < h; y += gridSize) {
+        for (var y = -h; y < h; y += gridSize) { // Converted let
             ctx.moveTo(-w, y);
             ctx.lineTo(w, y);
         }
         ctx.stroke();
         
         // Draw 4D projection effect
-        ctx.strokeStyle = `rgba(255, ${Math.floor(16 + this.audioLevels.bass * 100)}, 240, 0.4)`;
+        ctx.strokeStyle = 'rgba(255, ' + Math.floor(16 + this.audioLevels.bass * 100) + ', 240, 0.4)'; // Converted template literal
         ctx.lineWidth = 0.5;
         
         ctx.rotate(rotation * 0.5);
         ctx.scale(1 + this.audioLevels.mid * 0.3, 1 + this.audioLevels.high * 0.2);
         
         ctx.beginPath();
-        for (let x = -w; x < w; x += gridSize * 1.5) {
+        for (var x = -w; x < w; x += gridSize * 1.5) { // Converted let
             ctx.moveTo(x, -h);
             ctx.lineTo(x, h);
         }
-        for (let y = -h; y < h; y += gridSize * 1.5) {
+        for (var y = -h; y < h; y += gridSize * 1.5) { // Converted let
             ctx.moveTo(-w, y);
             ctx.lineTo(w, y);
         }
@@ -317,7 +295,7 @@ class SimpleVisualizer {
         ctx.restore();
         
         // Add glow effect
-        const glow = this.audioLevels.bass * 50 + this.audioLevels.mid * 30;
+        var glow = this.audioLevels.bass * 50 + this.audioLevels.mid * 30;
         if (glow > 0) {
             ctx.shadowColor = 'rgba(0, 217, 255, 0.8)';
             ctx.shadowBlur = glow;
@@ -359,12 +337,12 @@ class SimpleVisualizer {
 }
 
 // Initialize visualizer
-const simpleVisualizer = new SimpleVisualizer();
+var simpleVisualizer = new SimpleVisualizer();
 
 // Export for external control
 window.SimpleVisualizer = simpleVisualizer;
 
 // Cleanup on page unload
-window.addEventListener('beforeunload', () => {
+window.addEventListener('beforeunload', function() { // Converted arrow function
     simpleVisualizer.destroy();
 });

@@ -230,33 +230,31 @@
     InteractiveFeatures.prototype.handleCardClick = function(card) {
         // Add click ripple effect
         var ripple = document.createElement('div');
-        ripple.style.cssText = `
-            position: absolute;
-            background: rgba(0, 217, 255, 0.3);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: ripple 0.6s ease-out;
-            pointer-events: none;
-            z-index: 1000;
-        `;
+        ripple.style.cssText =
+            'position: absolute;' +
+            'background: rgba(0, 217, 255, 0.3);' +
+            'border-radius: 50%;' +
+            'width: 20px;' +
+            'height: 20px;' +
+            'animation: ripple 0.6s ease-out;' +
+            'pointer-events: none;' +
+            'z-index: 1000;';
         
         // Add ripple animation CSS if not exists
         if (!document.querySelector('#ripple-styles')) {
             var style = document.createElement('style');
             style.id = 'ripple-styles';
-            style.textContent = `
-                @keyframes ripple {
-                    0% {
-                        transform: scale(0);
-                        opacity: 1;
-                    }
-                    100% {
-                        transform: scale(4);
-                        opacity: 0;
-                    }
-                }
-            `;
+            style.textContent =
+                '@keyframes ripple {' +
+                    '0% {' +
+                        'transform: scale(0);' +
+                        'opacity: 1;' +
+                    '}' +
+                    '100% {' +
+                        'transform: scale(4);' +
+                        'opacity: 0;' +
+                    '}' +
+                '}';
             document.head.appendChild(style);
         }
         
@@ -326,23 +324,22 @@
         if (!document.querySelector('#visibility-animations')) {
             var style = document.createElement('style');
             style.id = 'visibility-animations';
-            style.textContent = `
-                @keyframes slideInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
+            style.textContent =
+                '@keyframes slideInUp {' +
+                    'from {' +
+                        'opacity: 0;' +
+                        'transform: translateY(30px);' +
+                    '}' +
+                    'to {' +
+                        'opacity: 1;' +
+                        'transform: translateY(0);' +
+                    '}' +
+                '}' +
                 
-                .content-card:not(.animated) {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-            `;
+                '.content-card:not(.animated) {' +
+                    'opacity: 0;' +
+                    'transform: translateY(30px);' +
+                '}';
             document.head.appendChild(style);
         }
     };

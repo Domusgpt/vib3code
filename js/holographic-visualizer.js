@@ -9,13 +9,11 @@
         this.animationId = null;
         this.time = 0;
         
-        // Holographic elements
         this.particles = [];
         this.waves = [];
         this.geometries = [];
         this.holographicLayers = [];
         
-        // Theme integration
         this.currentTheme = {
             primary: '#00d9ff',
             secondary: '#ff10f0', 
@@ -53,7 +51,6 @@
             self.resizeCanvas();
         });
         
-        // Set canvas styles for glassmorphic backdrop
         this.canvas.style.position = 'fixed';
         this.canvas.style.top = '0';
         this.canvas.style.left = '0';
@@ -69,7 +66,6 @@
     };
     
     HolographicVisualizer.prototype.createHolographicElements = function() {
-        // Create floating particles
         for (var i = 0; i < 150; i++) {
             this.particles.push({
                 x: Math.random() * this.canvas.width,
@@ -85,7 +81,6 @@
             });
         }
         
-        // Create wave systems
         for (var j = 0; j < 5; j++) {
             this.waves.push({
                 amplitude: 50 + Math.random() * 100,
@@ -97,14 +92,12 @@
             });
         }
         
-        // Create geometric patterns
         this.geometries = [
             { type: 'hypercube', rotation: 0, scale: 1 },
             { type: 'torus', rotation: 0, scale: 0.8 },
             { type: 'fractal', rotation: 0, scale: 0.6 }
         ];
         
-        // Create holographic layers
         for (var k = 0; k < 3; k++) {
             this.holographicLayers.push({
                 offsetX: Math.random() * 20 - 10,
@@ -144,22 +137,11 @@
         
         this.time += 0.016 * this.currentTheme.intensity;
         
-        // Clear with subtle gradient
         this.clearWithGradient();
-        
-        // Render holographic layers
         this.renderHolographicLayers();
-        
-        // Render wave systems
         this.renderWaves();
-        
-        // Render geometric patterns
         this.renderGeometries();
-        
-        // Render particles
         this.renderParticles();
-        
-        // Render glassmorphic overlay
         this.renderGlassmorphicOverlay();
         
         var self = this;
@@ -170,8 +152,6 @@
     
     HolographicVisualizer.prototype.clearWithGradient = function() {
         var ctx = this.ctx;
-        
-        // Create subtle animated background
         var gradient = ctx.createRadialGradient(
             this.canvas.width / 2, this.canvas.height / 2, 0,
             this.canvas.width / 2, this.canvas.height / 2, 
@@ -194,21 +174,16 @@
     
     HolographicVisualizer.prototype.renderHolographicLayers = function() {
         var ctx = this.ctx;
-        
         for (var i = 0; i < this.holographicLayers.length; i++) {
             var layer = this.holographicLayers[i];
-            
             ctx.save();
             ctx.globalAlpha = layer.opacity * Math.sin(this.time * 0.5 + layer.phase) * 0.5 + 0.5;
             ctx.globalCompositeOperation = 'screen';
             
-            // Animated holographic shift
             var shiftX = Math.sin(this.time * 0.3 + layer.phase) * layer.offsetX;
             var shiftY = Math.cos(this.time * 0.2 + layer.phase) * layer.offsetY;
-            
             ctx.translate(shiftX, shiftY);
             
-            // Draw holographic grid
             ctx.strokeStyle = this.getHolographicColor(layer.color);
             ctx.lineWidth = 1;
             
@@ -219,44 +194,36 @@
                 ctx.lineTo(x, this.canvas.height);
                 ctx.stroke();
             }
-            
             for (var y = -gridSize; y < this.canvas.height + gridSize; y += gridSize) {
                 ctx.beginPath();
                 ctx.moveTo(0, y);
                 ctx.lineTo(this.canvas.width, y);
                 ctx.stroke();
             }
-            
             ctx.restore();
         }
     };
     
     HolographicVisualizer.prototype.renderWaves = function() {
         var ctx = this.ctx;
-        
         for (var i = 0; i < this.waves.length; i++) {
             var wave = this.waves[i];
-            
             ctx.save();
             ctx.globalAlpha = wave.opacity * this.currentTheme.intensity;
             ctx.strokeStyle = this.currentTheme.primary;
             ctx.lineWidth = 2;
             ctx.globalCompositeOperation = 'lighten';
-            
             ctx.beginPath();
-            
             for (var x = 0; x <= this.canvas.width; x += 5) {
                 var y = this.canvas.height / 2 + 
                        Math.sin(x * wave.frequency + this.time * wave.speed + wave.phase) * 
                        wave.amplitude * Math.sin(this.time * 0.1 + wave.layer);
-                
                 if (x === 0) {
                     ctx.moveTo(x, y);
                 } else {
                     ctx.lineTo(x, y);
                 }
             }
-            
             ctx.stroke();
             ctx.restore();
         }
@@ -266,11 +233,9 @@
         var ctx = this.ctx;
         var centerX = this.canvas.width / 2;
         var centerY = this.canvas.height / 2;
-        
         for (var i = 0; i < this.geometries.length; i++) {
             var geo = this.geometries[i];
             geo.rotation += 0.01 * this.currentTheme.intensity;
-            
             ctx.save();
             ctx.translate(centerX, centerY);
             ctx.rotate(geo.rotation);
@@ -278,19 +243,11 @@
             ctx.globalAlpha = 0.3 * this.currentTheme.intensity;
             ctx.strokeStyle = this.currentTheme.accent;
             ctx.lineWidth = 1;
-            
             switch (geo.type) {
-                case 'hypercube':
-                    this.drawHypercube(ctx);
-                    break;
-                case 'torus':
-                    this.drawTorus(ctx);
-                    break;
-                case 'fractal':
-                    this.drawFractal(ctx);
-                    break;
+                case 'hypercube': this.drawHypercube(ctx); break;
+                case 'torus': this.drawTorus(ctx); break;
+                case 'fractal': this.drawFractal(ctx); break;
             }
-            
             ctx.restore();
         }
     };
@@ -298,23 +255,13 @@
     HolographicVisualizer.prototype.drawHypercube = function(ctx) {
         var size = 100;
         var depth = 50;
-        
-        // Front face
         ctx.strokeRect(-size/2, -size/2, size, size);
-        
-        // Back face
         ctx.strokeRect(-size/2 + depth, -size/2 + depth, size, size);
-        
-        // Connecting lines
         ctx.beginPath();
-        ctx.moveTo(-size/2, -size/2);
-        ctx.lineTo(-size/2 + depth, -size/2 + depth);
-        ctx.moveTo(size/2, -size/2);
-        ctx.lineTo(size/2 + depth, -size/2 + depth);
-        ctx.moveTo(size/2, size/2);
-        ctx.lineTo(size/2 + depth, size/2 + depth);
-        ctx.moveTo(-size/2, size/2);
-        ctx.lineTo(-size/2 + depth, size/2 + depth);
+        ctx.moveTo(-size/2, -size/2); ctx.lineTo(-size/2 + depth, -size/2 + depth);
+        ctx.moveTo(size/2, -size/2); ctx.lineTo(size/2 + depth, -size/2 + depth);
+        ctx.moveTo(size/2, size/2); ctx.lineTo(size/2 + depth, size/2 + depth);
+        ctx.moveTo(-size/2, size/2); ctx.lineTo(-size/2 + depth, size/2 + depth);
         ctx.stroke();
     };
     
@@ -322,12 +269,10 @@
         var majorRadius = 80;
         var minorRadius = 30;
         var segments = 20;
-        
         for (var i = 0; i < segments; i++) {
             var angle = (i / segments) * Math.PI * 2;
             var x = Math.cos(angle) * majorRadius;
             var y = Math.sin(angle) * majorRadius;
-            
             ctx.beginPath();
             ctx.arc(x, y, minorRadius, 0, Math.PI * 2);
             ctx.stroke();
@@ -337,85 +282,58 @@
     HolographicVisualizer.prototype.drawFractal = function(ctx) {
         var iterations = 5;
         var scale = 120;
-        
         function drawBranch(x, y, angle, length, depth) {
             if (depth === 0) return;
-            
             var endX = x + Math.cos(angle) * length;
             var endY = y + Math.sin(angle) * length;
-            
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(endX, endY);
             ctx.stroke();
-            
             var newLength = length * 0.7;
             drawBranch(endX, endY, angle - 0.5, newLength, depth - 1);
             drawBranch(endX, endY, angle + 0.5, newLength, depth - 1);
         }
-        
         drawBranch(0, scale/2, -Math.PI/2, scale/3, iterations);
     };
     
     HolographicVisualizer.prototype.renderParticles = function() {
         var ctx = this.ctx;
-        
         for (var i = 0; i < this.particles.length; i++) {
             var p = this.particles[i];
-            
-            // Update particle
             p.x += p.vx * this.currentTheme.intensity;
             p.y += p.vy * this.currentTheme.intensity;
             p.z += p.vz * this.currentTheme.intensity;
             p.life += 0.01;
             p.holographicShift += 0.05;
-            
-            // Wrap around edges
             if (p.x < 0) p.x = this.canvas.width;
             if (p.x > this.canvas.width) p.x = 0;
             if (p.y < 0) p.y = this.canvas.height;
             if (p.y > this.canvas.height) p.y = 0;
             if (p.z < 0) p.z = 1000;
             if (p.z > 1000) p.z = 0;
-            
             if (p.life > 1) p.life = 0;
-            
-            // Render particle with holographic effect
             var alpha = Math.sin(p.life * Math.PI) * this.currentTheme.intensity;
             var scale = (1000 - p.z) / 1000;
             var actualSize = p.size * scale;
-            
             if (actualSize > 0.5) {
                 ctx.save();
                 ctx.globalAlpha = alpha * 0.8;
-                
-                // Holographic color shifting
                 var colorShift = Math.sin(p.holographicShift) * 0.5 + 0.5;
                 var color = this.interpolateColors(
                     this.currentTheme.primary,
                     this.currentTheme.secondary,
                     colorShift
                 );
-                
-                // Draw multiple layers for holographic effect
                 for (var layer = 0; layer < 3; layer++) {
                     var layerOffset = layer * 2;
                     var layerAlpha = alpha * (0.5 - layer * 0.1);
-                    
                     ctx.globalAlpha = layerAlpha;
                     ctx.fillStyle = color;
-                    
                     ctx.beginPath();
-                    ctx.arc(
-                        p.x + layerOffset, 
-                        p.y + layerOffset, 
-                        actualSize, 
-                        0, 
-                        Math.PI * 2
-                    );
+                    ctx.arc(p.x + layerOffset, p.y + layerOffset, actualSize, 0, Math.PI * 2);
                     ctx.fill();
                 }
-                
                 ctx.restore();
             }
         }
@@ -423,54 +341,34 @@
     
     HolographicVisualizer.prototype.renderGlassmorphicOverlay = function() {
         var ctx = this.ctx;
-        
-        // Create subtle glassmorphic patterns
         ctx.save();
         ctx.globalAlpha = 0.05;
         ctx.globalCompositeOperation = 'lighten';
-        
         var gradient = ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
-        
-        // Fix color extraction from theme object
         var primaryColor = this.currentTheme.primary || '#00d9ff';
         var accentColor = this.currentTheme.accent || '#ffcc00';
         var secondaryColor = this.currentTheme.secondary || '#ff10f0';
-        
-        // If colors are objects, extract the actual color value
-        if (typeof primaryColor === 'object' && primaryColor.value) {
-            primaryColor = primaryColor.value;
-        }
-        if (typeof accentColor === 'object' && accentColor.value) {
-            accentColor = accentColor.value;
-        }
-        if (typeof secondaryColor === 'object' && secondaryColor.value) {
-            secondaryColor = secondaryColor.value;
-        }
-        
+        if (typeof primaryColor === 'object' && primaryColor.value) primaryColor = primaryColor.value;
+        if (typeof accentColor === 'object' && accentColor.value) accentColor = accentColor.value;
+        if (typeof secondaryColor === 'object' && secondaryColor.value) secondaryColor = secondaryColor.value;
         gradient.addColorStop(0, primaryColor);
         gradient.addColorStop(0.5, accentColor);
         gradient.addColorStop(1, secondaryColor);
-        
         ctx.fillStyle = gradient;
-        
-        // Animated glass panels
         for (var i = 0; i < 5; i++) {
             var x = (i / 5) * this.canvas.width + Math.sin(this.time * 0.1 + i) * 50;
             var y = Math.cos(this.time * 0.05 + i) * 100 + this.canvas.height / 2;
             var width = 200;
             var height = this.canvas.height;
-            
             ctx.save();
             ctx.translate(x, y);
             ctx.rotate(Math.sin(this.time * 0.02 + i) * 0.1);
             ctx.fillRect(-width/2, -height/2, width, height);
             ctx.restore();
         }
-        
         ctx.restore();
     };
     
-    // Utility functions
     HolographicVisualizer.prototype.hexToRgb = function(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -492,31 +390,25 @@
     HolographicVisualizer.prototype.interpolateColors = function(color1, color2, factor) {
         var c1 = this.hexToRgb(color1);
         var c2 = this.hexToRgb(color2);
-        
         var r = Math.floor((c1.r + (c2.r - c1.r) * factor) * 255);
         var g = Math.floor((c1.g + (c2.g - c1.g) * factor) * 255);
         var b = Math.floor((c1.b + (c2.b - c1.b) * factor) * 255);
-        
         return 'rgb(' + r + ', ' + g + ', ' + b + ')';
     };
     
     HolographicVisualizer.prototype.start = function() {
         if (this.isRunning) return;
-        
         this.isRunning = true;
         this.render();
-        
         console.log('🌟 Holographic Visualizer started');
     };
     
     HolographicVisualizer.prototype.stop = function() {
         this.isRunning = false;
-        
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
-        
         console.log('⏹️ Holographic Visualizer stopped');
     };
     
@@ -526,23 +418,17 @@
         this.waves = [];
         this.geometries = [];
         this.holographicLayers = [];
-        
         console.log('🔥 Holographic Visualizer destroyed');
     };
     
-    // Initialize visualizer
     var visualizer = new HolographicVisualizer();
-    
-    // Export for theme engine access
     window.SimpleVisualizer = visualizer;
     window.HolographicVisualizer = visualizer;
     
-    // Handle page unload
-    window.addEventListener('beforeunload', function() {
-        visualizer.destroy();
+    document.addEventListener('DOMContentLoaded', function() {
+        visualizer.start();
     });
     
-    // Pause/resume based on visibility
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             visualizer.stop();

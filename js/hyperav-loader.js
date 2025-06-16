@@ -49,24 +49,22 @@
             // Create container
             var container = document.createElement('div');
             container.id = 'hyperav-container';
-            container.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: -1;
-                pointer-events: none;
-            `;
+            container.style.cssText =
+                'position: fixed;' +
+                'top: 0;' +
+                'left: 0;' +
+                'width: 100%;' +
+                'height: 100%;' +
+                'z-index: -1;' +
+                'pointer-events: none;';
             
             // Create canvas
             var canvas = document.createElement('canvas');
             canvas.id = 'hypercube-canvas';
-            canvas.style.cssText = `
-                width: 100%;
-                height: 100%;
-                display: block;
-            `;
+            canvas.style.cssText =
+                'width: 100%;' +
+                'height: 100%;' +
+                'display: block;';
             
             container.appendChild(canvas);
             document.body.insertBefore(container, document.body.firstChild);
@@ -80,42 +78,39 @@
             // Create invisible interaction zones
             var interactionOverlay = document.createElement('div');
             interactionOverlay.id = 'visualizer-interaction-overlay';
-            interactionOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 5;
-                pointer-events: none;
-            `;
+            interactionOverlay.style.cssText =
+                'position: fixed;' +
+                'top: 0;' +
+                'left: 0;' +
+                'width: 100%;' +
+                'height: 100%;' +
+                'z-index: 5;' +
+                'pointer-events: none;';
             
             // Top-left corner for direct dimension control
             var dimensionZone = document.createElement('div');
             dimensionZone.className = 'interaction-zone dimension-control';
-            dimensionZone.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 200px;
-                height: 200px;
-                pointer-events: auto;
-                cursor: crosshair;
-            `;
+            dimensionZone.style.cssText =
+                'position: absolute;' +
+                'top: 0;' +
+                'left: 0;' +
+                'width: 200px;' +
+                'height: 200px;' +
+                'pointer-events: auto;' +
+                'cursor: crosshair;';
             dimensionZone.title = 'Drag to control dimensions';
             
             // Bottom-right corner for morph control
             var morphZone = document.createElement('div');
             morphZone.className = 'interaction-zone morph-control';
-            morphZone.style.cssText = `
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                width: 200px;
-                height: 200px;
-                pointer-events: auto;
-                cursor: move;
-            `;
+            morphZone.style.cssText =
+                'position: absolute;' +
+                'bottom: 0;' +
+                'right: 0;' +
+                'width: 200px;' +
+                'height: 200px;' +
+                'pointer-events: auto;' +
+                'cursor: move;';
             morphZone.title = 'Drag to control morphing';
             
             interactionOverlay.appendChild(dimensionZone);
@@ -231,24 +226,23 @@
         setupParameterDisplay: function() {
             var display = document.createElement('div');
             display.className = 'parameter-indicator';
-            display.innerHTML = `
-                <div class="param">
-                    <span>Section:</span>
-                    <span class="param-value" id="param-section">home</span>
-                </div>
-                <div class="param">
-                    <span>Geometry:</span>
-                    <span class="param-value" id="param-geometry">hypercube</span>
-                </div>
-                <div class="param">
-                    <span>Activity:</span>
-                    <span class="param-value" id="param-activity">0.0</span>
-                </div>
-                <div class="param">
-                    <span>Depth:</span>
-                    <span class="param-value" id="param-depth">0%</span>
-                </div>
-            `;
+            display.innerHTML =
+                '<div class="param">' +
+                    '<span>Section:</span>' +
+                    '<span class="param-value" id="param-section">home</span>' +
+                '</div>' +
+                '<div class="param">' +
+                    '<span>Geometry:</span>' +
+                    '<span class="param-value" id="param-geometry">hypercube</span>' +
+                '</div>' +
+                '<div class="param">' +
+                    '<span>Activity:</span>' +
+                    '<span class="param-value" id="param-activity">0.0</span>' +
+                '</div>' +
+                '<div class="param">' +
+                    '<span>Depth:</span>' +
+                    '<span class="param-value" id="param-depth">0%</span>' +
+                '</div>';
             document.body.appendChild(display);
             
             // Update display periodically

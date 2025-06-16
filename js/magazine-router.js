@@ -1,4 +1,4 @@
-const MagazineRouter = {
+var MagazineRouter = { // Converted const
     contentContainer: null,
     articlesData: [], // Will be assigned allArticles
     navLinks: [],
@@ -40,17 +40,17 @@ const MagazineRouter = {
             return;
         }
 
-        const script = document.createElement('script');
+        var script = document.createElement('script'); // Converted const
         script.src = scriptPath;
         script.async = true;
         script.defer = true;
         script.setAttribute('data-interactive-id', interactiveElement.dataset.contentId);
 
-        script.onerror = () => {
-            console.error(`MagazineRouter: Failed to load script ${scriptPath}.`);
-            const targetDiv = interactiveElement.querySelector('.interactive-embed-target');
+        script.onerror = function() {
+            console.error('MagazineRouter: Failed to load script ' + scriptPath + '.');
+            var targetDiv = interactiveElement.querySelector('.interactive-embed-target'); // Converted const
             if (targetDiv) {
-                targetDiv.innerHTML = `<p style="color:red;"><em>Failed to load interactive content script.</em></p>`;
+                targetDiv.innerHTML = '<p style="color:red;"><em>Failed to load interactive content script.</em></p>';
             }
         };
         document.body.appendChild(script);
@@ -63,11 +63,11 @@ const MagazineRouter = {
 
         if (!this.contentContainer) {
             console.error("MagazineRouter: Content container '.magazine-content' not found. Cannot initialize.");
-            const body = document.body;
+            var body = document.body; // Converted const
             if (body) {
-                const newContentContainer = document.createElement('div');
+                var newContentContainer = document.createElement('div'); // Converted const
                 newContentContainer.className = 'magazine-content';
-                const footer = document.querySelector('footer.footer-cyber');
+                var footer = document.querySelector('footer.footer-cyber'); // Converted const
                 if (footer) {
                     body.insertBefore(newContentContainer, footer);
                 } else {
@@ -89,30 +89,31 @@ const MagazineRouter = {
     },
 
     setupNavLinks: function() {
+        var self = this;
         this.navLinks = document.querySelectorAll('nav.nav-cyber .nav-links a');
-        this.navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                const href = link.getAttribute('href');
+        this.navLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                var href = link.getAttribute('href'); // Converted const
                 if (href && href.startsWith('#') && !link.getAttribute('target')) {
                     event.preventDefault();
-                    const sectionSlug = href.substring(1);
-                    this.navigateToSection(sectionSlug);
+                    var sectionSlug = href.substring(1); // Converted const
+                    self.navigateToSection(sectionSlug);
                 }
             });
         });
     },
 
     parseRoute: function() {
-        const hash = window.location.hash.replace(/^#!\/?/, '');
-        const parts = hash.split('/');
-        let section = parts[0] || 'home';
-        const itemId = parts[1] || null;
-        const knownSections = ['home', 'articles', 'videos', 'audios', 'interactives', 'spotlights', 'ema', 'about'];
-        let isKnownSection = knownSections.includes(section);
-        let isArticleIdRoute = false;
+        var hash = window.location.hash.replace(/^#!\/?/, ''); // Converted const
+        var parts = hash.split('/'); // Converted const
+        var section = parts[0] || 'home'; // Converted let
+        var itemId = parts[1] || null; // Converted const
+        var knownSections = ['home', 'articles', 'videos', 'audios', 'interactives', 'spotlights', 'ema', 'about']; // Converted const
+        var isKnownSection = knownSections.includes(section); // Converted let
+        var isArticleIdRoute = false; // Converted let
 
         if (!isKnownSection) {
-            const article = this.findArticleById(section);
+            var article = this.findArticleById(section); // Converted const
             if (article) {
                 isArticleIdRoute = true;
             }
@@ -135,9 +136,9 @@ const MagazineRouter = {
 
         this.renderContent(section, itemId, isArticleIdRoute);
 
-        let themeKey = section;
+        var themeKey = section; // Converted let
         if (isArticleIdRoute) {
-            const article = this.findArticleById(section);
+            var article = this.findArticleById(section); // Converted const
             themeKey = article ? (article.theme_modifier_key || article.contentType || 'article') : 'home';
         }
         if (window.ThemeEngine && typeof window.ThemeEngine.applySectionTheme === 'function') {
@@ -148,9 +149,9 @@ const MagazineRouter = {
     },
 
     navigateToSection: function(sectionSlug, itemId = null) {
-        let newHash = `#!/${sectionSlug}`;
+        var newHash = '#!/' + sectionSlug; // Converted let
         if (itemId) {
-            newHash += `/${itemId}`;
+            newHash += '/' + itemId;
         }
         if (window.location.hash === newHash) {
             this.handleRouteChange();
@@ -160,8 +161,8 @@ const MagazineRouter = {
     },
 
     updateNavActiveState: function(currentIdentifier) {
-        let activeRouteKey = currentIdentifier;
-        const article = this.findArticleById(currentIdentifier);
+        var activeRouteKey = currentIdentifier; // Converted let
+        var article = this.findArticleById(currentIdentifier); // Converted const
         if (article && article.contentType) {
             switch(article.contentType) {
                 case 'video': activeRouteKey = 'videos'; break;
@@ -172,8 +173,8 @@ const MagazineRouter = {
                 default: activeRouteKey = 'articles';
             }
         }
-        this.navLinks.forEach(link => {
-            const linkSection = link.getAttribute('data-section') || link.getAttribute('href').substring(1);
+        this.navLinks.forEach(function(link) {
+            var linkSection = link.getAttribute('data-section') || link.getAttribute('href').substring(1); // Converted const
             if (linkSection === activeRouteKey) {
                 link.classList.add('active');
             } else {
@@ -188,59 +189,60 @@ const MagazineRouter = {
             return;
         }
         this.contentContainer.innerHTML = '';
-        let itemsToRender = [];
+        var itemsToRender = []; // Converted let
 
         if (isArticleIdRoute) {
-            const item = this.findArticleById(section);
+            var item = this.findArticleById(section); // Converted const
             if (item) {
                 itemsToRender.push(item);
             } else {
-                console.warn(`MagazineRouter: Item with ID '${section}' not found.`);
+                console.warn('MagazineRouter: Item with ID \'' + section + '\' not found.');
             }
         } else if (itemId) {
-            const item = this.findArticleById(itemId);
+            var item = this.findArticleById(itemId); // Converted const, had to rename from previous block
             if (item) {
                 itemsToRender.push(item);
             } else {
-                console.warn(`MagazineRouter: Item with ID '${itemId}' in section '${section}' not found.`);
+                console.warn('MagazineRouter: Item with ID \'' + itemId + '\' in section \'' + section + '\' not found.');
             }
         } else {
-            let filteredData = [];
-            const articlesSource = this.articlesData || [];
+            var filteredData = []; // Converted let
+            var articlesSource = this.articlesData || []; // Converted const
             switch (section) {
                 case 'home':
-                    filteredData = articlesSource.sort((a,b) => (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0).slice(0, 5);
+                    filteredData = articlesSource.sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; }).slice(0, 5);
                     break;
                 case 'articles':
-                    filteredData = articlesSource.filter(item => item.contentType === 'article').sort((a,b) => (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0);
+                    filteredData = articlesSource.filter(function(item) { return item.contentType === 'article'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
                     break;
                 case 'videos':
-                    filteredData = articlesSource.filter(item => item.contentType === 'video').sort((a,b) => (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0);
+                    filteredData = articlesSource.filter(function(item) { return item.contentType === 'video'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
                     break;
                 case 'audios':
-                    filteredData = articlesSource.filter(item => item.contentType === 'audio').sort((a,b) => (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0);
+                    filteredData = articlesSource.filter(function(item) { return item.contentType === 'audio'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
                     break;
                 case 'interactives':
-                    filteredData = articlesSource.filter(item => item.contentType === 'interactive').sort((a,b) => (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0);
+                    filteredData = articlesSource.filter(function(item) { return item.contentType === 'interactive'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
                     break;
                 default:
-                    console.warn(`MagazineRouter: Unknown section '${section}' for list view or no specific list view defined.`);
+                    console.warn('MagazineRouter: Unknown section \'' + section + '\' for list view or no specific list view defined.');
                     break;
             }
             itemsToRender = filteredData;
         }
 
         if (itemsToRender.length === 0) {
-             this.contentContainer.innerHTML = \`<div class="container-cyber" style="padding: 40px 20px; text-align: center;"><h2 class="section-title">No Content Found</h2><p>Sorry, there's no content available for this section or item.</p></div>\`;
+             this.contentContainer.innerHTML = '<div class="container-cyber" style="padding: 40px 20px; text-align: center;"><h2 class="section-title">No Content Found</h2><p>Sorry, there\'s no content available for this section or item.</p></div>';
              return;
         }
 
-        itemsToRender.forEach(item => {
-            let itemHtml = '';
+        var self = this;
+        itemsToRender.forEach(function(item) {
+            var itemHtml = ''; // Converted let
             if (!item || typeof item.id === 'undefined') { console.error("MagazineRouter: Attempting to render invalid item.", item); return; }
-            let effectiveContentType = item.contentType;
+            var effectiveContentType = item.contentType; // Converted let
             if (typeof effectiveContentType === 'undefined') {
-                console.warn(`MagazineRouter: Item '\${item.id}' missing contentType, defaulting to 'article'.\`, item);
+                console.warn("MagazineRouter: Item '" + item.id + "' missing contentType, defaulting to 'article'.", item);
                 effectiveContentType = 'article';
             }
             switch (effectiveContentType) {
@@ -261,24 +263,23 @@ const MagazineRouter = {
                     else { console.error('renderInteractivePost not defined.'); itemHtml = '<p>Error: Interactive renderer missing.</p>'; }
                     break;
                 default:
-                    console.warn(\`Router: No renderer for contentType '\${effectiveContentType}' (item ID \${item.id}).\`);
-                    itemHtml = \`<div class="content-item error-item glass-element" style="padding:20px; margin:10px;"><h2>\${item.title || 'Unknown Title'}</h2><p>Cannot display contentType ('\${effectiveContentType}') yet.</p></div>\`;
+                    console.warn("Router: No renderer for contentType '" + effectiveContentType + "' (item ID " + item.id + ").");
+                    itemHtml = "<div class=\"content-item error-item glass-element\" style=\"padding:20px; margin:10px;\"><h2>" + (item.title || 'Unknown Title') + "</h2><p>Cannot display contentType ('" + effectiveContentType + "') yet.</p></div>";
                     break;
             }
             if (itemHtml) {
-                const tempDiv = document.createElement('div');
+                var tempDiv = document.createElement('div'); // Converted const
                 tempDiv.innerHTML = itemHtml;
-                const renderedElement = tempDiv.firstChild;
+                var renderedElement = tempDiv.firstChild; // Converted const
                 if (renderedElement) {
-                    this.contentContainer.appendChild(renderedElement);
-                    // Post-render actions for specific types
+                    self.contentContainer.appendChild(renderedElement);
                     if (effectiveContentType === "article" && item.html_content_path && renderedElement.dataset.htmlContentPath) {
-                        this.loadArticleContent(renderedElement, item.html_content_path);
+                        self.loadArticleContent(renderedElement, item.html_content_path);
                     }
                     if (effectiveContentType === "interactive" && item.bootstrap_script_path) {
-                        const bootstrapTarget = renderedElement.querySelector('[data-bootstrap-script]');
+                        var bootstrapTarget = renderedElement.querySelector('[data-bootstrap-script]'); // Converted const
                         if(bootstrapTarget && bootstrapTarget.dataset.bootstrapScript) {
-                           this.loadInteractiveScript(renderedElement, bootstrapTarget.dataset.bootstrapScript);
+                           self.loadInteractiveScript(renderedElement, bootstrapTarget.dataset.bootstrapScript);
                         }
                     }
                 } else {
@@ -290,7 +291,7 @@ const MagazineRouter = {
 
     findArticleById: function(id) {
         if (!this.articlesData || this.articlesData.length === 0) return null;
-        return this.articlesData.find(article => article.id === id);
+        return this.articlesData.find(function(article) { return article.id === id; });
     }
 };
 
@@ -359,7 +360,7 @@ var allArticles = [
     }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     if (typeof MagazineRouter !== 'undefined' && typeof MagazineRouter.init === 'function') {
         if (typeof allArticles !== 'undefined' && Array.isArray(allArticles)) {
             MagazineRouter.init(allArticles);
@@ -367,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("MagazineRouter: 'allArticles' (from fallback) is not defined or not an array. Router will init with empty data.");
             MagazineRouter.init([]);
         }
-        setTimeout(() => {
+        setTimeout(function() {
             MagazineRouter.handleRouteChange();
         }, 0);
     } else {

@@ -22,11 +22,11 @@ class ParallaxEngine {
     }
     
     setupElements() {
-        // Background parallax layers
-        const backgroundLayers = document.querySelectorAll('.parallax-layer');
-        backgroundLayers.forEach((layer, index) => {
-            const speed = parseFloat(layer.dataset.speed) || 0.5;
-            this.elements.push({
+        var self = this;
+        var backgroundLayers = document.querySelectorAll('.parallax-layer'); // Converted
+        backgroundLayers.forEach(function(layer, index) {
+            var speed = parseFloat(layer.dataset.speed) || 0.5; // Converted
+            self.elements.push({
                 element: layer,
                 type: 'background',
                 speed: speed,
@@ -35,10 +35,9 @@ class ParallaxEngine {
             });
         });
         
-        // Floating elements with complex motion
-        const floatingElements = document.querySelectorAll('.floating-element');
-        floatingElements.forEach((element, index) => {
-            this.elements.push({
+        var floatingElements = document.querySelectorAll('.floating-element'); // Converted
+        floatingElements.forEach(function(element, index) {
+            self.elements.push({
                 element: element,
                 type: 'floating',
                 speed: 0.3 + (index * 0.1),
@@ -49,10 +48,9 @@ class ParallaxEngine {
             });
         });
         
-        // Section-based parallax
-        const parallaxSections = document.querySelectorAll('.parallax-section');
-        parallaxSections.forEach((section, index) => {
-            this.elements.push({
+        var parallaxSections = document.querySelectorAll('.parallax-section'); // Converted
+        parallaxSections.forEach(function(section, index) {
+            self.elements.push({
                 element: section,
                 type: 'section',
                 speed: 0.1,
@@ -60,42 +58,38 @@ class ParallaxEngine {
             });
         });
         
-        // Card hover parallax
-        const cards3D = document.querySelectorAll('.card-3d');
-        cards3D.forEach((card, index) => {
-            this.setupCardParallax(card, index);
+        var cards3D = document.querySelectorAll('.card-3d'); // Converted
+        cards3D.forEach(function(card, index) {
+            self.setupCardParallax(card, index);
         });
     }
     
     setupCardParallax(card, index) {
-        let isHovering = false;
-        let mouseX = 0;
-        let mouseY = 0;
+        var self = this;
+        var isHovering = false; // Converted let to var
         
-        card.addEventListener('mouseenter', () => {
+        card.addEventListener('mouseenter', function() {
             isHovering = true;
         });
         
-        card.addEventListener('mouseleave', () => {
+        card.addEventListener('mouseleave', function() {
             isHovering = false;
-            // Reset transform
             card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
         });
         
-        card.addEventListener('mousemove', (e) => {
+        card.addEventListener('mousemove', function(e) {
             if (!isHovering) return;
             
-            const rect = card.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+            var rect = card.getBoundingClientRect(); // Converted
+            var centerX = rect.left + rect.width / 2; // Converted
+            var centerY = rect.top + rect.height / 2; // Converted
             
-            mouseX = (e.clientX - centerX) / (rect.width / 2);
-            mouseY = (e.clientY - centerY) / (rect.height / 2);
+            var mouseX = (e.clientX - centerX) / (rect.width / 2);
+            var mouseY = (e.clientY - centerY) / (rect.height / 2);
             
-            this.updateCardTransform(card, mouseX, mouseY);
+            self.updateCardTransform(card, mouseX, mouseY);
         });
         
-        // Add to elements for scroll-based effects
         this.elements.push({
             element: card,
             type: 'card',
@@ -108,15 +102,15 @@ class ParallaxEngine {
     }
     
     updateCardTransform(card, mouseX, mouseY) {
-        const maxRotation = 15;
-        const maxTranslation = 5;
+        var maxRotation = 15; // Converted
+        var maxTranslation = 5; // Converted
         
-        const rotateX = mouseY * -maxRotation;
-        const rotateY = mouseX * maxRotation;
-        const translateX = mouseX * maxTranslation;
-        const translateY = mouseY * maxTranslation;
+        var rotateX = mouseY * -maxRotation; // Converted
+        var rotateY = mouseX * maxRotation; // Converted
+        var translateX = mouseX * maxTranslation; // Converted
+        var translateY = mouseY * maxTranslation; // Converted
         
-        const transform = 'perspective(1000px) ' +
+        var transform = 'perspective(1000px) ' + // Converted
             'rotateX(' + rotateX + 'deg) ' +
             'rotateY(' + rotateY + 'deg) ' +
             'translateX(' + translateX + 'px) ' +
@@ -125,52 +119,49 @@ class ParallaxEngine {
         
         card.style.transform = transform;
         
-        // Update card glow position
-        const cardGlow = card.querySelector('.card-glow');
+        var cardGlow = card.querySelector('.card-glow'); // Converted
         if (cardGlow) {
             cardGlow.style.transform = 'translate(' + (mouseX * 20) + 'px, ' + (mouseY * 20) + 'px)';
         }
     }
     
     bindEvents() {
-        // Optimized scroll handler
-        window.addEventListener('scroll', () => {
-            this.scrollY = window.pageYOffset;
+        var self = this;
+        window.addEventListener('scroll', function() {
+            self.scrollY = window.pageYOffset;
         }, { passive: true });
         
-        // Window resize handler
-        window.addEventListener('resize', this.debounce(() => {
-            this.windowHeight = window.innerHeight;
-            this.recalculateElements();
+        window.addEventListener('resize', this.debounce(function() {
+            self.windowHeight = window.innerHeight;
+            self.recalculateElements();
         }, 250));
         
-        // Performance monitoring
         this.setupPerformanceMonitoring();
     }
     
     setupPerformanceMonitoring() {
-        let frameCount = 0;
-        let lastTime = performance.now();
+        var self = this;
+        var frameCount = 0; // Converted let to var
+        var lastTime = performance.now(); // Converted let to var
         
-        const checkPerformance = () => {
+        var checkPerformance = function() { // Converted
             frameCount++;
-            const currentTime = performance.now();
+            var currentTime = performance.now(); // Converted
             
             if (currentTime - lastTime >= 1000) {
-                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                var fps = Math.round((frameCount * 1000) / (currentTime - lastTime)); // Converted
                 
-                // Adjust quality based on performance
                 if (fps < 30) {
-                    this.enablePerformanceMode();
+                    self.enablePerformanceMode();
                 } else if (fps > 55) {
-                    this.disablePerformanceMode();
+                    self.disablePerformanceMode();
                 }
                 
                 frameCount = 0;
                 lastTime = currentTime;
             }
             
-            if (this.isRunning) {
+            if (self.isRunning) {
                 requestAnimationFrame(checkPerformance);
             }
         };
@@ -179,8 +170,7 @@ class ParallaxEngine {
     }
     
     enablePerformanceMode() {
-        // Reduce parallax effects for better performance
-        this.elements.forEach(element => {
+        this.elements.forEach(function(element) {
             if (element.type === 'floating') {
                 element.speed *= 0.5;
                 element.amplitude *= 0.7;
@@ -191,103 +181,99 @@ class ParallaxEngine {
     }
     
     disablePerformanceMode() {
-        // Restore full parallax effects
         this.recalculateElements();
         console.log('🚀 Full quality mode restored');
     }
     
     recalculateElements() {
-        // Recalculate element properties after resize
-        this.elements.forEach(element => {
+        var self = this;
+        this.elements.forEach(function(element) {
             if (element.element) {
-                const rect = element.element.getBoundingClientRect();
-                element.elementTop = rect.top + this.scrollY;
+                var rect = element.element.getBoundingClientRect(); // Converted
+                element.elementTop = rect.top + self.scrollY;
                 element.elementHeight = rect.height;
             }
         });
     }
     
     update() {
+        var self = this;
         if (!this.isRunning) return;
         
-        const currentTime = performance.now();
+        var currentTime = performance.now(); // Converted
         
-        this.elements.forEach(element => {
+        this.elements.forEach(function(element) {
             if (!element.element) return;
             
             switch (element.type) {
                 case 'background':
-                    this.updateBackgroundLayer(element);
+                    self.updateBackgroundLayer(element);
                     break;
                     
                 case 'floating':
-                    this.updateFloatingElement(element, currentTime);
+                    self.updateFloatingElement(element, currentTime);
                     break;
                     
                 case 'section':
-                    this.updateSection(element);
+                    self.updateSection(element);
                     break;
                     
                 case 'card':
-                    this.updateCard(element);
+                    self.updateCard(element);
                     break;
             }
         });
         
-        this.rafId = requestAnimationFrame(() => this.update());
+        this.rafId = requestAnimationFrame(function() { self.update(); });
     }
     
     updateBackgroundLayer(element) {
-        const translateY = -(this.scrollY * element.speed);
+        var translateY = -(this.scrollY * element.speed); // Converted
         element.element.style.transform = 'translateY(' + translateY + 'px)';
     }
     
     updateFloatingElement(element, currentTime) {
-        // Complex motion with sine waves and scroll influence
-        const scrollInfluence = this.scrollY * element.speed;
-        const timeInfluence = Math.sin(currentTime * element.frequency) * element.amplitude;
-        const rotationInfluence = Math.cos(currentTime * element.frequency * 0.5) * 5;
+        var scrollInfluence = this.scrollY * element.speed; // Converted
+        var timeInfluence = Math.sin(currentTime * element.frequency) * element.amplitude; // Converted
+        var rotationInfluence = Math.cos(currentTime * element.frequency * 0.5) * 5; // Converted
         
-        const translateY = scrollInfluence + timeInfluence;
-        const rotation = rotationInfluence;
+        var translateY = scrollInfluence + timeInfluence; // Converted
+        var rotation = rotationInfluence; // Converted
         
         element.element.style.transform = 'translateY(' + translateY + 'px) rotate(' + rotation + 'deg)';
         
-        // Opacity based on scroll position
-        const viewportCenter = this.scrollY + this.windowHeight / 2;
-        const elementCenter = element.element.offsetTop;
-        const distance = Math.abs(viewportCenter - elementCenter);
-        const maxDistance = this.windowHeight;
-        const opacity = Math.max(0.2, 1 - (distance / maxDistance));
+        var viewportCenter = this.scrollY + this.windowHeight / 2; // Converted
+        var elementCenter = element.element.offsetTop;
+        var distance = Math.abs(viewportCenter - elementCenter); // Converted
+        var maxDistance = this.windowHeight; // Converted
+        var opacity = Math.max(0.2, 1 - (distance / maxDistance)); // Converted
         
         element.element.style.opacity = opacity;
     }
     
     updateSection(element) {
-        // Subtle section movement
-        const rect = element.element.getBoundingClientRect();
-        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;
+        var rect = element.element.getBoundingClientRect(); // Converted
+        var isInView = rect.bottom >= 0 && rect.top <= this.windowHeight; // Converted
         
         if (isInView) {
-            const translateY = this.scrollY * element.speed;
+            var translateY = this.scrollY * element.speed; // Converted
             element.element.style.transform = 'translateY(' + translateY + 'px)';
         }
     }
     
     updateCard(element) {
-        // Scroll-based card tilting
-        const rect = element.element.getBoundingClientRect();
-        const isInView = rect.bottom >= 0 && rect.top <= this.windowHeight;
-        
+        var rect = element.element.getBoundingClientRect(); // Converted
+        var isInView = rect.bottom >= 0 && rect.top <= this.windowHeight; // Converted
+
         if (isInView && !element.isHovering) {
-            const centerY = rect.top + rect.height / 2;
-            const screenCenter = this.windowHeight / 2;
-            const distance = (centerY - screenCenter) / screenCenter;
+            var centerY = rect.top + rect.height / 2; // Converted
+            var screenCenter = this.windowHeight / 2; // Converted
+            var distance = (centerY - screenCenter) / screenCenter; // Converted
             
-            const rotateX = distance * 2;
-            const translateY = this.scrollY * element.speed;
+            var rotateX = distance * 2; // Converted
+            var translateY = this.scrollY * element.speed;
             
-            const transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) translateY(' + translateY + 'px)';
+            var transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) translateY(' + translateY + 'px)'; // Converted
             element.element.style.transform = transform;
         }
     }
@@ -297,7 +283,7 @@ class ParallaxEngine {
         
         this.isRunning = true;
         this.recalculateElements();
-        this.update();
+        this.rafId = requestAnimationFrame(this.update.bind(this));
         
         console.log('🌊 Parallax Engine started');
     }
@@ -313,24 +299,23 @@ class ParallaxEngine {
         console.log('⏹️ Parallax Engine stopped');
     }
     
-    // Utility functions
     debounce(func, wait) {
-        let timeout;
+        var timeout; // Converted let
         return function executedFunction() {
-            const args = arguments;
-            const later = () => {
-                clearTimeout(timeout);
-                func.apply(this, args);
+            var context = this;
+            var args = arguments; // Converted
+            var later = function() {
+                timeout = null;
+                func.apply(context, args);
             };
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
     }
     
-    // Public API
     addElement(element, options) {
         options = options || {};
-        const config = {
+        var config = { // Converted
             element: element,
             type: options.type || 'custom',
             speed: options.speed || 0.5,
@@ -344,7 +329,7 @@ class ParallaxEngine {
     }
     
     removeElement(id) {
-        const index = this.elements.findIndex(el => el.id === id);
+        var index = this.elements.findIndex(function(el) { return el.id === id; }); // Converted
         if (index !== -1) {
             this.elements.splice(index, 1);
             console.log('➖ Removed parallax element: ' + id);
@@ -352,14 +337,13 @@ class ParallaxEngine {
     }
     
     setSpeed(id, speed) {
-        const element = this.elements.find(el => el.id === id);
+        var element = this.elements.find(function(el) { return el.id === id; }); // Converted
         if (element) {
             element.speed = speed;
             console.log('⚡ Updated speed for ' + id + ': ' + speed);
         }
     }
     
-    // Cleanup
     destroy() {
         this.stop();
         this.elements = [];
@@ -367,25 +351,20 @@ class ParallaxEngine {
     }
 }
 
-// Reduced motion support
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; // Converted
 
 if (prefersReducedMotion) {
     console.log('⚠️ Reduced motion preferred - Parallax effects disabled');
 } else {
-    // Initialize parallax engine
-    const parallaxEngine = new ParallaxEngine();
+    var parallaxEngine = new ParallaxEngine(); // Converted
     
-    // Export for external use
     window.ParallaxEngine = parallaxEngine;
     
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
+    window.addEventListener('beforeunload', function() {
         parallaxEngine.destroy();
     });
     
-    // Pause/resume based on visibility
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             parallaxEngine.stop();
         } else {
