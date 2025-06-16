@@ -353,10 +353,12 @@
         },
         
         // Get current visualizer state for UI elements
+        // Get current visualizer state for display
         getVisualizerState: function() {
+            var preset = this.sectionPresets[this.state.currentSection] || this.sectionPresets.home;
             return {
                 section: this.state.currentSection,
-                preset: this.sectionPresets[this.state.currentSection],
+                preset: preset,
                 activity: {
                     scroll: Math.abs(this.state.scrollVelocity),
                     mouse: Math.sqrt(this.state.mouseVelocity.x * this.state.mouseVelocity.x + 

@@ -118,7 +118,7 @@ const MagazineRouter = {
             }
         }
         if (!isKnownSection && !isArticleIdRoute) {
-            console.warn(\`MagazineRouter: Unknown section or ID '\${section}', defaulting to 'home'.\`);
+            console.warn('MagazineRouter: Unknown section or ID \'' + section + '\', defaulting to \'home\'.');
             section = 'home';
         }
         return { section: section, itemId: isArticleIdRoute ? null : itemId, isArticleIdRoute: isArticleIdRoute };
