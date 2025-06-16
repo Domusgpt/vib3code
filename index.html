@@ -297,49 +297,139 @@
     <script src="js/main-fixed.js?v=1749968723"></script>
     <script src="js/parallax-fixed.js?v=1749968723"></script>
     
-    <!-- EMBEDDED HYPERAV INTEGRATION - BYPASS GITHUB PAGES SYNC ISSUE -->
+    <!-- ENHANCED HYPERAV INTEGRATION - PPPkernel + GEN-RL-MillZ Fusion -->
+    <script src="js/hyperav-integration-enhanced.js?v=2.0"></script>
     <script>
-        console.log('🚀 VIB3CODE HYPERAV INTEGRATION EMBEDDED v1749968723 LOADING...');
+        console.log('🚀 VIB3CODE ENHANCED HYPERAV INTEGRATION v2.0 LOADING...');
         
-        // Embedded VIB3 Visualizer Integration
-        window.VIB3VisualizerIntegration = {
-            state: {
-                currentSection: 'home',
-                scrollPosition: 0,
-                scrollVelocity: 0,
-                mousePosition: { x: 0.5, y: 0.5 },
-                clickIntensity: 0
-            },
+        // Enhanced VIB3 Visualizer Integration with Agentic Control
+        class VIB3VisualizerIntegration {
+            constructor() {
+                this.enhancedSystem = null;
+                this.isActive = false;
+                this.state = {
+                    currentSection: 'home',
+                    scrollPosition: 0,
+                    scrollVelocity: 0,
+                    mousePosition: { x: 0.5, y: 0.5 },
+                    clickIntensity: 0,
+                    readingMetrics: {
+                        timeOnPage: 0,
+                        engagement: 0.5,
+                        contentComplexity: 0.5,
+                        scrollProgress: 0
+                    }
+                };
+                
+                this.sectionPresets = {
+                    home: {
+                        geometry: 'hypercube',
+                        mood: 'dynamic',
+                        primary: '#00d9ff', secondary: '#ff0080', background: '#020010'
+                    },
+                    articles: {
+                        geometry: 'editorial',
+                        mood: 'focused-reading',
+                        primary: '#e6e6e6', secondary: '#3366ff', background: '#000208'
+                    },
+                    videos: {
+                        geometry: 'hypersphere',
+                        mood: 'engaging',
+                        primary: '#ff3366', secondary: '#33ff66', background: '#050005'
+                    },
+                    interactives: {
+                        geometry: 'hypertetrahedron',
+                        mood: 'dynamic-showcase',
+                        primary: '#ff8800', secondary: '#00ccff', background: '#020200'
+                    },
+                    philosophy: {
+                        geometry: 'hypersphere',
+                        mood: 'philosophical-depth',
+                        primary: '#8800ff', secondary: '#00ff88', background: '#000005'
+                    }
+                };
+            }
             
-            sectionPresets: {
-                home: {
-                    primary: '#00d9ff', secondary: '#ff0080', background: '#020010'
-                },
-                articles: {
-                    primary: '#3366ff', secondary: '#cc44ff', background: '#000208'
-                },
-                videos: {
-                    primary: '#ff3366', secondary: '#33ff66', background: '#050005'
-                },
-                podcasts: {
-                    primary: '#ff8800', secondary: '#00ccff', background: '#020200'
-                },
-                ema: {
-                    primary: '#8800ff', secondary: '#00ff88', background: '#000005'
+            async init() {
+                try {
+                    console.log('🎨 Initializing Enhanced VIB3 Visualizer...');
+                    
+                    // Initialize enhanced PPPkernel + GEN-RL-MillZ fusion system
+                    this.enhancedSystem = new VIB3CodeEnhancedVisualizerIntegration();
+                    const success = await this.enhancedSystem.init();
+                    
+                    if (success) {
+                        this.isActive = true;
+                        this.setupAdvancedTracking();
+                        this.setupReadingMetrics();
+                        console.log('✅ Enhanced VIB3 Visualizer Integration ready');
+                    } else {
+                        console.warn('🎨 Enhanced system failed, using fallback mode');
+                        this.setupFallbackMode();
+                    }
+                } catch (error) {
+                    console.warn('🎨 Enhanced visualizer error:', error);
+                    this.setupFallbackMode();
                 }
-            },
-            
-            init: function() {
-                console.log('🎨 Initializing VIB3 Context-Aware Visualizer...');
-                this.setupScrollTracking();
-                this.setupMouseTracking();
-                this.setupClickTracking();
-                this.setupSectionTracking();
+                
                 this.applySectionPreset('home');
-                console.log('✅ VIB3 Visualizer Integration ready');
-            },
+                this.startReadingTimer();
+            }
             
-            setupScrollTracking: function() {
+            setupAdvancedTracking() {
+                var self = this;
+                var lastScrollY = window.scrollY;
+                
+                window.addEventListener('scroll', function() {
+                    var currentScrollY = window.scrollY;
+                    self.state.scrollVelocity = currentScrollY - lastScrollY;
+                    self.state.scrollPosition = currentScrollY;
+                    
+                    // Calculate scroll progress
+                    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    self.state.readingMetrics.scrollProgress = docHeight > 0 ? currentScrollY / docHeight : 0;
+                    
+                    lastScrollY = currentScrollY;
+                    
+                    // Send to enhanced system
+                    if (self.enhancedSystem) {
+                        self.enhancedSystem.readingMetrics = self.state.readingMetrics;
+                        self.enhancedSystem.updateVisualizerData();
+                    }
+                    
+                    // Fallback to legacy system
+                    if (window.HolographicVisualizer) {
+                        var speed = 0.2 + Math.abs(self.state.scrollVelocity) * 0.001;
+                        window.HolographicVisualizer.config.rotationSpeed = speed;
+                    }
+                    
+                    self.updateParameterDisplay();
+                });
+                
+                document.addEventListener('mousemove', function(e) {
+                    self.state.mousePosition.x = e.clientX / window.innerWidth;
+                    self.state.mousePosition.y = e.clientY / window.innerHeight;
+                    self.updateParameterDisplay();
+                });
+                
+                document.addEventListener('click', function() {
+                    self.state.clickIntensity = 1.0;
+                    self.state.readingMetrics.engagement = Math.min(1.0, self.state.readingMetrics.engagement + 0.1);
+                    
+                    setTimeout(function() {
+                        self.state.clickIntensity = Math.max(0.0, self.state.clickIntensity - 0.2);
+                    }, 200);
+                });
+            }
+            
+            setupFallbackMode() {
+                console.log('🎨 Using fallback visualizer mode');
+                this.setupScrollTracking();
+                this.setupMouseTracking(); 
+                this.setupClickTracking();
+            }
+            
+            setupScrollTracking() {
                 var self = this;
                 var lastScrollY = window.scrollY;
                 
@@ -349,28 +439,22 @@
                     self.state.scrollPosition = currentScrollY;
                     lastScrollY = currentScrollY;
                     
-                    // Update visualizer based on scroll
                     if (window.HolographicVisualizer) {
                         var speed = 0.2 + Math.abs(self.state.scrollVelocity) * 0.001;
                         window.HolographicVisualizer.config.rotationSpeed = speed;
-                        
-                        if (Math.abs(self.state.scrollVelocity) > 50) {
-                            window.HolographicVisualizer.config.glitchIntensity = 0.3;
-                        }
                     }
                     
                     self.updateParameterDisplay();
                 });
-            },
+            }
             
-            setupMouseTracking: function() {
+            setupMouseTracking() {
                 var self = this;
                 
                 document.addEventListener('mousemove', function(e) {
                     self.state.mousePosition.x = e.clientX / window.innerWidth;
                     self.state.mousePosition.y = e.clientY / window.innerHeight;
                     
-                    // Update visualizer based on mouse
                     if (window.HolographicVisualizer) {
                         var intensity = Math.sqrt(
                             Math.pow(self.state.mousePosition.x - 0.5, 2) + 
@@ -381,9 +465,9 @@
                     
                     self.updateParameterDisplay();
                 });
-            },
+            }
             
-            setupClickTracking: function() {
+            setupClickTracking() {
                 var self = this;
                 
                 document.addEventListener('click', function() {
@@ -397,43 +481,83 @@
                         }, 500);
                     }
                 });
-            },
+            }
             
-            setupSectionTracking: function() {
+            setupReadingMetrics() {
                 var self = this;
                 
-                // Listen for section changes
+                // Track content complexity based on section
                 if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
                     var originalNavigate = window.MagazineRouter.navigateToSection;
                     window.MagazineRouter.navigateToSection = function(section, itemId) {
                         originalNavigate.call(window.MagazineRouter, section, itemId);
                         self.applySectionPreset(section);
+                        
+                        // Update content complexity
+                        var complexityMap = {
+                            'home': 0.7,
+                            'articles': 0.4,
+                            'videos': 0.6,
+                            'interactives': 0.9,
+                            'philosophy': 0.8
+                        };
+                        self.state.readingMetrics.contentComplexity = complexityMap[section] || 0.5;
                     };
                 }
-            },
+            }
             
-            applySectionPreset: function(section) {
-                console.log('🎨 Applying visualizer preset for section:', section);
+            startReadingTimer() {
+                var self = this;
+                var startTime = Date.now();
+                
+                setInterval(function() {
+                    self.state.readingMetrics.timeOnPage = Date.now() - startTime;
+                    
+                    // Update engagement based on time and interactions
+                    var minutes = self.state.readingMetrics.timeOnPage / 1000 / 60;
+                    if (minutes > 1) {
+                        self.state.readingMetrics.engagement = Math.min(1.0, 0.3 + (minutes * 0.1));
+                    }
+                }, 5000);
+            }
+            
+            applySectionPreset(section) {
+                console.log('🎨 Applying enhanced visualizer preset for section:', section);
                 var preset = this.sectionPresets[section] || this.sectionPresets.home;
                 
-                if (window.HolographicVisualizer && window.HolographicVisualizer.updateTheme) {
-                    window.HolographicVisualizer.updateTheme({
-                        primary: preset.primary,
-                        secondary: preset.secondary,
-                        background: preset.background
-                    });
+                if (this.enhancedSystem && this.isActive) {
+                    // Use enhanced system with agentic control
+                    this.enhancedSystem.applySectionPreset(section);
+                    
+                    if (preset.mood) {
+                        this.enhancedSystem.setEditorialMood(preset.mood);
+                    }
+                } else {
+                    // Fallback to legacy system
+                    if (window.HolographicVisualizer && window.HolographicVisualizer.updateTheme) {
+                        window.HolographicVisualizer.updateTheme({
+                            primary: preset.primary,
+                            secondary: preset.secondary,
+                            background: preset.background
+                        });
+                    }
                 }
                 
                 this.state.currentSection = section;
                 this.updateParameterDisplay();
-            },
+            }
             
-            updateParameterDisplay: function() {
-                // Update parameter display widget
+            // Legacy compatibility
+            applySectionTheme(themeKey) {
+                this.applySectionPreset(themeKey);
+            }
+            
+            updateParameterDisplay() {
                 var sectionEl = document.getElementById('param-section');
                 var scrollEl = document.getElementById('param-scroll');
                 var mouseEl = document.getElementById('param-mouse');
                 var activityEl = document.getElementById('param-activity');
+                var engagementEl = document.getElementById('param-engagement');
                 
                 if (sectionEl) sectionEl.textContent = this.state.currentSection;
                 if (scrollEl) scrollEl.textContent = Math.round(this.state.scrollVelocity);
@@ -449,21 +573,25 @@
                             Math.abs(this.state.mousePosition.y - 0.5) > 0.1) activity = 'hovering';
                     activityEl.textContent = activity;
                 }
+                
+                if (engagementEl) {
+                    engagementEl.textContent = Math.round(this.state.readingMetrics.engagement * 100) + '%';
+                }
             }
-        };
+        }
         
-        // Auto-initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔍 Checking components...');
-            console.log('📦 VIB3VisualizerIntegration:', !!window.VIB3VisualizerIntegration);
+        // Auto-initialize enhanced system
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🔍 Checking enhanced components...');
+            console.log('📦 VIB3CodeEnhancedVisualizerIntegration:', !!window.VIB3CodeEnhancedVisualizerIntegration);
             console.log('📦 HolographicVisualizer:', !!window.HolographicVisualizer);
             
-            // Wait for visualizer to load, then initialize integration
+            // Initialize enhanced visualizer
+            window.VIB3VisualizerIntegration = new VIB3VisualizerIntegration();
+            await window.VIB3VisualizerIntegration.init();
+            
+            // Ensure magazine content loads
             setTimeout(function() {
-                if (window.VIB3VisualizerIntegration) {
-                    window.VIB3VisualizerIntegration.init();
-                }
-                
                 if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
                     var magazineContent = document.querySelector('.magazine-content');
                     if (magazineContent && !magazineContent.innerHTML.trim()) {
@@ -491,6 +619,10 @@
         <div class="param">
             <span>Activity:</span>
             <span class="param-value" id="param-activity">idle</span>
+        </div>
+        <div class="param">
+            <span>Engagement:</span>
+            <span class="param-value" id="param-engagement">50%</span>
         </div>
     </div>
 
