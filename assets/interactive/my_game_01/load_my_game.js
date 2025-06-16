@@ -6,12 +6,19 @@
     
     console.log('🎮 Loading VIB3CODE Interactive Demo Game...');
     
-    // Find the target container
-    var gameContainer = document.getElementById('interactive-embed-my_game_01');
+    // Find the target container - try multiple possible IDs
+    var gameContainer = document.getElementById('interactive-embed-my_game_01') || 
+                       document.getElementById('game-container-div') ||
+                       document.querySelector('[data-bootstrap-script*="load_my_game.js"]') ||
+                       document.querySelector('.interactive-embed-target');
+    
     if (!gameContainer) {
-        console.error('Game container not found');
+        console.error('Game container not found. Checked IDs: interactive-embed-my_game_01, game-container-div');
+        console.error('Available elements:', document.querySelectorAll('[id*="interactive"], [class*="interactive"]'));
         return;
     }
+    
+    console.log('✅ Found game container:', gameContainer.id || gameContainer.className);
     
     // Game state
     var gameState = {

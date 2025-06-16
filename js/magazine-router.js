@@ -331,11 +331,11 @@ var allArticles = [
         "date": "2025-06-15",
         "id": "new-test-article",
         "contentType": "article",
-        "html_content_path": "/assets/articles/new-test-article/content.html",
+        "html_content_path": "assets/articles/new-test-article/content.html",
         "tags": ["intended mood", "pipeline", "visual", "guidelines for new s & s", "asset", "test", "new"],
         "description": "A new test article to demonstrate full pipeline capabilities.",
-        "header_image_path": "/assets/images/new_test_article/new_header.svg",
-        "linked_document_pdf": "/assets/documents/new_test_article/new_document.txt",
+        "header_image_path": "assets/images/new_test_article/new_header.svg",
+        "linked_document_pdf": "assets/documents/new_test_article/new_document.txt",
         "visual_mood": "calm minimalist blue_focus",
         "theme_modifier_key": "article_new_test_article_custom",
         "ai_suggestions": {
@@ -351,7 +351,7 @@ var allArticles = [
         "contentType": "video",
         "title": "My First Video",
         "video_url": "https://example.com/video.mp4",
-        "transcript_path": "/assets/videos/video1/transcript.txt",
+        "transcript_path": "assets/videos/video1/transcript.txt",
         "excerpt": "A cool video."
     },
     {
@@ -363,8 +363,8 @@ var allArticles = [
         "audio_url": "https://example.com/podcast_ep1.mp3",
         "duration": "00:30:45",
         "excerpt": "Talking about cool audio things.",
-        "episode_artwork_path": "/assets/audio/my_cool_podcast_ep1/podcast_ep1_art.jpg",
-        "shownotes_path": "/assets/audio/my_cool_podcast_ep1/ep1_notes.txt",
+        "episode_artwork_path": "assets/audio/my_cool_podcast_ep1/podcast_ep1_art.jpg",
+        "shownotes_path": "assets/audio/my_cool_podcast_ep1/ep1_notes.txt",
         "series_title": "My Cool Podcast",
         "tags": ["podcast", "audio", "episode1"]
     },
@@ -375,14 +375,14 @@ var allArticles = [
         "author": "Game Developer",
         "date": "2023-11-25",
         "live_url": "https://example.com/mygame/index.html",
-        "bootstrap_script_path": "/assets/interactive/my_game_01/load_my_game.js",
+        "bootstrap_script_path": "assets/interactive/my_game_01/load_my_game.js",
         "embed_target_div_id": "game-container-div",
         "excerpt": "A fun block-stacking game.",
-        "thumbnail_image_path": "/assets/interactive/my_game_01/game_thumb.png",
-        "instructions_path": "/assets/interactive/my_game_01/game_instructions.txt",
+        "thumbnail_image_path": "assets/interactive/my_game_01/game_thumb.png",
+        "instructions_path": "assets/interactive/my_game_01/game_instructions.txt",
         "required_assets_paths": [
-            "/assets/interactive/my_game_01/required/game_styles.css",
-            {"path": "/assets/interactive/my_game_01/required/levels.json", "type": "json"},
+            "assets/interactive/my_game_01/required/game_styles.css",
+            {"path": "assets/interactive/my_game_01/required/levels.json", "type": "json"},
             "https://cdn.example.com/somelib.js"
         ],
         "tags": ["game", "interactive", "fun"]
