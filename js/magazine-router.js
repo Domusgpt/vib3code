@@ -17,7 +17,7 @@ var MagazineRouter = { // Converted const
 
         targetDiv.innerHTML = '<p><em>Loading full article...</em></p>';
 
-        fetch(htmlPath)
+        fetch(htmlPath + '?v=' + Date.now())
             .then(function(response) {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status + ' fetching ' + htmlPath);

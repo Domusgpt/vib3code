@@ -247,14 +247,22 @@
             
             // Update display periodically
             setInterval(function() {
-                if (window.VIB3VisualizerIntegration) {
-                    var state = window.VIB3VisualizerIntegration.getVisualizerState();
-                    document.getElementById('param-section').textContent = state.section;
-                    document.getElementById('param-geometry').textContent = state.preset.geometryType;
-                    document.getElementById('param-activity').textContent = 
-                        (state.activity.scroll + state.activity.mouse + state.activity.click).toFixed(2);
-                    document.getElementById('param-depth').textContent = 
-                        Math.round(state.depth * 100) + '%';
+                if (window.VIB3VisualizerIntegration && 
+                    typeof window.VIB3VisualizerIntegration.getVisualizerState === 'function') {
+                    try {
+                        var state = window.VIB3VisualizerIntegration.getVisualizerState();
+                        if (state && state.preset && state.activity) {
+                            document.getElementById('param-section').textContent = state.section || 'unknown';
+                            document.getElementById('param-geometry').textContent = state.preset.geometryType || 'unknown';
+                            document.getElementById('param-activity').textContent = 
+                                ((state.activity.scroll || 0) + (state.activity.mouse || 0) + (state.activity.click || 0)).toFixed(2);
+                            document.getElementById('param-depth').textContent = 
+                                Math.round((state.depth || 0) * 100) + '%';
+                        }
+                    } catch (error) {
+                        // Silently handle errors to prevent console spam
+                        // console.warn('HyperAV: Parameter display update failed:', error.message);
+                    }
                 }
             }, 100);
         },
