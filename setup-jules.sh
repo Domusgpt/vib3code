@@ -119,23 +119,41 @@ else
     print_status "GitHub CLI already installed"
 fi
 
-# Node.js and npm
+# Node.js and npm (version 20 LTS for compatibility)
 if ! command_exists node; then
-    print_info "Installing Node.js..."
+    print_info "Installing Node.js 20 LTS..."
     if [[ "$OS" == "mac" ]]; then
-        brew install node
+        brew install node@20
+        brew link node@20 --force
     elif [[ "$OS" == "linux" ]]; then
-        # Install Node.js via NodeSource repository for latest LTS
-        curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+        # Install Node.js 20 LTS via NodeSource repository
+        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
         if command_exists apt; then
             sudo apt-get install -y nodejs
         elif command_exists yum; then
+            curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
             sudo yum install -y nodejs npm
         fi
     fi
-    print_status "Node.js installed"
+    print_status "Node.js 20 LTS installed"
 else
-    print_status "Node.js already installed"
+    # Check if current Node.js version is compatible
+    node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    if [ "$node_version" -lt 20 ]; then
+        print_warning "Node.js version $node_version detected. Upgrading to Node.js 20 LTS..."
+        if [[ "$OS" == "mac" ]]; then
+            brew install node@20
+            brew link node@20 --force
+        elif [[ "$OS" == "linux" ]]; then
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            if command_exists apt; then
+                sudo apt-get install -y nodejs
+            fi
+        fi
+        print_status "Node.js upgraded to 20 LTS"
+    else
+        print_status "Node.js already installed (compatible version)"
+    fi
 fi
 
 # Python 3
@@ -200,9 +218,31 @@ else
     print_status "ImageMagick already installed"
 fi
 
-# Install global npm packages
-print_header "📦 Installing global npm packages..."
-npm install -g firebase-tools serve @angular/cli
+# Configure npm for user-level global packages (avoid permission issues)
+print_header "📦 Configuring npm and installing global packages..."
+
+# Set npm to use user directory for global packages
+npm config set prefix "$HOME/.npm-global"
+
+# Add npm global bin to PATH for current session
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+# Install essential global packages (excluding Angular CLI - not needed for VIB3CODE)
+print_info "Installing Firebase CLI and serve..."
+npm install -g firebase-tools serve --force
+
+# Verify installations
+if command_exists firebase; then
+    print_status "Firebase CLI installed successfully"
+else
+    print_warning "Firebase CLI installation may have failed"
+fi
+
+if command_exists serve; then
+    print_status "Serve package installed successfully"
+else
+    print_warning "Serve package installation may have failed"
+fi
 
 # Install Python packages
 print_header "🐍 Installing Python packages..."
@@ -258,6 +298,9 @@ fi
 
 # Add aliases to shell config
 cat >> "$SHELL_RC" << 'EOF'
+
+# NPM Global Packages PATH
+export PATH="$HOME/.npm-global/bin:$PATH"
 
 # Paul Phillips Project Aliases
 alias vib3='cd ~/paul-phillips-projects/vib3code && python3 -m http.server 8000'
@@ -451,6 +494,9 @@ cat > "$PROJECTS_DIR/verify-setup.sh" << 'EOF'
 #!/bin/bash
 # Environment Verification for Jules
 
+# Add npm global bin to PATH for verification
+export PATH="$HOME/.npm-global/bin:$PATH"
+
 echo "🧪 Paul Phillips Development Environment Verification"
 echo "=================================================="
 
@@ -468,6 +514,11 @@ echo "Global Packages:"
 firebase --version 2>/dev/null && echo "✅ Firebase CLI" || echo "❌ Firebase CLI"
 serve --version 2>/dev/null && echo "✅ Serve" || echo "❌ Serve"
 
+# Check npm configuration
+echo ""
+echo "NPM Configuration:"
+npm config get prefix | grep -q "$HOME/.npm-global" && echo "✅ NPM user-level config" || echo "❌ NPM user-level config"
+
 # Check project setup
 echo ""
 echo "Project Setup:"
@@ -481,9 +532,9 @@ gh auth status 2>/dev/null && echo "✅ GitHub authenticated" || echo "❌ GitHu
 
 echo ""
 echo "Next steps if any items show ❌:"
-echo "1. Re-run setup script"
-echo "2. Manually install missing tools"  
-echo "3. Run authentication commands"
+echo "1. Restart terminal to load new PATH"
+echo "2. Re-run setup script if needed"
+echo "3. Run authentication commands: gh auth login, firebase login"
 EOF
 
 chmod +x "$PROJECTS_DIR/verify-setup.sh"
@@ -493,13 +544,17 @@ echo ""
 print_info "Jules' development environment is ready for Paul Phillips projects!"
 echo ""
 print_warning "Manual steps required:"
-echo "1. Restart your terminal/shell"
+echo "1. RESTART your terminal/shell (required for PATH changes)"
 echo "2. Run authentication:"
 echo "   gh auth login"
 echo "   firebase login"
 echo "3. Configure Git user:"
 echo "   git config --global user.name 'Jules [LastName]'"
 echo "   git config --global user.email 'jules@[email].com'"
+echo ""
+print_info "If Firebase/Serve commands aren't found after restart:"
+echo "• Run: export PATH=\"\$HOME/.npm-global/bin:\$PATH\""
+echo "• Or re-run this setup script"
 echo ""
 print_info "Quick start commands:"
 echo "• $PROJECTS_DIR/quick-start.sh     - Start VIB3CODE development"
