@@ -1,0 +1,25 @@
+# Collaboration metrics to track
+collaboration_metrics:
+  development_velocity:
+    - features_per_week
+    - bugs_fixed_per_day
+    - code_review_time
+    - deployment_frequency
+
+  quality_indicators:
+    - test_coverage_percentage
+    - code_duplication_ratio
+    - performance_score_improvement
+    - accessibility_compliance
+
+  collaboration_effectiveness:
+    - claude_jules_sync_score
+    - cross_review_accuracy
+    - implementation_alignment
+    - communication_efficiency
+
+  business_impact:
+    - development_cost_reduction
+    - time_to_market_improvement
+    - user_satisfaction_increase
+    - maintenance_overhead_reduction

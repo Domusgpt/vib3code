@@ -1,0 +1,16 @@
+{
+  "collaborationMode": "synchronized",
+  "workflowType": "github-actions",
+  "communicationProtocol": "structured-commits",
+  "taskDistribution": {
+    "claude": ["architecture", "logic", "documentation"],
+    "jules": ["ui-implementation", "testing", "deployment"],
+    "shared": ["reviews", "optimization", "refactoring"]
+  },
+  "qualityGates": {
+    "autoReview": true,
+    "crossValidation": true,
+    "performanceCheck": true,
+    "emaCompliance": true
+  }
+}
