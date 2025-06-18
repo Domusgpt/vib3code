@@ -1,0 +1,359 @@
+/* css/enhanced-styles.css - v1.4 VP */
+/* Applying Neon/Vaporwave styles to enhanced features */
+
+/* --- Base Enhancements --- */
+:root { /* Reiterate key variables for context, though defined elsewhere */
+  --vp-glow-primary-rgb: var(--accent-color-primary-rgb);
+  --vp-glow-secondary-rgb: var(--accent-color-secondary-rgb);
+  --vp-glow-tertiary-rgb: var(--accent-color-tertiary-rgb);
+  --vp-focus-outline: var(--accent-color-secondary); /* Cyan focus */
+}
+
+/* Remove base glass overrides if any */
+.main-frame, .sidebar .control-module, .sidebar .sub-module {
+  /* Backgrounds/borders are handled in the main style.css now */
+}
+
+
+/* --- Visualizer Area Enhancement --- */
+.visualizer-area {
+  /* Base style in main css, add transition */
+  transition: var(--morphing-transition);
+}
+
+/* Neon Visualizer Controller States */
+.visualizer-area.interactive {
+  cursor: crosshair;
+  border-color: rgba(var(--vp-glow-secondary-rgb), 0.6) !important;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6),
+              0 0 10px rgba(var(--vp-glow-secondary-rgb), 0.4) !important;
+}
+.visualizer-area.active {
+  border-color: var(--vp-lime) !important;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7),
+              0 0 15px 2px rgba(var(--vp-lime-rgb), 0.5) !important;
+}
+
+/* Neon XY position indicator */
+.visualizer-xy-indicator {
+  position: absolute; width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(var(--accent-color-primary-rgb), 0.9) 0%, /* Primary color core */
+      rgba(var(--accent-color-primary-rgb), 0) 70%
+    );
+  transform: translate(-50%, -50%); pointer-events: none; opacity: 0; z-index: 10;
+  box-shadow: 0 0 15px 3px var(--glow-primary), /* Use primary glow */
+              0 0 25px 8px rgba(var(--vp-glow-primary-rgb), 0.5);
+  transition: opacity 0.3s ease;
+}
+
+/* Neon Visualizer mode toggle button */
+.visualizer-mode-toggle {
+  position: absolute; top: 10px; right: 10px; z-index: 20;
+  background: rgba(var(--vp-element-base-rgb), 0.5); /* Darker base */
+  color: var(--accent-color-secondary); /* Cyan text */
+  border: 1px solid rgba(var(--vp-glow-secondary-rgb), 0.4);
+  border-radius: var(--button-border-radius);
+  padding: 5px 10px; font-family: var(--font-ui); font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all 0.3s ease;
+  text-shadow: 0 0 4px var(--glow-secondary);
+  box-shadow: 0 0 6px rgba(var(--vp-glow-secondary-rgb), 0.3);
+}
+.visualizer-mode-toggle:hover {
+  background: rgba(var(--vp-element-base-rgb), 0.7);
+  border-color: var(--accent-color-secondary);
+  color: var(--vp-text-bright);
+  box-shadow: 0 0 10px 2px var(--glow-secondary);
+}
+
+
+/* --- Enhanced Module Morphing & Focus --- */
+/* Base state for modules within sidebars */
+.sidebar-content > .control-module,
+.sidebar-content .input-module-container .sub-module {
+  opacity: 0.9; /* Slightly faded */
+  transform: scale(1) translateZ(0); /* No initial scale down */
+  transition: var(--morphing-transition);
+  border-color: var(--border-color-base);
+}
+
+/* When a module gains focus */
+.control-module.focused {
+  opacity: 1;
+  transform: scale(1.02) translateZ(5px); /* Subtle pop */
+  z-index: 10;
+  border-color: var(--vp-focus-outline); /* Use secondary (cyan) for focus */
+  box-shadow: 0 0 15px 2px var(--glow-secondary-strong), /* Cyan focus glow */
+              0 0 25px 5px rgba(var(--vp-glow-secondary-rgb), 0.4);
+  /* No pulsing animation by default, add if desired */
+  /* animation: pulseFocusVP 2s ease-in-out infinite alternate; */
+}
+/* @keyframes pulseFocusVP { ... } */
+
+
+/* When a sidebar has focus, dim other elements */
+.main-frame.has-focus > *:not(.focused):not(.preset-selector-container):not(#hypercube-canvas) {
+    opacity: 0.65; /* Dim unfocused sidebars/visualizer */
+    filter: saturate(60%) brightness(0.8);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+/* Override for the focused sidebar/visualizer */
+.main-frame.has-focus > .focused {
+    opacity: 1;
+    filter: none;
+}
+
+
+/* --- Enhanced Text --- */
+/* Module Title styling is handled in neumorphic-style.css */
+
+/* --- Enhanced Mode Switch (Keyboard/XY) --- */
+/* Base style now in neumorphic-style, this enhances the look */
+.mode-switch-button {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(145deg, #1f0c3f, #1a0933); /* Dark purple gradient */
+  border: 1px solid rgba(var(--vp-purple-rgb), 0.4); /* Purple border */
+  border-radius: 5px; padding: 5px 10px;
+  font-family: var(--font-ui); font-weight: 700; font-size: 11px; letter-spacing: 0.5px;
+  color: var(--vp-purple); /* Purple text */
+  cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(var(--vp-purple-rgb), 0.3), var(--shadow-depth);
+  text-shadow: 0 0 4px rgba(var(--vp-purple-rgb), 0.5);
+}
+.mode-switch-button:hover {
+  color: var(--vp-text-bright);
+  border-color: var(--vp-purple);
+  box-shadow: 0 0 10px 2px rgba(var(--vp-purple-rgb), 0.5), var(--shadow-depth);
+}
+.mode-switch-button .switch-track {
+  width: 24px; height: 14px; background: rgba(0, 0, 0, 0.5);
+  border-radius: 7px; position: relative; border: 1px solid #000;
+}
+.mode-switch-button .switch-handle {
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--vp-purple); top: 1px; left: 1px; /* Adjust positioning */
+  transition: transform 0.3s var(--transition-timing-snap), background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 5px 1px rgba(var(--vp-purple-rgb), 0.7);
+}
+/* State when XY is active */
+.mode-switch-button.xy { border-color: var(--accent-color-primary); color: var(--accent-color-primary); } /* Magenta */
+.mode-switch-button.xy .switch-handle {
+  transform: translateX(10px);
+  background: var(--accent-color-primary); /* Magenta handle */
+  box-shadow: 0 0 8px 2px var(--glow-primary);
+}
+/* Input container switching animation */
+.input-module-container.switching { animation: moduleSwitchVP 0.4s ease-out; }
+@keyframes moduleSwitchVP {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.95); opacity: 0.3; filter: blur(2px); }
+  100% { transform: scale(1); opacity: 1; filter: blur(0px); }
+}
+
+
+/* --- Enhanced Preset Selector Wheel --- */
+.preset-wheel-container { /* Positioned absolutely by main CSS */ }
+.preset-wheel {
+  position: relative; display: flex; border-radius: 20px;
+  background: rgba(var(--vp-element-base-rgb), 0.4); /* Darker wheel */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 0 12px 1px rgba(var(--vp-purple-rgb), 0.4); /* Subtle glow */
+  border: 1px solid rgba(var(--vp-purple-rgb), 0.4);
+  padding: 5px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; white-space: nowrap;
+  max-width: 100%; /* Fill container */
+}
+.preset-wheel::-webkit-scrollbar { display: none; }
+.preset-label { /* Label like "SCROLLS:" */
+  position: sticky; left: 0; font-family: var(--font-arcane); font-size: 14px;
+  color: var(--vp-purple); text-shadow: 0 0 5px rgba(var(--vp-purple-rgb), 0.7);
+  padding: 0 12px; display: flex; align-items: center;
+  background: linear-gradient(90deg, rgba(var(--vp-element-base-rgb), 0.9), rgba(var(--vp-element-base-rgb), 0.0) 90%); /* Fade out effect */
+  z-index: 2; margin-right: 5px;
+}
+.preset-wheel-item {
+  padding: 6px 14px; margin: 0 4px; border-radius: 15px;
+  font-family: var(--font-terminal); font-weight: 700; font-size: 12px;
+  cursor: pointer; transition: all 0.2s ease-out; white-space: nowrap;
+  background: transparent; border: 1px solid transparent;
+  color: var(--vp-text-secondary); display: inline-block;
+}
+.preset-wheel-item:hover {
+    color: var(--vp-text-primary);
+    background: rgba(var(--vp-purple-rgb), 0.2);
+    border-color: rgba(var(--vp-purple-rgb), 0.4);
+}
+.preset-wheel-item.active {
+  background: rgba(var(--accent-color-secondary-rgb), 0.3); /* Cyan active */
+  color: var(--vp-text-bright);
+  border-color: var(--accent-color-secondary);
+  box-shadow: 0 0 8px 1px var(--glow-secondary);
+  transform: scale(1.05); /* Slightly larger */
+}
+
+/* --- Particle System Container --- */
+.particle-container { /* Fullscreen overlay */
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1000; overflow: hidden;
+}
+/* Base particle style */
+.particle { position: absolute; border-radius: 50%; pointer-events: none; }
+/* Large particle specific style */
+.large-particle {
+    mix-blend-mode: color-dodge; /* Example blend mode for color modification */
+    opacity: 0; /* Start invisible, fade in/out via JS */
+    z-index: 1001; /* Above normal particles */
+    transition: opacity 1s ease-in-out; /* Smooth fade */
+}
+/* Animation applied via JS */
+
+
+/* --- Tooltip --- */
+.maleficarum-tooltip {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(10, 2, 33, 0.9); /* Dark bg */
+  color: var(--vp-pink); /* Pink text */
+  padding: 10px 20px; border-radius: 4px;
+  font-family: var(--font-ui); font-size: 14px; font-weight: 500;
+  z-index: 9999; pointer-events: none; opacity: 0;
+  transition: opacity 0.3s ease, bottom 0.3s ease; /* Animate position slightly */
+  box-shadow: 0 0 10px 1px var(--glow-primary);
+  border: 1px solid rgba(var(--accent-color-primary-rgb), 0.5);
+  text-shadow: 0 0 5px var(--glow-primary);
+}
+.maleficarum-tooltip.visible { /* Class added by JS */
+    opacity: 1;
+    bottom: 30px; /* Move up slightly when visible */
+}
+.maleficarum-tooltip.error { /* Style for error messages */
+    color: var(--vp-yellow);
+    border-color: rgba(var(--vp-yellow-rgb), 0.7);
+    box-shadow: 0 0 10px 1px rgba(var(--vp-yellow-rgb), 0.6);
+    text-shadow: 0 0 5px rgba(var(--vp-yellow-rgb), 0.6);
+}
+
+
+/* --- Slider Track Fill --- */
+/* Neon slider fill */
+.slider-wrapper::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    height: var(--slider-track-height);
+    width: calc(var(--slider-progress, 0) * 100%); /* Controlled by JS via CSS var */
+    background: var(--slider-track-active-color); /* Cyan fill */
+    border-radius: calc(var(--slider-track-height) / 2);
+    pointer-events: none; z-index: 1; border: none;
+    box-shadow: 0 0 6px 1px var(--glow-secondary); /* Fill glow */
+    transition: width 0.05s linear; /* Faster fill update */
+}
+
+/* Audio-reactive slider enhancements */
+.slider-wrapper {
+    --pulse-intensity: 0; /* Default value, updated by JS */
+    position: relative;
+    overflow: visible;
+}
+
+.slider-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: calc(var(--slider-progress) * 100%);
+    height: calc(var(--slider-track-height) + var(--pulse-intensity) * 4px);
+    background: linear-gradient(
+        90deg, 
+        var(--accent-color-secondary), 
+        var(--accent-color-primary)
+    );
+    transform: translateY(-50%);
+    opacity: calc(0.4 + var(--pulse-intensity) * 0.6);
+    border-radius: calc(var(--slider-track-height) / 2);
+    pointer-events: none;
+    filter: blur(calc(1px + var(--pulse-intensity) * 3px));
+    box-shadow: 0 0 calc(5px + var(--pulse-intensity) * 15px) var(--accent-color-primary);
+    z-index: 1;
+    transition: all 0.05s linear, filter 0.2s ease, opacity 0.2s ease;
+}
+
+.value-display {
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    color: rgba(var(--accent-color-primary-rgb), calc(0.7 + var(--pulse-intensity) * 0.3)) !important;
+    text-shadow: 0 0 calc(var(--pulse-intensity) * 10px) var(--accent-color-secondary);
+    font-size: calc(0.75rem + var(--pulse-intensity) * 0.15rem) !important;
+}
+
+/* Pulsing effect on slider labels during high intensity */
+@keyframes pulseLabel {
+    0% { opacity: 0.8; text-shadow: 0 0 5px var(--accent-color-primary); }
+    50% { opacity: 1; text-shadow: 0 0 10px var(--accent-color-primary), 0 0 20px var(--accent-color-secondary); }
+    100% { opacity: 0.8; text-shadow: 0 0 5px var(--accent-color-primary); }
+}
+
+.control-group label {
+    transition: all 0.2s ease;
+}
+
+.control-group.active label {
+    animation: pulseLabel 0.8s infinite;
+    color: var(--accent-color-primary);
+}
+
+/* Audio reactivity indicator */
+.reactivity-indicator {
+    animation: pulseLabel 1.5s infinite;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: var(--font-terminal);
+    font-size: 0.8em;
+    color: var(--accent-color-primary);
+    background: rgba(0,0,0,0.6);
+    padding: 5px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--accent-color-primary);
+    z-index: 10;
+    text-shadow: 0 0 5px var(--accent-color-primary);
+    transition: all 0.3s ease;
+}
+
+/* Default state for sliders before audio kicks in */
+.styled-slider {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+/* Fix for missing slider thumb on some mobile browsers */
+.styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color-secondary);
+    border: 2px solid var(--accent-color-primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--accent-color-primary);
+}
+
+.styled-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color-secondary);
+    border: 2px solid var(--accent-color-primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--accent-color-primary);
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1024px) and (min-aspect-ratio: 1/1) { /* Landscape on medium screens */
+     /* Sidebar adjustments already in main CSS */
+     .module-title { font-size: 15px; }
+}
+@media (max-width: 480px) { /* Small screens (likely portrait) */
+     .preset-wheel { max-width: 95%; } /* Allow slightly more width */
+     .preset-label { font-size: 11px; padding: 0 6px;}
+     .preset-wheel-item { font-size: 10px; padding: 4px 8px; margin: 0 2px;}
+     .module-title { font-size: 12px; }
+     .visualizer-mode-toggle { font-size: 10px; padding: 3px 6px; }
+     .maleficarum-tooltip { font-size: 12px; padding: 8px 15px; }
+}

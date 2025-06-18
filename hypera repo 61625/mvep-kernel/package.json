@@ -1,0 +1,35 @@
+{
+  "name": "mvep-kernel",
+  "version": "1.1.0",
+  "description": "Multimodal Visualization Enhancement Protocol - 4D data visualization kernel",
+  "main": "src/MVEPKernel-Advanced.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "visualization",
+    "4D",
+    "WebGL",
+    "data-visualization",
+    "polytopal-projection",
+    "mvep",
+    "ppp"
+  ],
+  "author": "GEN-RL-MiLLz <phillips.paul.email@gmail.com>",
+  "license": "MIT",
+  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Domusgpt/parserator.git",
+    "directory": "packages/mvep-kernel"
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}

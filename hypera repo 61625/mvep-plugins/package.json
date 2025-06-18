@@ -1,0 +1,36 @@
+{
+  "name": "@parserator/mvep-plugins",
+  "version": "1.0.0",
+  "description": "Data input plugins for MVEP visualization kernel",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mvep",
+    "visualization",
+    "data-processing",
+    "json",
+    "audio",
+    "plugins"
+  ],
+  "author": "GEN-RL-MiLLz",
+  "license": "MIT",
+  "dependencies": {
+    "@parserator/mvep-kernel": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Domusgpt/parserator.git",
+    "directory": "packages/mvep-plugins"
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}

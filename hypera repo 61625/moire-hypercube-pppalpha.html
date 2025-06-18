@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGB Moiré Hypercube Lattice Animation</title>
+    <style>
+        :root {
+            /* Vaporwave color scheme */
+            --color-primary: #ff00ff;      /* Neon pink */
+            --color-secondary: #00ffff;    /* Cyan */
+            --color-tertiary: #9933ff;     /* Purple */
+            --color-dark: #0a1130;         /* Deep blue */
+            --color-darker: #050a20;       /* Deeper blue */
+            --color-text: #e0e0ff;         /* Light blue-white */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Chakra Petch', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--color-darker);
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            text-align: center;
+            color: rgba(224, 224, 255, 0.8);
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            max-height: 800px;
+            overflow: hidden;
+            background-color: rgba(5, 10, 32, 0.5);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            margin-bottom: 30px;
+        }
+
+        #hypercube-canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls {
+            background-color: rgba(10, 17, 48, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border-top: 3px solid var(--color-primary);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider {
+            flex-grow: 1;
+            height: 5px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #0e4166, #5fc3e4);
+            outline: none;
+            border-radius: 5px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--color-secondary);
+            cursor: pointer;
+            box-shadow: 0 0 5px var(--color-secondary);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--color-secondary);
+            cursor: pointer;
+            box-shadow: 0 0 5px var(--color-secondary);
+        }
+
+        .value-display {
+            width: 50px;
+            text-align: center;
+            font-family: monospace;
+            color: var(--color-text);
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            background-color: rgba(10, 17, 48, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--color-secondary);
+        }
+
+        .instructions h2 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            color: var(--color-secondary);
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .code-section {
+            margin-top: 40px;
+        }
+
+        .code-section h2 {
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Code explanation */
+        .explanation {
+            background-color: rgba(10, 17, 48, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .explanation h3 {
+            margin-top: 0;
+            color: var(--color-primary);
+        }
+
+        .explanation p {
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            color: rgba(224, 224, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>RGB Moiré Hypercube Lattice Animation</h1>
+            <p class="description">
+                An interactive WebGL animation featuring lattice matrix grids that morph into cubes and hypercubes, 
+                with RGB color splitting and moiré glitch effects creating a dynamic, dimensional visual experience.
+            </p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="instructions">
+            <h2>Interaction Instructions</h2>
+            <ul>
+                <li>Move your mouse or touch the screen to change the center of the lattice</li>
+                <li>Use the sliders below to adjust different parameters of the effect</li>
+                <li>The animation automatically rotates to showcase the dimensional transformations</li>
+            </ul>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="hypercube-canvas"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="morphFactor">Morph Factor</label>
+                <div class="control-row">
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="morphFactor">
+                    <span class="value-display" id="morphFactor-value">0.50</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="dimension">Dimension (3D → 4D)</label>
+                <div class="control-row">
+                    <input type="range" min="3" max="4" step="0.01" value="3.5" class="slider" id="dimension">
+                    <span class="value-display" id="dimension-value">3.50</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="glitchIntensity">RGB Glitch Intensity</label>
+                <div class="control-row">
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="glitchIntensity">
+                    <span class="value-display" id="glitchIntensity-value">0.50</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="rotationSpeed">Rotation Speed</label>
+                <div class="control-row">
+                    <input type="range" min="0" max="2" step="0.01" value="0.5" class="slider" id="rotationSpeed">
+                    <span class="value-display" id="rotationSpeed-value">0.50</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="gridDensity">Grid Density</label>
+                <div class="control-row">
+                    <input type="range" min="5" max="20" step="0.5" value="10" class="slider" id="gridDensity">
+                    <span class="value-display" id="gridDensity-value">10.0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h3>How It Works</h3>
+            <p>
+                This animation combines several advanced graphics techniques to create a unique visual effect:
+            </p>
+            <p>
+                <strong>Lattice Grid Generation:</strong> The base effect starts with a 3D grid of points and lines, creating 
+                a lattice structure that forms the foundation of the animation.
+            </p>
+            <p>
+                <strong>Hypercube Projection:</strong> 4D hypercubes (tesseracts) are projected into 3D space through a series 
+                of mathematical transformations. As the dimension parameter increases, the visualization 
+                morphs from regular 3D cubes toward 4D hypercubes.
+            </p>
+            <p>
+                <strong>RGB Color Splitting:</strong> The glitch effect is created by offsetting the red, green, and blue color 
+                channels slightly, creating color fringes similar to chromatic aberration in optics.
+            </p>
+            <p>
+                <strong>Moiré Patterns:</strong> By overlaying multiple grid patterns with slight offsets and differences in 
+                scale, interference patterns called moiré effects emerge, creating complex visual textures.
+            </p>
+        </div>
+    </main>
+    
+    <footer class="container">
+        <p>© 2025 Web Effects Encyclopedia - All code available under MIT license</p>
+    </footer>
+    
+    <script>
+        // Connect sliders to their value displays
+        document.querySelectorAll('.slider').forEach(slider => {
+            const valueDisplay = document.getElementById(`${slider.id}-value`);
+            
+            // Update value display on input
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = parseFloat(slider.value).toFixed(2);
+            });
+            
+            // Initialize value displays
+            valueDisplay.textContent = parseFloat(slider.value).toFixed(2);
+        });
+    </script>
+    
+    <!-- Main Animation Script -->
+    <script>
+        // Hypercube Lattice Animation with RGB Moiré Effect
+        // A WebGL shader-based animation that creates morphing lattice grids 
+        // forming hypercubes with RGB color splitting glitch effects
+
+        class HypercubeLatticeEffect {
+          constructor(canvas) {
+            this.canvas = canvas;
+            this.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            
+            if (!this.gl) {
+              console.error('WebGL not supported');
+              return;
+            }
+            
+            // Animation properties
+            this.startTime = Date.now();
+            this.mouseX = 0.5;
+            this.mouseY = 0.5;
+            this.morphFactor = 0.5;
+            this.glitchIntensity = 0.5;
+            this.rotationSpeed = 0.5;
+            this.dimension = 3.5; // Between 3.0 and 4.0 (3D cube to 4D hypercube)
+            this.gridDensity = 10.0;
+            
+            // Initialize
+            this.initShaders();
+            this.initBuffers();
+            this.setupInteraction();
+            this.resize();
+            this.animate();
+          }
+          
+          initShaders() {
+            // Vertex shader source
+            const vertexShaderSource = `
+              attribute vec2 a_position;
+              
+              void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+              }
+            `;
+            
+            // Fragment shader source
+            const fragmentShaderSource = `
+              precision highp float;
+              
+              uniform vec2 u_resolution;
+              uniform float u_time;
+              uniform vec2 u_mouse;
+              uniform float u_morphFactor;
+              uniform float u_glitchIntensity;
+              uniform float u_rotationSpeed;
+              uniform float u_dimension;
+              uniform float u_gridDensity;
+              
+              // 4D rotation matrices around various planes
+              mat4 rotateXY(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  c, -s, 0, 0,
+                  s, c, 0, 0,
+                  0, 0, 1, 0,
+                  0, 0, 0, 1
+                );
+              }
+              
+              mat4 rotateXZ(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  c, 0, -s, 0,
+                  0, 1, 0, 0,
+                  s, 0, c, 0,
+                  0, 0, 0, 1
+                );
+              }
+              
+              mat4 rotateXW(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  c, 0, 0, -s,
+                  0, 1, 0, 0,
+                  0, 0, 1, 0,
+                  s, 0, 0, c
+                );
+              }
+              
+              mat4 rotateYZ(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  1, 0, 0, 0,
+                  0, c, -s, 0,
+                  0, s, c, 0,
+                  0, 0, 0, 1
+                );
+              }
+              
+              mat4 rotateYW(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  1, 0, 0, 0,
+                  0, c, 0, -s,
+                  0, 0, 1, 0,
+                  0, s, 0, c
+                );
+              }
+              
+              mat4 rotateZW(float theta) {
+                float c = cos(theta);
+                float s = sin(theta);
+                return mat4(
+                  1, 0, 0, 0,
+                  0, 1, 0, 0,
+                  0, 0, c, -s,
+                  0, 0, s, c
+                );
+              }
+              
+              // Project a 4D point to 3D space
+              vec3 project4Dto3D(vec4 p) {
+                float w = 2.0 / (2.0 + p.w); // Perspective divide
+                return vec3(p.x * w, p.y * w, p.z * w);
+              }
+              
+              // Project a 3D point to 2D space
+              vec2 project3Dto2D(vec3 p) {
+                float z = 2.0 / (3.0 + p.z); // Perspective divide
+                return vec2(p.x * z, p.y * z);
+              }
+              
+              // Convert from screen space to normalized cube coordinates
+              vec3 screenToNormalizedCoords(vec2 screen) {
+                vec2 aspectRatio = vec2(u_resolution.x / u_resolution.y, 1.0);
+                return vec3((screen * 2.0 - 1.0) * aspectRatio * 2.0, 0.0);
+              }
+              
+              // Function to create a smooth-edged grid line
+              float gridLine(float position, float width) {
+                float halfW = width * 0.5;
+                return smoothstep(0.0, halfW, halfW - abs(position));
+              }
+              
+              // Calculate distance to the nearest point on a 3D grid
+              float distanceToGridPoint(vec3 p, float gridSize) {
+                vec3 gridPos = floor(p * gridSize + 0.5) / gridSize;
+                return length(p - gridPos);
+              }
+              
+              // Distance to nearest edge in 3D lattice
+              float latticeEdges(vec3 p, float gridSize, float lineWidth) {
+                vec3 grid = fract(p * gridSize);
+                vec3 edges = 1.0 - smoothstep(0.0, lineWidth, abs(grid - 0.5));
+                return max(max(edges.x, edges.y), edges.z);
+              }
+              
+              // Distance to nearest vertex in 3D lattice
+              float latticeVertices(vec3 p, float gridSize, float vertexSize) {
+                vec3 grid = fract(p * gridSize);
+                vec3 distToVertex = min(grid, 1.0 - grid);
+                float minDist = min(min(distToVertex.x, distToVertex.y), distToVertex.z);
+                return 1.0 - smoothstep(0.0, vertexSize, minDist);
+              }
+              
+              // Create a hypercube (tesseract) lattice
+              float hypercubeLattice(vec3 p, float morphFactor, float gridSize) {
+                // Create base cubic lattice
+                float edges = latticeEdges(p, gridSize, 0.03);
+                float vertices = latticeVertices(p, gridSize, 0.05);
+                
+                // Add time-based distortion to simulate hypercube morphing
+                float timeFactor = u_time * 0.2 * u_rotationSpeed;
+                
+                // Apply non-linear distortion based on morphFactor
+                vec3 distortedP = p;
+                distortedP.x += sin(p.z * 2.0 + timeFactor) * morphFactor * 0.2;
+                distortedP.y += cos(p.x * 2.0 + timeFactor) * morphFactor * 0.2;
+                distortedP.z += sin(p.y * 2.0 + timeFactor) * morphFactor * 0.1;
+                
+                // Apply 4D rotation projection when morphing to a hypercube
+                if (u_dimension > 3.0) {
+                  // Create a 4D point by extending our 3D point
+                  float w = sin(length(p) * 3.0 + u_time * 0.3) * (u_dimension - 3.0);
+                  vec4 p4d = vec4(distortedP, w);
+                  
+                  // Apply 4D rotations
+                  p4d = rotateXW(timeFactor * 0.31) * p4d;
+                  p4d = rotateYW(timeFactor * 0.27) * p4d;
+                  p4d = rotateZW(timeFactor * 0.23) * p4d;
+                  
+                  // Project back to 3D
+                  distortedP = project4Dto3D(p4d);
+                }
+                
+                // Calculate lattice values for the distorted position
+                float distortedEdges = latticeEdges(distortedP, gridSize, 0.03);
+                float distortedVertices = latticeVertices(distortedP, gridSize, 0.05);
+                
+                // Blend between regular and distorted lattice based on morphFactor
+                edges = mix(edges, distortedEdges, morphFactor);
+                vertices = mix(vertices, distortedVertices, morphFactor);
+                
+                return max(edges, vertices);
+              }
+              
+              void main() {
+                // Normalized pixel coordinates
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                
+                // Correct aspect ratio
+                float aspectRatio = u_resolution.x / u_resolution.y;
+                uv.x *= aspectRatio;
+                
+                // Center coordinates
+                vec2 center = vec2(u_mouse.x * aspectRatio, u_mouse.y);
+                
+                // Create 3D space coordinates
+                vec3 p = vec3(uv - center, 0.0);
+                
+                // Apply rotation based on time
+                float timeRotation = u_time * 0.2 * u_rotationSpeed;
+                mat2 rotation = mat2(
+                  cos(timeRotation), -sin(timeRotation),
+                  sin(timeRotation), cos(timeRotation)
+                );
+                p.xy = rotation * p.xy;
+                
+                // Add z-dimension movement
+                p.z = sin(u_time * 0.1) * 0.5;
+                
+                // Calculate hypercube lattice with grid density
+                float lattice = hypercubeLattice(p, u_morphFactor, u_gridDensity);
+                
+                // Apply RGB color splitting for glitch effect
+                float glitchAmount = u_glitchIntensity * (0.1 + 0.1 * sin(u_time * 5.0));
+                
+                // Calculate color offset vectors
+                vec2 rOffset = vec2(glitchAmount, glitchAmount * 0.5);
+                vec2 gOffset = vec2(-glitchAmount * 0.3, glitchAmount * 0.2);
+                vec2 bOffset = vec2(glitchAmount * 0.1, -glitchAmount * 0.4);
+                
+                // Apply color channel shifting
+                float r = hypercubeLattice(vec3(p.xy + rOffset, p.z), u_morphFactor, u_gridDensity);
+                float g = hypercubeLattice(vec3(p.xy + gOffset, p.z), u_morphFactor, u_gridDensity);
+                float b = hypercubeLattice(vec3(p.xy + bOffset, p.z), u_morphFactor, u_gridDensity);
+                
+                // Create moiré pattern by overlaying slightly offset grids
+                float moireGrid1 = hypercubeLattice(p, u_morphFactor, u_gridDensity * 1.01);
+                float moireGrid2 = hypercubeLattice(p, u_morphFactor, u_gridDensity * 0.99);
+                float moire = abs(moireGrid1 - moireGrid2) * 0.5;
+                
+                // Blend the moiré pattern with the RGB lattice
+                r = mix(r, moire, 0.3);
+                g = mix(g, moire, 0.4);
+                b = mix(b, moire, 0.5);
+                
+                // Base colors for the hypercube
+                vec3 baseColor = vec3(0.1, 0.2, 0.4);
+                vec3 latticeColor = vec3(0.9, 0.8, 1.0);
+                
+                // Final color with RGB glitch effect
+                vec3 color = mix(baseColor, latticeColor, vec3(r, g, b));
+                
+                // Add subtle pulsing glow
+                color += vec3(0.1, 0.2, 0.4) * (0.5 + 0.5 * sin(u_time * 0.5));
+                
+                // Vignette effect
+                float vignette = 1.0 - smoothstep(0.4, 1.4, length(uv - vec2(center.x, center.y)));
+                color *= vignette;
+                
+                gl_FragColor = vec4(color, 1.0);
+              }
+            `;
+            
+            // Create and compile shaders
+            const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
+            const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
+            
+            // Create and link program
+            this.program = this.createProgram(vertexShader, fragmentShader);
+            
+            // Get attribute and uniform locations
+            this.positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
+            this.resolutionUniformLocation = this.gl.getUniformLocation(this.program, 'u_resolution');
+            this.timeUniformLocation = this.gl.getUniformLocation(this.program, 'u_time');
+            this.mouseUniformLocation = this.gl.getUniformLocation(this.program, 'u_mouse');
+            this.morphFactorUniformLocation = this.gl.getUniformLocation(this.program, 'u_morphFactor');
+            this.glitchIntensityUniformLocation = this.gl.getUniformLocation(this.program, 'u_glitchIntensity');
+            this.rotationSpeedUniformLocation = this.gl.getUniformLocation(this.program, 'u_rotationSpeed');
+            this.dimensionUniformLocation = this.gl.getUniformLocation(this.program, 'u_dimension');
+            this.gridDensityUniformLocation = this.gl.getUniformLocation(this.program, 'u_gridDensity');
+          }
+          
+          createShader(type, source) {
+            const shader = this.gl.createShader(type);
+            this.gl.shaderSource(shader, source);
+            this.gl.compileShader(shader);
+            
+            const success = this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS);
+            if (!success) {
+              console.error("Could not compile shader:", this.gl.getShaderInfoLog(shader));
+              this.gl.deleteShader(shader);
+              return null;
+            }
+            
+            return shader;
+          }
+          
+          createProgram(vertexShader, fragmentShader) {
+            const program = this.gl.createProgram();
+            this.gl.attachShader(program, vertexShader);
+            this.gl.attachShader(program, fragmentShader);
+            this.gl.linkProgram(program);
+            
+            const success = this.gl.getProgramParameter(program, this.gl.LINK_STATUS);
+            if (!success) {
+              console.error("Could not link program:", this.gl.getProgramInfoLog(program));
+              this.gl.deleteProgram(program);
+              return null;
+            }
+            
+            return program;
+          }
+          
+          initBuffers() {
+            // Create a buffer for the square's positions
+            this.positionBuffer = this.gl.createBuffer();
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+            
+            // Set the geometry - a rectangle that covers the entire viewport
+            this.gl.bufferData(
+              this.gl.ARRAY_BUFFER,
+              new Float32Array([
+                -1.0, -1.0,  // bottom left
+                 1.0, -1.0,  // bottom right
+                -1.0,  1.0,  // top left
+                 1.0,  1.0,  // top right
+              ]),
+              this.gl.STATIC_DRAW
+            );
+          }
+          
+          setupInteraction() {
+            // Track mouse position
+            this.canvas.addEventListener('mousemove', (event) => {
+              const rect = this.canvas.getBoundingClientRect();
+              this.mouseX = (event.clientX - rect.left) / rect.width;
+              this.mouseY = 1.0 - (event.clientY - rect.top) / rect.height; // Flip Y for WebGL
+            });
+            
+            // Handle touch events for mobile
+            this.canvas.addEventListener('touchmove', (event) => {
+              if (event.touches.length > 0) {
+                const rect = this.canvas.getBoundingClientRect();
+                this.mouseX = (event.touches[0].clientX - rect.left) / rect.width;
+                this.mouseY = 1.0 - (event.touches[0].clientY - rect.top) / rect.height;
+                event.preventDefault();
+              }
+            }, { passive: false });
+            
+            // Interactive parameters
+            document.getElementById('morphFactor')?.addEventListener('input', (event) => {
+              this.morphFactor = parseFloat(event.target.value);
+            });
+            
+            document.getElementById('glitchIntensity')?.addEventListener('input', (event) => {
+              this.glitchIntensity = parseFloat(event.target.value);
+            });
+            
+            document.getElementById('rotationSpeed')?.addEventListener('input', (event) => {
+              this.rotationSpeed = parseFloat(event.target.value);
+            });
+            
+            document.getElementById('dimension')?.addEventListener('input', (event) => {
+              this.dimension = parseFloat(event.target.value);
+            });
+            
+            document.getElementById('gridDensity')?.addEventListener('input', (event) => {
+              this.gridDensity = parseFloat(event.target.value);
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => this.resize());
+          }
+          
+          resize() {
+            // Adjust canvas size to match display size
+            const displayWidth = this.canvas.clientWidth;
+            const displayHeight = this.canvas.clientHeight;
+            
+            if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
+              this.canvas.width = displayWidth;
+              this.canvas.height = displayHeight;
+              this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+            }
+          }
+          
+          render(time) {
+            // Clear the canvas
+            this.gl.clearColor(0.05, 0.05, 0.1, 1.0);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+            
+            // Use our shader program
+            this.gl.useProgram(this.program);
+            
+            // Setup the position attribute
+            this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+            this.gl.vertexAttribPointer(
+              this.positionAttributeLocation,
+              2,          // size (num components per iteration)
+              this.gl.FLOAT,   // type of data
+              false,      // normalize
+              0,          // stride
+              0           // offset
+            );
+            
+            // Set the uniforms
+            this.gl.uniform2f(this.resolutionUniformLocation, this.canvas.width, this.canvas.height);
+            this.gl.uniform1f(this.timeUniformLocation, time);
+            this.gl.uniform2f(this.mouseUniformLocation, this.mouseX, this.mouseY);
+            this.gl.uniform1f(this.morphFactorUniformLocation, this.morphFactor);
+            this.gl.uniform1f(this.glitchIntensityUniformLocation, this.glitchIntensity);
+            this.gl.uniform1f(this.rotationSpeedUniformLocation, this.rotationSpeed);
+            this.gl.uniform1f(this.dimensionUniformLocation, this.dimension);
+            this.gl.uniform1f(this.gridDensityUniformLocation, this.gridDensity);
+            
+            // Draw the geometry (2 triangles)
+            this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+          }
+          
+          animate() {
+            // Calculate elapsed time in seconds
+            const currentTime = Date.now();
+            const elapsedTime = (currentTime - this.startTime) / 1000;
+            
+            // Render with current time
+            this.render(elapsedTime);
+            
+            // Request next frame
+            requestAnimationFrame(() => this.animate());
+          }
+        }
+
+        // Initialize the animation when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+          const canvas = document.getElementById('hypercube-canvas');
+          if (canvas) {
+            const effect = new HypercubeLatticeEffect(canvas);
+          }
+        });
+    </script>
+</body>
+</html>

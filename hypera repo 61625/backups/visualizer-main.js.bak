@@ -1,0 +1,589 @@
+/**
+ * visualizer-main.js - v1.2
+ * Standalone script for Hypersynth Visualizer (Mic Input).
+ * - Enhanced audio reactivity: Audio levels modulate visual parameters.
+ * - Added dissonance proxy affecting color shift.
+ * - Added more detailed logging for audio analysis.
+ */
+import HypercubeCore from '../core/HypercubeCore.js';
+import ShaderManager from '../core/ShaderManager.js';
+import GeometryManager from '../core/GeometryManager.js';
+import ProjectionManager from '../core/ProjectionManager.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('hypercube-canvas');
+    const statusDiv = document.getElementById('status');
+    if (!canvas) { statusDiv.textContent = "Error: Canvas not found."; return; }
+
+    // DOM Elements
+    const sliders = {
+        morphFactor: document.getElementById('morphFactor'), dimension: document.getElementById('dimension'),
+        rotationSpeed: document.getElementById('rotationSpeed'), gridDensity: document.getElementById('gridDensity'),
+        lineThickness: document.getElementById('lineThickness'), patternIntensity: document.getElementById('patternIntensity'),
+        universeModifier: document.getElementById('universeModifier'), colorShift: document.getElementById('colorShift'),
+        glitchIntensity: document.getElementById('glitchIntensity'),
+    };
+    const valueDisplays = {}; for (const key in sliders) { if(sliders[key]) valueDisplays[key] = document.getElementById(`${sliders[key].id}-value`); }
+    const geometrySelect = document.getElementById('geometryType'); const projectionSelect = document.getElementById('projectionMethod');
+    const reactivityIndicator = document.querySelector('.reactivity-indicator');
+    
+    // Add click handler to reactivity indicator to manually trigger mic permission
+    if (reactivityIndicator) {
+        reactivityIndicator.addEventListener('click', async () => {
+            // Only try to setup audio if not already set up
+            if (!audioContext || !analyser) {
+                statusDiv.textContent = "Requesting microphone access...";
+                const audioReady = await setupAudio();
+                if (audioReady) {
+                    statusDiv.textContent = "Mic connected successfully!";
+                    reactivityIndicator.textContent = "AUDIO REACTIVE (MIC)";
+                    reactivityIndicator.style.borderColor = "#00ff80";
+                } else {
+                    statusDiv.textContent = "Microphone access denied or error";
+                    reactivityIndicator.textContent = "CLICK FOR MIC ACCESS";
+                }
+            }
+        });
+        
+        // Set initial text to prompt for click
+        reactivityIndicator.textContent = "CLICK FOR MIC ACCESS";
+        reactivityIndicator.style.cursor = "pointer";
+    }
+
+    // State
+    let gl = null, audioContext = null, analyser = null, micSource = null;
+    let mainVisualizerCore = null, geometryManager = null, projectionManager = null, shaderManager = null;
+    let analysisData = { bass: 0, mid: 0, high: 0, bassSmooth: 0, midSmooth: 0, highSmooth: 0 }; // Added smoothed values
+    let freqData = null;
+    let visualParams = { // Stores BASE values from sliders
+        morphFactor: 0.5, dimension: 4.0, rotationSpeed: 0.2, gridDensity: 8.0,
+        lineThickness: 0.03, patternIntensity: 1.0, universeModifier: 1.0,
+        colorShift: 0.0, glitchIntensity: 0.0,
+        // Default derived params (will be updated by lineThickness slider)
+        shellWidth: 0.025, tetraThickness: 0.035
+    };
+    let lastEnergy = 0; // For transient smoothing (optional)
+
+    async function setupAudio() {
+        try {
+            // Create audio context with fallback
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Resume audio context (needed for some browsers)
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            
+            // Setup analyzer with larger FFT for better resolution
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 1024; 
+            analyser.smoothingTimeConstant = 0.6;
+            freqData = new Uint8Array(analyser.frequencyBinCount);
+            
+            // Request mic access with explicit constraints
+            statusDiv.textContent = "Requesting Mic...";
+            const constraints = { 
+                audio: { 
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                } 
+            };
+            
+            // Get user media with error handling
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            
+            // Connect mic to analyzer
+            micSource = audioContext.createMediaStreamSource(stream);
+            micSource.connect(analyser);
+            
+            // Add a dummy node to keep audio context active
+            const dummyNode = audioContext.createGain();
+            dummyNode.gain.value = 0;
+            analyser.connect(dummyNode);
+            dummyNode.connect(audioContext.destination);
+            
+            // Debug info
+            console.log("Audio setup complete:", {
+                "Audio Context State": audioContext.state,
+                "Sample Rate": audioContext.sampleRate,
+                "FFT Size": analyser.fftSize,
+                "Frequency Bins": analyser.frequencyBinCount
+            });
+            
+            statusDiv.textContent = "Mic OK - Visualizer Active"; 
+            
+            // Forcing initial audio calculation
+            calculateAudioLevels();
+            
+            return true;
+        } catch (err) { 
+            console.error("Audio setup error:", err); 
+            statusDiv.textContent = `Error: ${err.message}.`; 
+            
+            // Cleanup on error
+            if (audioContext?.state !== 'closed') audioContext?.close(); 
+            audioContext = null; 
+            analyser = null; 
+            return false; 
+        }
+    }
+
+    function calculateAudioLevels() {
+        if (!analyser || !freqData) {
+            console.warn("Audio analyzer not available");
+            return;
+        }
+        
+        try {
+            // Get frequency data from analyzer
+            analyser.getByteFrequencyData(freqData);
+            
+            // Check if we're getting any audio signal at all
+            const hasAudioSignal = freqData.some(value => value > 0);
+            if (!hasAudioSignal) {
+                console.warn("No audio signal detected - check microphone permissions and input");
+                
+                // Set minimum values to ensure UI reactivity even without mic input
+                // This is just for testing - will use real mic values when available
+                analysisData.bass = 0.2 + Math.random() * 0.3;
+                analysisData.mid = 0.1 + Math.random() * 0.3;
+                analysisData.high = 0.05 + Math.random() * 0.2;
+                
+                // Apply smoothing
+                const alpha = 0.2;
+                analysisData.bassSmooth = analysisData.bassSmooth * (1 - alpha) + analysisData.bass * alpha;
+                analysisData.midSmooth = analysisData.midSmooth * (1 - alpha) + analysisData.mid * alpha;
+                analysisData.highSmooth = analysisData.highSmooth * (1 - alpha) + analysisData.high * alpha;
+                
+                // Update status if no signal for extended period
+                if (Math.random() < 0.01) {
+                    statusDiv.textContent = "No audio signal detected - check mic";
+                }
+                
+                return;
+            }
+            
+            // Calculate frequency bands
+            const bufferLength = analyser.frequencyBinCount;
+            const nyquist = audioContext.sampleRate / 2;
+            const bassBand = [20, 250], midBand = [250, 4000], highBand = [4000, 12000];
+            const freqPerBin = nyquist / bufferLength;
+            
+            let bassSum = 0, midSum = 0, highSum = 0;
+            let bassCount = 0, midCount = 0, highCount = 0;
+            
+            // Analyze frequency bands
+            for (let i = 0; i < bufferLength; i++) {
+                const freq = i * freqPerBin;
+                const value = freqData[i] / 255.0;
+                
+                if (freq >= bassBand[0] && freq < bassBand[1]) { 
+                    bassSum += value; 
+                    bassCount++; 
+                } else if (freq >= midBand[0] && freq < midBand[1]) { 
+                    midSum += value; 
+                    midCount++; 
+                } else if (freq >= highBand[0] && freq < highBand[1]) { 
+                    highSum += value; 
+                    highCount++; 
+                }
+            }
+            
+            // Calculate averages with safety checks
+            const bassAvg = bassCount > 0 ? bassSum / bassCount : 0;
+            const midAvg = midCount > 0 ? midSum / midCount : 0;
+            const highAvg = highCount > 0 ? highSum / highCount : 0;
+            
+            // Update raw values
+            analysisData.bass = bassAvg;
+            analysisData.mid = midAvg;
+            analysisData.high = highAvg;
+            
+            // Apply smoothing with proper alpha value
+            const alpha = 0.15;
+            analysisData.bassSmooth = analysisData.bassSmooth * (1 - alpha) + analysisData.bass * alpha;
+            analysisData.midSmooth = analysisData.midSmooth * (1 - alpha) + analysisData.mid * alpha;
+            analysisData.highSmooth = analysisData.highSmooth * (1 - alpha) + analysisData.high * alpha;
+            
+            // Log values occasionally for debugging
+            if (Math.random() < 0.01) {
+                console.log(`Audio Levels: Bass=${analysisData.bassSmooth.toFixed(2)} Mid=${analysisData.midSmooth.toFixed(2)} High=${analysisData.highSmooth.toFixed(2)}`);
+                
+                // Update status with audio levels
+                statusDiv.textContent = `Audio: B:${analysisData.bassSmooth.toFixed(2)} M:${analysisData.midSmooth.toFixed(2)} H:${analysisData.highSmooth.toFixed(2)}`;
+            }
+        } catch (err) {
+            console.error("Error analyzing audio:", err);
+            
+            // Fallback to random values for testing
+            analysisData.bass = 0.1 + Math.random() * 0.3;
+            analysisData.mid = 0.2 + Math.random() * 0.3;
+            analysisData.high = 0.1 + Math.random() * 0.2;
+            
+            // Apply smoothing
+            const alpha = 0.2;
+            analysisData.bassSmooth = analysisData.bassSmooth * (1 - alpha) + analysisData.bass * alpha;
+            analysisData.midSmooth = analysisData.midSmooth * (1 - alpha) + analysisData.mid * alpha;
+            analysisData.highSmooth = analysisData.highSmooth * (1 - alpha) + analysisData.high * alpha;
+        }
+    }
+
+    function setupControls() {
+        for (const key in sliders) {
+            const slider = sliders[key]; const display = valueDisplays[key];
+            if (slider && display) {
+                const step = slider.step; const decimals = step.includes('.') ? step.split('.')[1].length : 0;
+                visualParams[key] = parseFloat(slider.value); display.textContent = visualParams[key].toFixed(decimals);
+                slider.addEventListener('input', () => {
+                    visualParams[key] = parseFloat(slider.value); display.textContent = visualParams[key].toFixed(decimals);
+                    if(key === 'lineThickness') { visualParams.shellWidth = visualParams.lineThickness*0.8; visualParams.tetraThickness = visualParams.lineThickness*1.1; if(mainVisualizerCore){ mainVisualizerCore.state._dirtyUniforms.add('u_shellWidth'); mainVisualizerCore.state._dirtyUniforms.add('u_tetraThickness');}}
+                    if(mainVisualizerCore) mainVisualizerCore.updateParameters({ [key]: visualParams[key] }); // Direct update
+                    const wrapper = slider.closest('.slider-wrapper'); if(wrapper) { const min=parseFloat(slider.min), max=parseFloat(slider.max), val=visualParams[key]; const progress=(max===min)?0:(val-min)/(max-min); wrapper.style.setProperty('--slider-progress', Math.max(0,Math.min(1,progress)).toFixed(3)); }
+                });
+                 const wrapper = slider.closest('.slider-wrapper'); if(wrapper) { const min=parseFloat(slider.min), max=parseFloat(slider.max), val=visualParams[key]; const progress=(max===min)?0:(val-min)/(max-min); wrapper.style.setProperty('--slider-progress', Math.max(0,Math.min(1,progress)).toFixed(3)); }
+            }
+        }
+        geometrySelect?.addEventListener('change', (e) => { mainVisualizerCore?.updateParameters({ geometryType: e.target.value }); });
+        projectionSelect?.addEventListener('change', (e) => { mainVisualizerCore?.updateParameters({ projectionMethod: e.target.value }); });
+        console.log("Controls initialized.");
+    }
+
+    function mainUpdateLoop() {
+        if (!mainVisualizerCore?.state?.isRendering) return;
+        if (analyser) calculateAudioLevels();
+
+        // Calculate audio-influenced factors
+        const dissonanceFactor = analysisData.midSmooth * analysisData.highSmooth * 2.0;
+        const energyFactor = (analysisData.bassSmooth + analysisData.midSmooth) * 0.5;
+        const transientFactor = Math.max(0, analysisData.highSmooth - lastEnergy) * 2.0;
+        lastEnergy = analysisData.highSmooth * 0.8; // Update transient tracking with decay
+        
+        // Calculate reactivity mappings for each parameter
+        const paramMappings = {
+            morphFactor: {
+                factor: 0.6 + analysisData.midSmooth * 1.2 + transientFactor * 0.4,
+                primary: 'mid',
+                secondary: 'high',
+                pulseThreshold: 0.4
+            },
+            dimension: {
+                factor: 0.85 + analysisData.bassSmooth * 0.3,
+                primary: 'bass',
+                secondary: null,
+                pulseThreshold: 0.6
+            },
+            rotationSpeed: {
+                factor: 0.5 + analysisData.midSmooth * 2.5 + analysisData.highSmooth * 1.5,
+                primary: 'mid',
+                secondary: 'high',
+                pulseThreshold: 0.3
+            },
+            gridDensity: {
+                factor: 0.7 + analysisData.bassSmooth * 1.8,
+                primary: 'bass',
+                secondary: null,
+                pulseThreshold: 0.5
+            },
+            lineThickness: {
+                factor: 1.2 - analysisData.highSmooth * 0.8,
+                primary: 'high',
+                secondary: null,
+                pulseThreshold: 0.6,
+                inverse: true
+            },
+            patternIntensity: {
+                factor: 0.6 + analysisData.midSmooth * 1.2 + transientFactor * 0.8,
+                primary: 'mid',
+                secondary: 'transient',
+                pulseThreshold: 0.3
+            },
+            universeModifier: {
+                factor: 0.8 + analysisData.bassSmooth * 0.8,
+                primary: 'bass',
+                secondary: 'mid',
+                pulseThreshold: 0.5
+            },
+            glitchIntensity: {
+                factor: 1.0 + analysisData.highSmooth * 6.0 + transientFactor * 10.0,
+                primary: 'high',
+                secondary: 'transient',
+                pulseThreshold: 0.2,
+                additive: true
+            },
+            colorShift: {
+                factor: 1.0 + (dissonanceFactor - 0.1) * 0.8 + (energyFactor - 0.2) * 0.5,
+                primary: 'dissonance',
+                secondary: 'energy',
+                pulseThreshold: 0.4,
+                bipolar: true
+            }
+        };
+        
+        // Calculate fully reactive parameters
+        const effectiveParams = {
+            shellWidth: visualParams.shellWidth * (0.8 + analysisData.midSmooth * 1.4),
+            tetraThickness: visualParams.tetraThickness * (1.1 - analysisData.highSmooth * 0.7),
+            audioLevels: { bass: analysisData.bassSmooth, mid: analysisData.midSmooth, high: analysisData.highSmooth }
+        };
+        
+        // Calculate each parameter based on its mapping
+        for (const key in paramMappings) {
+            const mapping = paramMappings[key];
+            
+            if (mapping.additive) {
+                // Additive parameters add to base value instead of multiplying
+                effectiveParams[key] = visualParams[key] + 
+                    (visualParams[key] * analysisData.highSmooth * 0.2) + 
+                    (transientFactor * 0.3);
+            } else if (mapping.bipolar) {
+                // Bipolar parameters can go positive or negative from center
+                effectiveParams[key] = visualParams[key] + 
+                    (dissonanceFactor - 0.1) * 0.8 + 
+                    (energyFactor - 0.2) * 0.5;
+            } else {
+                // Standard multiplicative parameters
+                effectiveParams[key] = visualParams[key] * mapping.factor;
+            }
+        }
+
+        // Update slider positions and add visual effects based on audio reactivity
+        for (const key in sliders) {
+            const slider = sliders[key];
+            const display = valueDisplays[key];
+            if (slider && display) {
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                const step = slider.step;
+                const decimals = step.includes('.') ? step.split('.')[1].length : 0;
+                const value = effectiveParams[key];
+                
+                // Only update if value is valid
+                if (value !== undefined && !isNaN(value)) {
+                    // Clamp value to slider range
+                    const clampedValue = Math.max(min, Math.min(max, value));
+                    
+                    // Update slider position visually (not the value to avoid feedback loops)
+                    const progress = (max === min) ? 0 : (clampedValue - min) / (max - min);
+                    const wrapper = slider.closest('.slider-wrapper');
+                    if (wrapper) {
+                        wrapper.style.setProperty('--slider-progress', Math.max(0, Math.min(1, progress)).toFixed(3));
+                    }
+                    
+                    // Update value display with the effective parameter value
+                    display.textContent = clampedValue.toFixed(decimals);
+                    
+                    // Add visual effects to sliders based on audio analysis
+                    const controlGroup = slider.closest('.control-group');
+                    const mapping = paramMappings[key];
+                    
+                    if (mapping) {
+                        // Calculate pulse intensity based on primary and secondary audio bands
+                        let pulseIntensity = 0;
+                        
+                        if (mapping.primary === 'bass') {
+                            pulseIntensity = analysisData.bassSmooth * 1.5;
+                        } else if (mapping.primary === 'mid') {
+                            pulseIntensity = analysisData.midSmooth * 1.5;
+                        } else if (mapping.primary === 'high') {
+                            pulseIntensity = analysisData.highSmooth * 1.5;
+                        } else if (mapping.primary === 'dissonance') {
+                            pulseIntensity = dissonanceFactor * 1.2;
+                        } else if (mapping.primary === 'energy') {
+                            pulseIntensity = energyFactor * 1.2;
+                        } else if (mapping.primary === 'transient') {
+                            pulseIntensity = transientFactor * 2.0;
+                        }
+                        
+                        // Limit pulse intensity
+                        pulseIntensity = Math.min(1, pulseIntensity);
+                        
+                        if (wrapper) {
+                            wrapper.style.setProperty('--pulse-intensity', pulseIntensity.toFixed(2));
+                        }
+                        
+                        // Add 'active' class to control groups that exceed their pulse threshold
+                        if (pulseIntensity > mapping.pulseThreshold) {
+                            controlGroup?.classList.add('active');
+                        } else {
+                            controlGroup?.classList.remove('active');
+                        }
+                    } else {
+                        // For parameters without mappings, use overall energy
+                        const defaultPulse = Math.min(1, energyFactor * 1.2);
+                        if (wrapper) {
+                            wrapper.style.setProperty('--pulse-intensity', defaultPulse.toFixed(2));
+                        }
+                        
+                        if (defaultPulse > 0.5) {
+                            controlGroup?.classList.add('active');
+                        } else {
+                            controlGroup?.classList.remove('active');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Clamp values to valid ranges
+        effectiveParams.morphFactor = Math.max(0, Math.min(1.5, effectiveParams.morphFactor));
+        effectiveParams.dimension = Math.max(3, Math.min(5, effectiveParams.dimension));
+        effectiveParams.rotationSpeed = Math.max(0, Math.min(3, effectiveParams.rotationSpeed));
+        effectiveParams.gridDensity = Math.max(1, Math.min(25, effectiveParams.gridDensity));
+        effectiveParams.lineThickness = Math.max(0.002, Math.min(0.1, effectiveParams.lineThickness));
+        effectiveParams.shellWidth = Math.max(0.005, Math.min(0.08, effectiveParams.shellWidth));
+        effectiveParams.tetraThickness = Math.max(0.003, Math.min(0.1, effectiveParams.tetraThickness));
+        effectiveParams.patternIntensity = Math.max(0, Math.min(3, effectiveParams.patternIntensity));
+        effectiveParams.universeModifier = Math.max(0.3, Math.min(2.5, effectiveParams.universeModifier));
+        effectiveParams.glitchIntensity = Math.max(0, Math.min(0.15, effectiveParams.glitchIntensity));
+        effectiveParams.colorShift = Math.max(-1.0, Math.min(1.0, effectiveParams.colorShift));
+
+        mainVisualizerCore.updateParameters(effectiveParams);
+        requestAnimationFrame(mainUpdateLoop);
+    }
+
+    // Setup random audio data for fallback/testing
+    function setupRandomAudioData() {
+        console.log("Setting up random audio data");
+        
+        // Set up simple interval to generate fake audio data
+        const randomAudioInterval = setInterval(() => {
+            // Only use random data if real analyzer is not available
+            if (!analyser) {
+                // Generate slightly structured random values
+                const time = Date.now() / 1000;
+                const bassFactor = 0.5 + 0.4 * Math.sin(time * 0.33); // Slower bass rhythm
+                const midFactor = 0.5 + 0.4 * Math.sin(time * 0.67);  // Medium mid rhythm
+                const highFactor = 0.3 + 0.3 * Math.sin(time * 1.5);  // Faster high rhythm
+                
+                // Apply random variations
+                analysisData.bass = 0.1 + bassFactor * Math.random() * 0.5;
+                analysisData.mid = 0.1 + midFactor * Math.random() * 0.5;
+                analysisData.high = 0.05 + highFactor * Math.random() * 0.4;
+                
+                // Add random peaks occasionally
+                if (Math.random() < 0.05) {
+                    analysisData.bass += 0.4;
+                }
+                if (Math.random() < 0.08) {
+                    analysisData.mid += 0.3;
+                }
+                if (Math.random() < 0.1) {
+                    analysisData.high += 0.3;
+                }
+                
+                // Smooth the values
+                const alpha = 0.25;
+                analysisData.bassSmooth = analysisData.bassSmooth * (1 - alpha) + analysisData.bass * alpha;
+                analysisData.midSmooth = analysisData.midSmooth * (1 - alpha) + analysisData.mid * alpha;
+                analysisData.highSmooth = analysisData.highSmooth * (1 - alpha) + analysisData.high * alpha;
+                
+                // Clamp to valid range
+                analysisData.bassSmooth = Math.min(1, Math.max(0, analysisData.bassSmooth));
+                analysisData.midSmooth = Math.min(1, Math.max(0, analysisData.midSmooth));
+                analysisData.highSmooth = Math.min(1, Math.max(0, analysisData.highSmooth));
+            } else {
+                // Real analyzer is now available, clear the interval
+                clearInterval(randomAudioInterval);
+            }
+        }, 40); // 25fps random updates
+    }
+
+    async function initialize() {
+        try {
+            // Set status
+            statusDiv.textContent = "Initializing WebGL...";
+            
+            // Initialize WebGL context with antialiasing
+            gl = canvas.getContext('webgl', { 
+                antialias: true,
+                powerPreference: 'high-performance',
+                desynchronized: true
+            }) || canvas.getContext('experimental-webgl'); 
+            
+            if (!gl) throw new Error("WebGL context creation failed");
+            
+            // Initialize core managers
+            statusDiv.textContent = "Creating geometry...";
+            geometryManager = new GeometryManager();
+            projectionManager = new ProjectionManager();
+            
+            // Initialize shader manager
+            statusDiv.textContent = "Compiling shaders...";
+            shaderManager = new ShaderManager(gl, geometryManager, projectionManager);
+            
+            // Setup UI controls
+            setupControls();
+            
+            // Create main visualizer core with error callback
+            statusDiv.textContent = "Creating visualization core...";
+            mainVisualizerCore = new HypercubeCore(canvas, shaderManager, {
+                 geometryType: geometrySelect?.value ?? 'hypercube',
+                 projectionMethod: projectionSelect?.value ?? 'perspective',
+                 ...visualParams,
+                 callbacks: { 
+                     onError: (err) => { 
+                         statusDiv.textContent = `Vis Error: ${err.message}`; 
+                         console.error("Visualizer error:", err); 
+                     },
+                     onRender: () => {
+                         // Optional render callback for frame timing
+                     }
+                 }
+            });
+            
+            // Check if shaders compiled successfully
+            if (!mainVisualizerCore.shaderManager.programs[mainVisualizerCore.state.shaderProgramName]) {
+                throw new Error("Initial shader compilation failed");
+            }
+            
+            // Log success
+            console.log("Visualizer Core initialized successfully");
+            statusDiv.textContent = "Visualization ready";
+        } catch (err) { 
+            console.error("Visualization initialization error:", err); 
+            statusDiv.textContent = `Error: ${err.message}`; 
+            return; 
+        }
+        
+        // Set up fallback random audio data immediately
+        setupRandomAudioData();
+        
+        // Start the visualization and render loop immediately with random data
+        mainVisualizerCore.start(); 
+        requestAnimationFrame(mainUpdateLoop);
+        
+        // Check if we're in an iframe in a web environment (likely to have permission issues)
+        const isInIframe = window !== window.top;
+        const isWebHosted = window.location.protocol.startsWith('http');
+        
+        // Don't auto-request microphone in hosted environments, wait for user click instead
+        if (!isInIframe && !isWebHosted) {
+            // If not in hosted environment, try to initialize audio automatically
+            // This helps when running from local file system directly
+            try {
+                statusDiv.textContent = "Attempting to access microphone...";
+                const audioReady = await setupAudio();
+                
+                if (audioReady) {
+                    statusDiv.textContent = "Mic OK - Visualizer Active";
+                    
+                    // Update reactivity indicator
+                    const reactivityIndicator = document.querySelector('.reactivity-indicator');
+                    if (reactivityIndicator) {
+                        reactivityIndicator.textContent = "AUDIO REACTIVE (MIC)";
+                        reactivityIndicator.style.borderColor = "#00ff80";
+                        reactivityIndicator.style.animation = 'pulseLabel 1.5s infinite';
+                    }
+                } else {
+                    console.warn("Automatic microphone access failed, using simulation");
+                }
+            } catch (err) {
+                console.error("Error during automatic audio setup:", err);
+            }
+        }
+        
+        console.log("Initialization complete - visualization running");
+    }
+    initialize();
+});

@@ -1,0 +1,54 @@
+{
+  "name": "@parserator/core",
+  "version": "1.0.0",
+  "description": "Core HTTP client for Parserator - Production-grade API client with 95% accuracy",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run clean && npm run build && npm test"
+  },
+  "keywords": [
+    "parserator",
+    "api",
+    "client",
+    "http",
+    "parsing",
+    "ai",
+    "architect-extractor",
+    "typescript"
+  ],
+  "author": "Paul Phillips <Gen-rl-millz@parserator.com>",
+  "license": "PROPRIETARY",
+  "homepage": "https://parserator.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domusgpt/parserator.git",
+    "directory": "packages/core"
+  },
+  "dependencies": {
+    "@parserator/types": "^1.0.0",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.8.10",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
