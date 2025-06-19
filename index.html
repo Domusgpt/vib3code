@@ -1699,15 +1699,45 @@
                 let scrollTimeout;
                 let mouseTimeout;
                 
-                // Mouse movement
+                // SOPHISTICATED MOUSE PARAMETER MAPPING
                 document.addEventListener('mousemove', (e) => {
-                    this.interactionState.mouseX = e.clientX / window.innerWidth;
-                    this.interactionState.mouseY = e.clientY / window.innerHeight;
+                    const rawX = e.clientX / window.innerWidth;
+                    const rawY = e.clientY / window.innerHeight;
+                    
+                    // Store raw coordinates
+                    this.interactionState.mouseX = rawX;
+                    this.interactionState.mouseY = rawY;
+                    
+                    // COMPLEX PARAMETER TRANSFORMATIONS
+                    const time = performance.now() * 0.001;
+                    
+                    // Center offset with mathematical modifiers
+                    const centerOffsetX = (rawX - 0.5) * 0.3 * Math.sin(time * 0.2) + 0.5;
+                    const centerOffsetY = (1.0 - rawY - 0.5) * 0.2 * Math.cos(time * 0.3) + 0.5; // Inverted Y with time modulation
+                    
+                    // Distance from center for radial effects
+                    const distanceFromCenter = Math.sqrt(Math.pow(rawX - 0.5, 2) + Math.pow(rawY - 0.5, 2));
+                    const normalizedDistance = Math.min(distanceFromCenter * 2, 1.0);
+                    
+                    // Quadrant-based modifiers
+                    const quadrant = this.getMouseQuadrant(rawX, rawY);
+                    const quadrantModifier = this.getQuadrantModifier(quadrant, time);
+                    
+                    // Store sophisticated mouse state
+                    this.interactionState.mouseComplex = {
+                        centerOffset: { x: centerOffsetX, y: centerOffsetY },
+                        distanceFromCenter: normalizedDistance,
+                        quadrant: quadrant,
+                        quadrantModifier: quadrantModifier,
+                        timePhase: Math.sin(time * 0.1),
+                        spatialIndex: this.calculateSpatialIndex(rawX, rawY, time)
+                    };
+                    
                     this.interactionState.type = 'move';
-                    this.interactionState.intensity = 0.5;
+                    this.interactionState.intensity = 0.3 + normalizedDistance * 0.4; // Intensity based on distance from center
                     this.interactionState.lastActivity = Date.now();
                     
-                    // Update parameter display with mouse data
+                    // Update parameter display with sophisticated data
                     if (window.updateParameterDisplay) {
                         window.updateParameterDisplay();
                     }
@@ -1720,6 +1750,43 @@
                         }
                     }, 3000);
                 });
+                
+                // Add sophisticated mouse calculation methods
+                this.getMouseQuadrant = function(x, y) {
+                    if (x >= 0.5 && y >= 0.5) return 1; // Top-right
+                    if (x < 0.5 && y >= 0.5) return 2;  // Top-left
+                    if (x < 0.5 && y < 0.5) return 3;   // Bottom-left
+                    return 4; // Bottom-right
+                };
+                
+                this.getQuadrantModifier = function(quadrant, time) {
+                    const baseModifiers = {
+                        1: { gridMultiplier: 1.2, dimensionOffset: 0.1, rotationBoost: 1.3 },
+                        2: { gridMultiplier: 0.8, dimensionOffset: -0.1, rotationBoost: 0.7 },
+                        3: { gridMultiplier: 1.1, dimensionOffset: 0.2, rotationBoost: 0.9 },
+                        4: { gridMultiplier: 0.9, dimensionOffset: -0.05, rotationBoost: 1.1 }
+                    };
+                    
+                    const base = baseModifiers[quadrant];
+                    const timeInfluence = Math.sin(time * 0.15 + quadrant) * 0.1;
+                    
+                    return {
+                        gridMultiplier: base.gridMultiplier + timeInfluence,
+                        dimensionOffset: base.dimensionOffset + timeInfluence * 0.5,
+                        rotationBoost: base.rotationBoost + timeInfluence * 0.2
+                    };
+                };
+                
+                this.calculateSpatialIndex = function(x, y, time) {
+                    // Complex spatial mapping function
+                    const spiralAngle = Math.atan2(y - 0.5, x - 0.5) + time * 0.1;
+                    const spiralRadius = Math.sqrt((x - 0.5) * (x - 0.5) + (y - 0.5) * (y - 0.5));
+                    return {
+                        spiral: (Math.sin(spiralAngle * 3 + spiralRadius * 10) + 1) * 0.5,
+                        wave: Math.sin(x * 8 + time) * Math.cos(y * 6 + time * 0.7),
+                        noise: (Math.sin(x * 23.1 + y * 17.3 + time * 0.05) + 1) * 0.5
+                    };
+                };
                 
                 // Scroll tracking
                 window.addEventListener('scroll', () => {
@@ -1829,6 +1896,7 @@
                 this.time = performance.now() * 0.001;
                 
                 const config = this.getInterpolatedConfig();
+                const mouseComplex = this.interactionState.mouseComplex || {};
                 
                 // Apply interaction effects
                 const holdDuration = this.interactionState.isHolding ? 
@@ -1837,12 +1905,44 @@
                 const interactionMultiplier = 1 + this.interactionState.intensity * 0.5;
                 const dimensionShift = holdDuration * 0.1;
                 
+                // SOPHISTICATED MOUSE PARAMETER MAPPING
+                let gridDensityModifier = 1.0;
+                let dimensionModifier = 0.0;
+                let rotationModifier = 1.0;
+                let glitchModifier = 0.0;
+                
+                if (mouseComplex.quadrantModifier) {
+                    gridDensityModifier = mouseComplex.quadrantModifier.gridMultiplier;
+                    dimensionModifier = mouseComplex.quadrantModifier.dimensionOffset;
+                    rotationModifier = mouseComplex.quadrantModifier.rotationBoost;
+                }
+                
+                if (mouseComplex.spatialIndex) {
+                    // Use spatial noise for subtle parameter variations
+                    glitchModifier = mouseComplex.spatialIndex.noise * 0.3;
+                    
+                    // Wave function affects grid density
+                    gridDensityModifier *= 1.0 + mouseComplex.spatialIndex.wave * 0.2;
+                    
+                    // Spiral affects dimension
+                    dimensionModifier += mouseComplex.spatialIndex.spiral * 0.1;
+                }
+                
+                // Distance from center affects morphing
+                const distanceEffect = mouseComplex.distanceFromCenter || 0;
+                const morphModifier = 1.0 + distanceEffect * 0.3;
+                
+                // Time phase for breathing effects
+                const timePhase = mouseComplex.timePhase || 0;
+                const breathingEffect = 1.0 + timePhase * 0.1;
+                
                 const modifiedConfig = {
                     ...config,
-                    gridDensity: config.gridDensity * interactionMultiplier,
-                    morphFactor: Math.min(config.morphFactor * interactionMultiplier, 1.0),
-                    dimension: Math.min(config.dimension + dimensionShift, 4.0),
-                    glitchIntensity: config.glitchIntensity + this.interactionState.intensity * 0.2
+                    gridDensity: config.gridDensity * interactionMultiplier * gridDensityModifier * breathingEffect,
+                    morphFactor: Math.min(config.morphFactor * interactionMultiplier * morphModifier, 1.0),
+                    dimension: Math.min(config.dimension + dimensionShift + dimensionModifier, 4.0),
+                    glitchIntensity: config.glitchIntensity + this.interactionState.intensity * 0.2 + glitchModifier,
+                    rotationSpeed: config.rotationSpeed * rotationModifier
                 };
                 
                 // Render
@@ -1852,7 +1952,7 @@
                 
                 this.gl.useProgram(this.program);
                 
-                // Set uniforms
+                // Set uniforms with sophisticated mouse mapping
                 this.gl.uniform1f(this.uniforms.time, this.time);
                 this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
                 this.gl.uniform3fv(this.uniforms.baseColor, modifiedConfig.baseColor);
@@ -1863,7 +1963,11 @@
                 this.gl.uniform1f(this.uniforms.rotationSpeed, modifiedConfig.rotationSpeed);
                 this.gl.uniform1i(this.uniforms.geometry, this.getGeometryIndex(modifiedConfig.geometry));
                 this.gl.uniform1f(this.uniforms.interactionIntensity, this.interactionState.intensity);
-                this.gl.uniform2f(this.uniforms.mouse, this.interactionState.mouseX, this.interactionState.mouseY);
+                
+                // Use sophisticated center offset instead of raw mouse position
+                const mouseX = mouseComplex.centerOffset?.x || this.interactionState.mouseX;
+                const mouseY = mouseComplex.centerOffset?.y || this.interactionState.mouseY;
+                this.gl.uniform2f(this.uniforms.mouse, mouseX, mouseY);
                 
                 // Draw
                 const positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
@@ -2535,9 +2639,14 @@
                 scrollEl.className = `data-value state-${state.type}`;
             }
             
-            // Update mouse position with precision
+            // Update mouse position with sophisticated analysis
             const mouseEl = document.getElementById('param-mouse');
-            if (mouseEl) {
+            if (mouseEl && state.mouseComplex) {
+                const complex = state.mouseComplex;
+                const quadrantLabels = { 1: 'TR', 2: 'TL', 3: 'BL', 4: 'BR' };
+                mouseEl.textContent = `Q${complex.quadrant || 1}:${quadrantLabels[complex.quadrant || 1]} D${(complex.distanceFromCenter || 0).toFixed(2)}`;
+                mouseEl.className = `data-value state-${state.type}`;
+            } else if (mouseEl) {
                 mouseEl.textContent = `${state.mouseX.toFixed(2)}, ${state.mouseY.toFixed(2)}`;
                 mouseEl.className = `data-value state-${state.type}`;
             }
@@ -2583,11 +2692,31 @@
                 }
             }
             
-            // Data node hover effects based on mouse position
+            // Sophisticated data node transformations
             const dataNodes = document.querySelectorAll('.data-node');
             dataNodes.forEach((node, index) => {
-                const offset = (state.mouseX + state.mouseY) * 100 + index * 20;
-                node.style.transform = `translateX(${Math.sin(offset * 0.01) * 2}px) translateY(${Math.cos(offset * 0.01) * 1}px)`;
+                if (state.mouseComplex && state.mouseComplex.spatialIndex) {
+                    const spatial = state.mouseComplex.spatialIndex;
+                    const time = performance.now() * 0.001;
+                    
+                    // Different movement patterns for each node
+                    const spiralX = Math.sin(spatial.spiral * Math.PI * 2 + index + time * 0.1) * 3;
+                    const spiralY = Math.cos(spatial.spiral * Math.PI * 2 + index + time * 0.1) * 2;
+                    
+                    const waveX = spatial.wave * Math.sin(time * 0.3 + index * 0.5) * 2;
+                    const noiseY = (spatial.noise - 0.5) * 1.5;
+                    
+                    // Combine effects with quadrant influence
+                    const quadrantInfluence = state.mouseComplex.quadrantModifier?.gridMultiplier || 1.0;
+                    const finalX = (spiralX + waveX) * quadrantInfluence;
+                    const finalY = (spiralY + noiseY) * quadrantInfluence;
+                    
+                    node.style.transform = `translateX(${finalX}px) translateY(${finalY}px) rotate(${spatial.spiral * 5}deg)`;
+                } else {
+                    // Fallback simple movement
+                    const offset = (state.mouseX + state.mouseY) * 100 + index * 20;
+                    node.style.transform = `translateX(${Math.sin(offset * 0.01) * 2}px) translateY(${Math.cos(offset * 0.01) * 1}px)`;
+                }
             });
         }
         
@@ -2670,8 +2799,8 @@
                 
                 <!-- Mouse Data Node -->
                 <div class="data-node" id="mouse-node">
-                    <span class="data-label">Cursor Matrix</span>
-                    <span class="data-value state-idle" id="param-mouse">0.50, 0.50</span>
+                    <span class="data-label">Spatial Vector</span>
+                    <span class="data-value state-idle" id="param-mouse">Q1:TR D0.00</span>
                 </div>
                 
                 <!-- Activity Data Node -->
