@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home-Master Reactive System Demo</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .controls {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .config-display {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        button {
+            background: #2a2a2a;
+            border: 1px solid #555;
+            color: #00ff00;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: inherit;
+        }
+        
+        button:hover {
+            background: #3a3a3a;
+            border-color: #777;
+        }
+        
+        select {
+            background: #2a2a2a;
+            border: 1px solid #555;
+            color: #00ff00;
+            padding: 8px;
+            margin: 5px;
+            font-family: inherit;
+        }
+        
+        input[type="range"] {
+            margin: 5px;
+            width: 200px;
+        }
+        
+        .section-config {
+            border-bottom: 1px solid #333;
+            padding: 10px 0;
+        }
+        
+        .section-config:last-child {
+            border-bottom: none;
+        }
+        
+        .param {
+            display: inline-block;
+            margin-right: 15px;
+            min-width: 120px;
+        }
+        
+        .geometry {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .value {
+            color: #4ecdc4;
+        }
+        
+        .relationship {
+            color: #ffe66d;
+            font-style: italic;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #4ecdc4;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        .summary {
+            background: #0a2a0a;
+            border: 1px solid #2a4a2a;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 HOME-MASTER REACTIVE SYSTEM DEMO</h1>
+        
+        <div class="controls">
+            <h2>Editor Controls</h2>
+            
+            <div>
+                <button onclick="randomizeEverything()">🎲 RANDOMIZE HOME (All Auto-Derive)</button>
+                <button onclick="loadPreset('cyberpunk')">🌆 Cyberpunk Preset</button>
+                <button onclick="loadPreset('minimal')">🏛️ Minimal Preset</button>
+                <button onclick="loadPreset('chaotic')">⚡ Chaotic Preset</button>
+                <button onclick="loadPreset('elegant')">✨ Elegant Preset</button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label>Scroll Reactivity: </label>
+                <select onchange="setScrollReactivity(this.value)">
+                    <option value="gridDensity + morphFactor">Grid Density + Morph Factor</option>
+                    <option value="rotationSpeed + glitchIntensity">Rotation + Glitch</option>
+                    <option value="dimension + lineThickness">Dimension + Line Thickness</option>
+                    <option value="gridDensity + morphFactor + glitchIntensity + rotationSpeed">Multi-Parameter Chaos</option>
+                    <option value="all-chaos">ALL PARAMETERS</option>
+                    <option value="minimal">Minimal (Grid Only)</option>
+                    <option value="dimensional">Dimensional Focus</option>
+                </select>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <h3>Fine-Tune Home (Others Auto-Update)</h3>
+                <div>
+                    <label>Grid Density: </label>
+                    <input type="range" min="5" max="25" value="12" oninput="adjustHome('gridDensity', this.value)">
+                    <span id="gridDensityValue">12</span>
+                </div>
+                <div>
+                    <label>Morph Factor: </label>
+                    <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="adjustHome('morphFactor', this.value)">
+                    <span id="morphFactorValue">0.5</span>
+                </div>
+                <div>
+                    <label>Rotation Speed: </label>
+                    <input type="range" min="0" max="3" step="0.1" value="1" oninput="adjustHome('rotationSpeed', this.value)">
+                    <span id="rotationSpeedValue">1.0</span>
+                </div>
+                <div>
+                    <label>Hue: </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="adjustHome('hue', this.value)">
+                    <span id="hueValue">0.5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="config-display">
+            <h2>Current Configuration (Live)</h2>
+            <div id="configOutput">Click "Randomize Home" to see the magic!</div>
+        </div>
+        
+        <div class="summary">
+            <strong>Summary:</strong>
+            <div id="summaryOutput">No configuration loaded</div>
+        </div>
+    </div>
+
+    <script src="home-master-system.js"></script>
+    <script>
+        // Initialize the system
+        const reactiveSystem = new HomeBasedReactiveSystem();
+        
+        // Set up change listener
+        reactiveSystem.onChange(updateDisplay);
+        
+        function randomizeEverything() {
+            console.log('🎲 Randomizing home configuration...');
+            const newConfig = reactiveSystem.randomizeHome();
+            console.log('New home:', newConfig);
+            updateSliders();
+        }
+        
+        function loadPreset(presetName) {
+            console.log(`Loading preset: ${presetName}`);
+            reactiveSystem.loadPreset(presetName);
+            updateSliders();
+        }
+        
+        function setScrollReactivity(option) {
+            console.log(`Setting scroll reactivity: ${option}`);
+            reactiveSystem.setHomeScrollReactivity(option);
+        }
+        
+        function adjustHome(paramName, value) {
+            const numValue = parseFloat(value);
+            document.getElementById(paramName + 'Value').textContent = numValue.toFixed(2);
+            reactiveSystem.adjustHomeParameter(paramName, numValue);
+        }
+        
+        function updateSliders() {
+            const homeConfig = reactiveSystem.getSectionConfig('homepage');
+            if (!homeConfig) return;
+            
+            // Update slider positions and displays
+            const sliders = ['gridDensity', 'morphFactor', 'rotationSpeed', 'hue'];
+            sliders.forEach(param => {
+                const slider = document.querySelector(`input[oninput*="${param}"]`);
+                const display = document.getElementById(param + 'Value');
+                if (slider && display && homeConfig[param] !== undefined) {
+                    slider.value = homeConfig[param];
+                    display.textContent = homeConfig[param].toFixed(2);
+                }
+            });
+        }
+        
+        function updateDisplay(allConfigs) {
+            const output = document.getElementById('configOutput');
+            const summary = document.getElementById('summaryOutput');
+            
+            let html = '';
+            
+            Object.keys(allConfigs).forEach(sectionId => {
+                const config = allConfigs[sectionId];
+                
+                html += `<div class="section-config">`;
+                html += `<strong class="geometry">${sectionId.toUpperCase()}: ${config.geometry}</strong><br>`;
+                
+                // Show key parameters with relationships
+                html += `<span class="param">Grid: <span class="value">${config.gridDensity.toFixed(1)}</span></span>`;
+                html += `<span class="param">Morph: <span class="value">${config.morphFactor.toFixed(2)}</span></span>`;
+                html += `<span class="param">Rotation: <span class="value">${config.rotationSpeed.toFixed(2)}</span></span>`;
+                html += `<span class="param">Glitch: <span class="value">${config.glitchIntensity.toFixed(2)}</span></span>`;
+                html += `<span class="param">Dimension: <span class="value">${config.dimension.toFixed(2)}</span></span><br>`;
+                
+                html += `<span class="param">Hue: <span class="value">${config.hue.toFixed(2)}</span></span>`;
+                html += `<span class="param">Scroll: <span class="value">${config.scrollParams.join(' + ')}</span></span>`;
+                html += `<span class="param">Direction: <span class="value">${config.scrollDirection > 0 ? '↑' : '↓'} ${Math.abs(config.scrollDirection).toFixed(1)}x</span></span>`;
+                
+                // Show relationships for non-home sections
+                if (sectionId !== 'homepage') {
+                    html += `<br><span class="relationship">↳ Auto-derived from home using fixed mathematical relationships</span>`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            output.innerHTML = html;
+            summary.textContent = reactiveSystem.getConfigSummary();
+        }
+        
+        // Demo: Load cyberpunk preset on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loadPreset('cyberpunk');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
