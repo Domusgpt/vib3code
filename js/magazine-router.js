@@ -170,10 +170,12 @@ var MagazineRouter = { // Converted const
             var article = this.findArticleById(section); // Converted const
             themeKey = article ? (article.theme_modifier_key || article.contentType || 'article') : 'home';
         }
-        if (window.ThemeEngine && typeof window.ThemeEngine.applySectionTheme === 'function') {
-            window.ThemeEngine.applySectionTheme(themeKey);
-        } else if (window.VIB3VisualizerIntegration && typeof window.VIB3VisualizerIntegration.applySectionPreset === 'function') {
-            window.VIB3VisualizerIntegration.applySectionPreset(themeKey);
+        if (window.persistentMultiVisualizer && typeof window.persistentMultiVisualizer.transitionToSection === 'function') {
+            window.persistentMultiVisualizer.transitionToSection(themeKey);
+        } else {
+            console.warn('PersistentMultiVisualizer not found or transitionToSection method is missing.');
+            // Optionally, dispatch the event as a fallback, though direct call is preferred if the global instance is reliably present.
+            // document.dispatchEvent(new CustomEvent('sectionChange', { detail: { section: themeKey } }));
         }
     },
 

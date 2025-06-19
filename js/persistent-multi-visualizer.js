@@ -526,8 +526,8 @@ class PersistentVisualizerInstance {
         this.time = performance.now() * 0.001;
         
         // Calculate velocity influence
-        const mouseVel = Math.min(this.globalVelocityState.mouseVelocity * 0.05, 1.0);
-        const scrollVel = Math.min(this.globalVelocityState.scrollVelocity * 0.01, 1.0);
+        const mouseVel = Math.min(this.globalVelocityState.mouseVelocity * 0.1, 1.0);
+        const scrollVel = Math.min(this.globalVelocityState.scrollVelocity * 0.1, 1.0);
         const velocityInfluence = (mouseVel + scrollVel) * this.config.intensity;
         
         // Clear
