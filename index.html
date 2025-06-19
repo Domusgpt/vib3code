@@ -1699,48 +1699,13 @@
                 let scrollTimeout;
                 let mouseTimeout;
                 
-                // SOPHISTICATED MOUSE PARAMETER MAPPING
+                // SIMPLE REACTIVE MOUSE SYSTEM
                 document.addEventListener('mousemove', (e) => {
-                    const rawX = e.clientX / window.innerWidth;
-                    const rawY = e.clientY / window.innerHeight;
-                    
-                    // Store raw coordinates
-                    this.interactionState.mouseX = rawX;
-                    this.interactionState.mouseY = rawY;
-                    
-                    // COMPLEX PARAMETER TRANSFORMATIONS
-                    const time = performance.now() * 0.001;
-                    
-                    // Center offset with mathematical modifiers
-                    const centerOffsetX = (rawX - 0.5) * 0.3 * Math.sin(time * 0.2) + 0.5;
-                    const centerOffsetY = (1.0 - rawY - 0.5) * 0.2 * Math.cos(time * 0.3) + 0.5; // Inverted Y with time modulation
-                    
-                    // Distance from center for radial effects
-                    const distanceFromCenter = Math.sqrt(Math.pow(rawX - 0.5, 2) + Math.pow(rawY - 0.5, 2));
-                    const normalizedDistance = Math.min(distanceFromCenter * 2, 1.0);
-                    
-                    // Quadrant-based modifiers
-                    const quadrant = this.getMouseQuadrant(rawX, rawY);
-                    const quadrantModifier = this.getQuadrantModifier(quadrant, time);
-                    
-                    // Store sophisticated mouse state
-                    this.interactionState.mouseComplex = {
-                        centerOffset: { x: centerOffsetX, y: centerOffsetY },
-                        distanceFromCenter: normalizedDistance,
-                        quadrant: quadrant,
-                        quadrantModifier: quadrantModifier,
-                        timePhase: Math.sin(time * 0.1),
-                        spatialIndex: this.calculateSpatialIndex(rawX, rawY, time)
-                    };
-                    
+                    this.interactionState.mouseX = e.clientX / window.innerWidth;
+                    this.interactionState.mouseY = 1.0 - (e.clientY / window.innerHeight);
                     this.interactionState.type = 'move';
-                    this.interactionState.intensity = 0.3 + normalizedDistance * 0.4; // Intensity based on distance from center
+                    this.interactionState.intensity = 0.5;
                     this.interactionState.lastActivity = Date.now();
-                    
-                    // Update parameter display with sophisticated data
-                    if (window.updateParameterDisplay) {
-                        window.updateParameterDisplay();
-                    }
                     
                     clearTimeout(mouseTimeout);
                     mouseTimeout = setTimeout(() => {
@@ -1750,43 +1715,6 @@
                         }
                     }, 3000);
                 });
-                
-                // Add sophisticated mouse calculation methods
-                this.getMouseQuadrant = function(x, y) {
-                    if (x >= 0.5 && y >= 0.5) return 1; // Top-right
-                    if (x < 0.5 && y >= 0.5) return 2;  // Top-left
-                    if (x < 0.5 && y < 0.5) return 3;   // Bottom-left
-                    return 4; // Bottom-right
-                };
-                
-                this.getQuadrantModifier = function(quadrant, time) {
-                    const baseModifiers = {
-                        1: { gridMultiplier: 1.2, dimensionOffset: 0.1, rotationBoost: 1.3 },
-                        2: { gridMultiplier: 0.8, dimensionOffset: -0.1, rotationBoost: 0.7 },
-                        3: { gridMultiplier: 1.1, dimensionOffset: 0.2, rotationBoost: 0.9 },
-                        4: { gridMultiplier: 0.9, dimensionOffset: -0.05, rotationBoost: 1.1 }
-                    };
-                    
-                    const base = baseModifiers[quadrant];
-                    const timeInfluence = Math.sin(time * 0.15 + quadrant) * 0.1;
-                    
-                    return {
-                        gridMultiplier: base.gridMultiplier + timeInfluence,
-                        dimensionOffset: base.dimensionOffset + timeInfluence * 0.5,
-                        rotationBoost: base.rotationBoost + timeInfluence * 0.2
-                    };
-                };
-                
-                this.calculateSpatialIndex = function(x, y, time) {
-                    // Complex spatial mapping function
-                    const spiralAngle = Math.atan2(y - 0.5, x - 0.5) + time * 0.1;
-                    const spiralRadius = Math.sqrt((x - 0.5) * (x - 0.5) + (y - 0.5) * (y - 0.5));
-                    return {
-                        spiral: (Math.sin(spiralAngle * 3 + spiralRadius * 10) + 1) * 0.5,
-                        wave: Math.sin(x * 8 + time) * Math.cos(y * 6 + time * 0.7),
-                        noise: (Math.sin(x * 23.1 + y * 17.3 + time * 0.05) + 1) * 0.5
-                    };
-                };
                 
                 // Scroll tracking
                 window.addEventListener('scroll', () => {
@@ -1896,53 +1824,20 @@
                 this.time = performance.now() * 0.001;
                 
                 const config = this.getInterpolatedConfig();
-                const mouseComplex = this.interactionState.mouseComplex || {};
                 
-                // Apply interaction effects
+                // Simple interaction effects
                 const holdDuration = this.interactionState.isHolding ? 
                     (Date.now() - this.interactionState.holdStart) / 1000 : 0;
                 
-                const interactionMultiplier = 1 + this.interactionState.intensity * 0.5;
+                const interactionMultiplier = 1 + this.interactionState.intensity * 0.3;
                 const dimensionShift = holdDuration * 0.1;
-                
-                // SOPHISTICATED MOUSE PARAMETER MAPPING
-                let gridDensityModifier = 1.0;
-                let dimensionModifier = 0.0;
-                let rotationModifier = 1.0;
-                let glitchModifier = 0.0;
-                
-                if (mouseComplex.quadrantModifier) {
-                    gridDensityModifier = mouseComplex.quadrantModifier.gridMultiplier;
-                    dimensionModifier = mouseComplex.quadrantModifier.dimensionOffset;
-                    rotationModifier = mouseComplex.quadrantModifier.rotationBoost;
-                }
-                
-                if (mouseComplex.spatialIndex) {
-                    // Use spatial noise for subtle parameter variations
-                    glitchModifier = mouseComplex.spatialIndex.noise * 0.3;
-                    
-                    // Wave function affects grid density
-                    gridDensityModifier *= 1.0 + mouseComplex.spatialIndex.wave * 0.2;
-                    
-                    // Spiral affects dimension
-                    dimensionModifier += mouseComplex.spatialIndex.spiral * 0.1;
-                }
-                
-                // Distance from center affects morphing
-                const distanceEffect = mouseComplex.distanceFromCenter || 0;
-                const morphModifier = 1.0 + distanceEffect * 0.3;
-                
-                // Time phase for breathing effects
-                const timePhase = mouseComplex.timePhase || 0;
-                const breathingEffect = 1.0 + timePhase * 0.1;
                 
                 const modifiedConfig = {
                     ...config,
-                    gridDensity: config.gridDensity * interactionMultiplier * gridDensityModifier * breathingEffect,
-                    morphFactor: Math.min(config.morphFactor * interactionMultiplier * morphModifier, 1.0),
-                    dimension: Math.min(config.dimension + dimensionShift + dimensionModifier, 4.0),
-                    glitchIntensity: config.glitchIntensity + this.interactionState.intensity * 0.2 + glitchModifier,
-                    rotationSpeed: config.rotationSpeed * rotationModifier
+                    gridDensity: config.gridDensity * interactionMultiplier,
+                    morphFactor: Math.min(config.morphFactor * interactionMultiplier, 1.0),
+                    dimension: Math.min(config.dimension + dimensionShift, 4.0),
+                    glitchIntensity: config.glitchIntensity + this.interactionState.intensity * 0.2
                 };
                 
                 // Render
@@ -1952,7 +1847,7 @@
                 
                 this.gl.useProgram(this.program);
                 
-                // Set uniforms with sophisticated mouse mapping
+                // Set uniforms
                 this.gl.uniform1f(this.uniforms.time, this.time);
                 this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
                 this.gl.uniform3fv(this.uniforms.baseColor, modifiedConfig.baseColor);
@@ -1963,11 +1858,7 @@
                 this.gl.uniform1f(this.uniforms.rotationSpeed, modifiedConfig.rotationSpeed);
                 this.gl.uniform1i(this.uniforms.geometry, this.getGeometryIndex(modifiedConfig.geometry));
                 this.gl.uniform1f(this.uniforms.interactionIntensity, this.interactionState.intensity);
-                
-                // Use sophisticated center offset instead of raw mouse position
-                const mouseX = mouseComplex.centerOffset?.x || this.interactionState.mouseX;
-                const mouseY = mouseComplex.centerOffset?.y || this.interactionState.mouseY;
-                this.gl.uniform2f(this.uniforms.mouse, mouseX, mouseY);
+                this.gl.uniform2f(this.uniforms.mouse, this.interactionState.mouseX, this.interactionState.mouseY);
                 
                 // Draw
                 const positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
@@ -2019,11 +1910,57 @@
                     rotationSpeed: 0.5
                 };
                 
-                this.derivedParams = {
-                    articles: { gridMultiplier: 0.7, morphOffset: -0.2 },
-                    videos: { gridMultiplier: 1.2, morphOffset: 0.3 },
-                    podcasts: { speedMultiplier: 1.3, morphInvert: true },
-                    ema: { gridMultiplier: 1.5, dimensionBoost: 0.3 }
+                // MATHEMATICAL RELATIONSHIPS TO HOME SECTION
+                this.sectionRelationships = {
+                    articles: {
+                        gridDensity: (home) => home * 0.8,           // Focused reading = tighter grid
+                        morphFactor: (home) => home * 0.6,          // Less morphing = stable
+                        rotationSpeed: (home) => home * 0.5,        // Slower = contemplative
+                        glitchIntensity: (home) => home * 0.3,      // Minimal glitch = clean
+                        dimension: (home) => Math.max(3.0, home - 0.2) // Slightly lower dimension
+                    },
+                    videos: {
+                        gridDensity: (home) => home * 1.3,          // More dynamic = denser
+                        morphFactor: (home) => home * 1.4,          // High morphing = active
+                        rotationSpeed: (home) => home * 1.6,        // Faster = engaging
+                        glitchIntensity: (home) => home * 1.2,      // Some glitch = dynamic
+                        dimension: (home) => Math.min(4.0, home + 0.3) // Higher dimension
+                    },
+                    podcasts: {
+                        gridDensity: (home) => home * 0.9,          // Medium grid
+                        morphFactor: (home) => 1.0 - home,          // INVERTED morphing (your idea!)
+                        rotationSpeed: (home) => home * 1.8,        // Fast rotation = audio flow
+                        glitchIntensity: (home) => home * 0.8,      // Medium glitch
+                        dimension: (home) => home + Math.sin(Date.now() * 0.001) * 0.2 // BREATHING dimension
+                    },
+                    ema: {
+                        gridDensity: (home) => home * 1.5,          // Complex = dense
+                        morphFactor: (home) => home * 1.2,          // High morphing = philosophical
+                        rotationSpeed: (home) => home * 0.3,        // Slow = contemplative
+                        glitchIntensity: (home) => home * 2.0,      // High glitch = complex thought
+                        dimension: (home) => Math.min(4.0, home + 0.5) // Maximum dimension
+                    }
+                };
+                
+                // RANDOMIZATION SYSTEM (except geometry)
+                this.randomizeParameters = function() {
+                    // Randomize home parameters (except geometry)
+                    this.homeMasterConfig.gridDensity = 8.0 + Math.random() * 12.0;  // 8-20
+                    this.homeMasterConfig.morphFactor = Math.random();                // 0-1
+                    this.homeMasterConfig.rotationSpeed = 0.2 + Math.random() * 0.8; // 0.2-1.0
+                    this.homeMasterConfig.glitchIntensity = Math.random() * 0.5;      // 0-0.5
+                    this.homeMasterConfig.dimension = 3.0 + Math.random() * 1.0;     // 3.0-4.0
+                    
+                    console.log('🎲 Randomized home parameters:', this.homeMasterConfig);
+                    
+                    // All other sections will automatically derive from these new values
+                    this.updateAllDerivedSections();
+                };
+                
+                this.updateAllDerivedSections = function() {
+                    Object.keys(this.sectionRelationships).forEach(sectionName => {
+                        this.applyDerivedThemeConfig(this.sectionThemes[sectionName], sectionName);
+                    });
                 };
                 
                 this.init();
@@ -2054,31 +1991,17 @@
                 if (!this.reactiveCore || !this.reactiveCore.themeConfigs[themeName]) return;
                 
                 const baseConfig = this.reactiveCore.themeConfigs[themeName];
-                const derivedConfig = this.derivedParams[sectionName];
+                const relationships = this.sectionRelationships[sectionName];
                 
-                if (derivedConfig) {
-                    // Apply home-master derived parameters
-                    if (derivedConfig.gridMultiplier) {
-                        baseConfig.gridDensity = this.homeMasterConfig.gridDensity * derivedConfig.gridMultiplier;
-                    }
+                if (relationships) {
+                    // Apply mathematical relationships to home parameters
+                    baseConfig.gridDensity = relationships.gridDensity(this.homeMasterConfig.gridDensity);
+                    baseConfig.morphFactor = relationships.morphFactor(this.homeMasterConfig.morphFactor);
+                    baseConfig.rotationSpeed = relationships.rotationSpeed(this.homeMasterConfig.rotationSpeed);
+                    baseConfig.glitchIntensity = relationships.glitchIntensity(this.homeMasterConfig.glitchIntensity);
+                    baseConfig.dimension = relationships.dimension(this.homeMasterConfig.dimension);
                     
-                    if (derivedConfig.morphOffset) {
-                        baseConfig.morphFactor = Math.max(0, Math.min(1, this.homeMasterConfig.morphFactor + derivedConfig.morphOffset));
-                    }
-                    
-                    if (derivedConfig.morphInvert) {
-                        baseConfig.morphFactor = 1.0 - this.homeMasterConfig.morphFactor;
-                    }
-                    
-                    if (derivedConfig.speedMultiplier) {
-                        baseConfig.rotationSpeed = this.homeMasterConfig.rotationSpeed * derivedConfig.speedMultiplier;
-                    }
-                    
-                    if (derivedConfig.dimensionBoost) {
-                        baseConfig.dimension = Math.min(4.0, this.homeMasterConfig.dimension + derivedConfig.dimensionBoost);
-                    }
-                    
-                    console.log(`📊 Applied derived config for ${sectionName}:`, baseConfig);
+                    console.log(`🔄 Applied mathematical relationships for ${sectionName}:`, baseConfig);
                 }
             }
             
@@ -2816,6 +2739,12 @@
                 </div>
                 <div class="engagement-bar">
                     <div class="engagement-fill" id="engagement-fill" style="width: 50%;"></div>
+                </div>
+                
+                <!-- Randomization Control -->
+                <div class="data-node" id="randomize-node" style="cursor: pointer; margin-top: 10px;" onclick="window.randomizeVisualizer()">
+                    <span class="data-label">Randomize</span>
+                    <span class="data-value" style="color: #ff8800;">🎲 ROLL</span>
                 </div>
             </div>
         </div>
