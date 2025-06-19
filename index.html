@@ -91,6 +91,7 @@
             position: relative;
             z-index: 1;
             backdrop-filter: blur(2px);
+            min-height: 500vh; /* Ensure scrollable height for section transitions */
         }
         
         /* Parameter indicator */
@@ -1959,7 +1960,7 @@
         
         // Infinite scroll and navigation system
         function initializeInfiniteScrollSystem() {
-            const sections = ['home', 'articles', 'videos', 'audios', 'ema'];
+            const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
             let currentSectionIndex = 0;
             let isTransitioning = false;
             let scrollTimeout;
@@ -1996,10 +1997,10 @@
                 
                 // Set new timeout for section transitions
                 scrollTimeout = setTimeout(function() {
-                    if (!isTransitioning && scrollVelocity > 20) {
+                    if (!isTransitioning && scrollVelocity > 10) {
                         handleSectionTransition();
                     }
-                }, 150);
+                }, 200);
             });
             
             function handleSectionTransition() {
@@ -2042,6 +2043,9 @@
                 // Load section content if using router
                 if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
                     window.MagazineRouter.navigateToSection(sectionName);
+                } else {
+                    // Fallback content for sections without router
+                    displayFallbackContent(sectionName);
                 }
                 
                 // Reset transition flag after animation
@@ -2070,7 +2074,7 @@
         }
         
         function initializeKeyboardNavigation() {
-            const sections = ['home', 'articles', 'videos', 'audios', 'ema'];
+            const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
             let currentIndex = 0;
             
             document.addEventListener('keydown', function(event) {
@@ -2138,6 +2142,57 @@
             });
             
             console.log('🖱️ Navigation click handlers initialized');
+        }
+        
+        function displayFallbackContent(sectionName) {
+            const contentContainer = document.querySelector('.magazine-content');
+            if (!contentContainer) return;
+            
+            const fallbackContent = {
+                home: {
+                    title: 'VIB3CODE Digital Magazine',
+                    content: 'Welcome to the premier digital magazine for Exoditical Moral Architecture and digital sovereignty. Explore our latest articles, videos, podcasts, and interactive content.'
+                },
+                articles: {
+                    title: 'Technical Articles',
+                    content: 'Deep dive into EMA principles, development techniques, and digital sovereignty implementations. Our articles provide comprehensive technical guidance for modern developers.'
+                },
+                videos: {
+                    title: 'Video Content',
+                    content: 'Watch in-depth discussions on digital freedom, technical demonstrations, and thought leadership in the EMA movement.'
+                },
+                podcasts: {
+                    title: 'Audio & Podcasts', 
+                    content: 'Listen to conversations with industry leaders, deep technical discussions, and explorations of digital sovereignty principles.'
+                },
+                ema: {
+                    title: 'Exoditical Moral Architecture',
+                    content: 'The philosophical foundation of ethical technology development. EMA principles guide our approach to digital sovereignty, user freedom, and moral computing.'
+                }
+            };
+            
+            const section = fallbackContent[sectionName] || fallbackContent.home;
+            
+            contentContainer.innerHTML = `
+                <div class="container-cyber" style="padding: 60px 20px; text-align: center; min-height: 70vh; display: flex; flex-direction: column; justify-content: center;">
+                    <h1 class="section-title cyber-glow" style="font-size: 3rem; margin-bottom: 2rem; color: var(--neon-cyan);">
+                        ${section.title}
+                    </h1>
+                    <p style="font-size: 1.2rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: rgba(255,255,255,0.8);">
+                        ${section.content}
+                    </p>
+                    <div style="margin-top: 3rem;">
+                        <div class="glass-element" style="padding: 20px; border-radius: 10px; display: inline-block;">
+                            <p style="color: var(--neon-magenta); margin: 0;">
+                                <strong>Current Section:</strong> ${sectionName.toUpperCase()}
+                            </p>
+                            <p style="color: var(--neon-cyan); margin: 10px 0 0 0; font-size: 0.9rem;">
+                                Use scroll or arrow keys to navigate between sections
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
         window.updateParameterDisplay = function(scrollData) {

@@ -137,7 +137,7 @@ var MagazineRouter = { // Converted const
         var parts = hash.split('/'); // Converted const
         var section = parts[0] || 'home'; // Converted let
         var itemId = parts[1] || null; // Converted const
-        var knownSections = ['home', 'articles', 'videos', 'audios', 'interactives', 'spotlights', 'ema', 'about']; // Converted const
+        var knownSections = ['home', 'articles', 'videos', 'audios', 'podcasts', 'interactives', 'spotlights', 'ema', 'about']; // Converted const
         var isKnownSection = knownSections.includes(section); // Converted let
         var isArticleIdRoute = false; // Converted let
 
@@ -250,8 +250,21 @@ var MagazineRouter = { // Converted const
                 case 'audios':
                     filteredData = articlesSource.filter(function(item) { return item.contentType === 'audio'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
                     break;
+                case 'podcasts':
+                    filteredData = articlesSource.filter(function(item) { return item.contentType === 'audio'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
+                    break;
                 case 'interactives':
                     filteredData = articlesSource.filter(function(item) { return item.contentType === 'interactive'; }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
+                    break;
+                case 'ema':
+                    // EMA philosophy section - show featured content
+                    filteredData = articlesSource.filter(function(item) { 
+                        return item.tags && (item.tags.includes('ema') || item.tags.includes('philosophy') || item.tags.includes('digital-sovereignty')); 
+                    }).sort(function(a,b) { return (b.date && a.date) ? new Date(b.date) - new Date(a.date) : 0; });
+                    // If no EMA-tagged content, show recent articles
+                    if (filteredData.length === 0) {
+                        filteredData = articlesSource.slice(0, 3);
+                    }
                     break;
                 default:
                     console.warn('MagazineRouter: Unknown section \'' + section + '\' for list view or no specific list view defined.');
