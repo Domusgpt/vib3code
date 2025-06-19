@@ -6,21 +6,16 @@
  * sections by transitioning geometry, colors, and effects smoothly.
  */
 
-class PersistentMultiVisualizer {
+class VisualizerManager {
     constructor() {
-        this.visualizers = {
-            header: null,
-            content: null,
-            ambient: null,
-            interactive: null
-        };
+        this.instances = {};
         
-        this.currentSection = 'home';
+        this.currentMasterStyleKey = 'home';
         this.transitionDuration = 1000; // 1 second transitions
         this.isTransitioning = false;
         
         // Section configuration presets
-        this.sectionConfigs = {
+        this.masterStylePresets = {
             home: {
                 geometry: 0, // Hypercube
                 baseColor: [1.0, 0.0, 1.0], // Magenta
@@ -86,8 +81,7 @@ class PersistentMultiVisualizer {
     
     init() {
         this.setupGlobalTracking();
-        this.createPersistentVisualizers();
-        this.setupNavigationListener();
+        this.setupNavigationListener(); // Or its future equivalent applyMasterStyle
     }
     
     setupGlobalTracking() {
@@ -121,67 +115,11 @@ class PersistentMultiVisualizer {
         });
     }
     
-    createPersistentVisualizers() {
-        // Create fixed canvas elements
-        this.createCanvas('persistent-header', 'header-visualizer');
-        this.createCanvas('persistent-content', 'content-visualizer');
-        this.createCanvas('persistent-ambient', 'ambient-visualizer');
-        
-        // Initialize visualizer instances
-        this.visualizers.header = new PersistentVisualizerInstance(
-            'persistent-header', 
-            { ...this.sectionConfigs.home, intensity: 0.3, opacity: 0.25 },
-            this.globalVelocityState
-        );
-        
-        this.visualizers.content = new PersistentVisualizerInstance(
-            'persistent-content',
-            { ...this.sectionConfigs.home, intensity: 0.15, opacity: 0.12 },
-            this.globalVelocityState
-        );
-        
-        this.visualizers.ambient = new PersistentVisualizerInstance(
-            'persistent-ambient',
-            { ...this.sectionConfigs.home, intensity: 0.08, opacity: 0.06 },
-            this.globalVelocityState
-        );
-        
-        console.log('🎨 Persistent multi-visualizer system initialized');
-        console.log('- 3 layers: header, content, ambient');
-        console.log('- Smooth parameter morphing on navigation');
-        console.log('- Portal transition effects enabled');
-    }
-    
-    createCanvas(id, className) {
-        const canvas = document.createElement('canvas');
-        canvas.id = id;
-        canvas.className = className;
-        document.body.appendChild(canvas);
-        
-        // Position the canvas layers
-        canvas.style.position = 'fixed';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100vw';
-        canvas.style.height = '100vh';
-        canvas.style.pointerEvents = 'none';
-        canvas.style.zIndex = this.getZIndex(className);
-    }
-    
-    getZIndex(className) {
-        const zIndexMap = {
-            'header-visualizer': '1',
-            'content-visualizer': '0',
-            'ambient-visualizer': '-1'
-        };
-        return zIndexMap[className] || '0';
-    }
-    
     setupNavigationListener() {
         // Listen for section changes
         document.addEventListener('sectionChange', (event) => {
             const newSection = event.detail.section;
-            this.transitionToSection(newSection);
+            this.applyMasterStyle(newSection);
         });
         
         // Also listen for navigation clicks
@@ -189,130 +127,129 @@ class PersistentMultiVisualizer {
             const navLink = event.target.closest('[data-section]');
             if (navLink) {
                 const section = navLink.getAttribute('data-section');
-                this.transitionToSection(section);
+                this.applyMasterStyle(section);
             }
         });
     }
+
+    addInstance(id, canvasElement, initialConfig, rules, globalVelocityStateRef) {
+        if (!canvasElement) {
+            console.error(`VisualizerManager: Canvas element not provided for instance ID '${id}'.`);
+            return null;
+        }
+        if (this.instances[id]) {
+            console.warn(`VisualizerManager: Instance with ID '${id}' already exists. Overwriting.`);
+            this.instances[id].stop(); // Stop existing if any
+        }
+        try {
+            const newInstance = new ManagedVisualizer(
+                canvasElement, // Pass the actual canvas element
+                initialConfig,
+                globalVelocityStateRef
+            );
+            newInstance.id = id; // Assign the ID to the instance for reference
+            newInstance.rules = rules || {}; // Store rules for later use
+            this.instances[id] = newInstance;
+            console.log(`VisualizerManager: Added instance '${id}'.`);
+            return newInstance;
+        } catch (error) {
+            console.error(`VisualizerManager: Error creating ManagedVisualizer for ID '${id}':`, error);
+            return null;
+        }
+    }
+
+    removeInstance(id) {
+        if (this.instances[id]) {
+            this.instances[id].stop();
+            // Potentially also clean up canvas if manager was responsible, though now it's passed in.
+            delete this.instances[id];
+            console.log(`VisualizerManager: Removed instance '${id}'.`);
+        } else {
+            console.warn(`VisualizerManager: Instance with ID '${id}' not found for removal.`);
+        }
+    }
+
+    getInstance(id) {
+        return this.instances[id] || null;
+    }
     
-    transitionToSection(targetSection) {
-        if (this.isTransitioning || this.currentSection === targetSection) {
+    applyMasterStyle(styleKey) { // Renamed from transitionToSection
+        if (this.isTransitioning || this.currentMasterStyleKey === styleKey) {
             return;
         }
         
-        console.log(`🌀 Portal transition: ${this.currentSection} → ${targetSection}`);
+        console.log(`VisualizerManager: Applying master style: ${styleKey}`); // Updated log
         
         this.isTransitioning = true;
-        const targetConfig = this.sectionConfigs[targetSection];
+        const targetConfig = this.masterStylePresets[styleKey]; // Use new property name
         
         if (!targetConfig) {
-            console.error(`❌ Unknown section: ${targetSection}`);
+            console.error(`VisualizerManager: Unknown master style key: ${styleKey}`); // Updated log
             this.isTransitioning = false;
             return;
         }
         
         // Create smooth transitions for all visualizers
-        const transitions = Object.keys(this.visualizers).map(layer => {
-            const visualizer = this.visualizers[layer];
-            if (visualizer) {
-                return this.smoothTransition(visualizer, targetConfig, layer);
+        // const transitions = Object.keys(this.instances).map(instanceId => { // Old way
+        //     const visualizer = this.instances[instanceId];
+        //     if (visualizer) {
+        //         return this.smoothTransition(visualizer, targetConfig, instanceId); // This method is removed
+        //     }
+        //     return Promise.resolve();
+        // });
+
+        const transitionPromises = Object.values(this.instances).map(instance => {
+            if (instance && typeof instance.updateWithNewMaster === 'function') {
+                // Pass the masterConfig and the instance's own rules
+                return instance.updateWithNewMaster(targetConfig); // masterIntensity argument removed
             }
             return Promise.resolve();
         });
         
-        Promise.all(transitions).then(() => {
-            this.currentSection = targetSection;
+        Promise.all(transitionPromises).then(() => {
+            this.currentMasterStyleKey = styleKey; // Use new property name
             this.isTransitioning = false;
-            console.log(`✅ Portal transition complete: ${targetSection}`);
+            console.log(`VisualizerManager: Master style '${styleKey}' application complete for all instances.`); // Updated log
             
             // Dispatch completion event for text animations
-            document.dispatchEvent(new CustomEvent('visualizerTransitionComplete', {
-                detail: { section: targetSection }
+            document.dispatchEvent(new CustomEvent('masterStyleTransitionComplete', { // Updated event name
+                detail: { styleKey: styleKey } // Updated detail
             }));
+        }).catch(err => {
+            console.error("VisualizerManager: Error during instance transitions: ", err);
+            this.isTransitioning = false; // Unlock even if some fail
         });
-    }
-    
-    smoothTransition(visualizer, targetConfig, layer) {
-        return new Promise((resolve) => {
-            const startTime = performance.now();
-            const startConfig = { ...visualizer.config };
-            
-            // Layer-specific intensity modifiers
-            const intensityMap = {
-                header: 0.3,
-                content: 0.15,
-                ambient: 0.08
-            };
-            
-            const targetConfigAdjusted = {
-                ...targetConfig,
-                intensity: intensityMap[layer] || 0.15
-            };
-            
-            const animate = (currentTime) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / this.transitionDuration, 1);
-                
-                // Smooth easing function
-                const ease = this.easeInOutCubic(progress);
-                
-                // Interpolate all parameters
-                const newConfig = this.interpolateConfig(startConfig, targetConfigAdjusted, ease);
-                visualizer.updateConfig(newConfig);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    resolve();
-                }
-            };
-            
-            requestAnimationFrame(animate);
-        });
-    }
-    
-    easeInOutCubic(t) {
-        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    }
-    
-    interpolateConfig(start, end, progress) {
-        const result = {};
-        
-        // Interpolate numeric values
-        for (const key in end) {
-            if (typeof end[key] === 'number' && typeof start[key] === 'number') {
-                result[key] = start[key] + (end[key] - start[key]) * progress;
-            } else if (Array.isArray(end[key]) && Array.isArray(start[key])) {
-                // Interpolate color arrays
-                result[key] = start[key].map((startVal, index) => 
-                    startVal + (end[key][index] - startVal) * progress
-                );
-            } else {
-                // For non-numeric values (like latticeStyle), switch at midpoint
-                result[key] = progress < 0.5 ? start[key] : end[key];
-            }
-        }
-        
-        return result;
     }
     
     // Public API for external control
-    getCurrentSection() {
-        return this.currentSection;
+    getCurrentMasterStyleKey() { // Renamed method
+        return this.currentMasterStyleKey; // Use new property name
     }
     
     isInTransition() {
         return this.isTransitioning;
     }
     
-    getVisualizer(layer) {
-        return this.visualizers[layer];
+    getVisualizer(instanceId) { // Parameter name changed for clarity, was 'layer'
+        return this.instances[instanceId];
+    }
+
+    propagateGlobalEffect(effectType, effectParams) {
+        console.log(`VisualizerManager: Propagating global effect '${effectType}' to all instances.`);
+        Object.values(this.instances).forEach(instance => {
+            if (instance && typeof instance.applyGlobalEffect === 'function') {
+                instance.applyGlobalEffect(effectType, effectParams);
+            }
+        });
     }
 }
 
-class PersistentVisualizerInstance {
-    constructor(canvasId, config, globalVelocityState) {
-        this.canvas = document.getElementById(canvasId);
-        this.config = config;
+class ManagedVisualizer {
+    constructor(canvasElement, config, globalVelocityState) {
+        this.canvas = canvasElement;
+        this.rules = {}; // Will be set by addInstance
+        this.baseConfig = config; // Renamed from this.config
+        this.currentComputedConfig = { ...this.baseConfig }; // Initialize currentComputedConfig
         this.globalVelocityState = globalVelocityState;
         this.gl = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
         
@@ -323,6 +260,7 @@ class PersistentVisualizerInstance {
         
         this.time = 0;
         this.animationId = null;
+        this.transitionDuration = this.baseConfig.transitionDuration || 1000; // Default transition duration for instance
         
         this.init();
     }
@@ -519,7 +457,160 @@ class PersistentVisualizerInstance {
     }
     
     updateConfig(newConfig) {
-        this.config = { ...this.config, ...newConfig };
+        this.currentComputedConfig = { ...this.currentComputedConfig, ...newConfig };
+    }
+
+    updateWithNewMaster(masterConfig) { // masterIntensity argument removed
+        const pDerivRules = (this.rules && this.rules.parameterDerivation) ? this.rules.parameterDerivation : {};
+        let finalTargetConfig = {};
+
+        // Helper to safely get values
+        const getValue = (paramKey, masterVal, baseVal, currentVal, defaultVal) => {
+            if (pDerivRules[paramKey] === 'fixed' && baseVal !== undefined) {
+                return baseVal;
+            } else if (pDerivRules[paramKey] && typeof pDerivRules[paramKey].multiplierRelativeToMaster === 'number' && masterVal !== undefined) {
+                return masterVal * pDerivRules[paramKey].multiplierRelativeToMaster;
+            } else if (pDerivRules[paramKey] && pDerivRules[paramKey].colorOverride) { // Specific for baseColor
+                return [...pDerivRules[paramKey].colorOverride];
+            }
+            return masterVal !== undefined ? masterVal : (currentVal !== undefined ? currentVal : defaultVal);
+        };
+
+        // Geometry
+        finalTargetConfig.geometry = getValue('geometry', masterConfig.geometry, this.baseConfig.geometry, this.currentComputedConfig.geometry, 0);
+
+        // BaseColor
+        const defaultColor = [1,1,1];
+        let derivedBaseColor = getValue('baseColor', masterConfig.baseColor, this.baseConfig.baseColor, this.currentComputedConfig.baseColor, defaultColor);
+        // Ensure baseColor is an array, especially if coming from masterConfig or baseConfig directly
+        finalTargetConfig.baseColor = Array.isArray(derivedBaseColor) ? [...derivedBaseColor] : defaultColor;
+
+
+        // Intensity
+        finalTargetConfig.intensity = getValue('intensity', masterConfig.intensity, this.baseConfig.intensity, this.currentComputedConfig.intensity, 0.1);
+
+        // GridDensity
+        finalTargetConfig.gridDensity = getValue('gridDensity', masterConfig.gridDensity, this.baseConfig.gridDensity, this.currentComputedConfig.gridDensity, 10.0);
+
+        // MorphFactor
+        finalTargetConfig.morphFactor = getValue('morphFactor', masterConfig.morphFactor, this.baseConfig.morphFactor, this.currentComputedConfig.morphFactor, 0.5);
+
+        // Dimension
+        finalTargetConfig.dimension = getValue('dimension', masterConfig.dimension, this.baseConfig.dimension, this.currentComputedConfig.dimension, 3.0);
+
+        // GlitchIntensity
+        finalTargetConfig.glitchIntensity = getValue('glitchIntensity', masterConfig.glitchIntensity, this.baseConfig.glitchIntensity, this.currentComputedConfig.glitchIntensity, 0.0);
+
+        // RotationSpeed
+        finalTargetConfig.rotationSpeed = getValue('rotationSpeed', masterConfig.rotationSpeed, this.baseConfig.rotationSpeed, this.currentComputedConfig.rotationSpeed, 0.5);
+
+        // LatticeStyle
+        finalTargetConfig.latticeStyle = getValue('latticeStyle', masterConfig.latticeStyle, this.baseConfig.latticeStyle, this.currentComputedConfig.latticeStyle, 'hybrid');
+
+        // ReactivityConfig - merge master's with base's, base taking precedence for specific reactivity params
+        finalTargetConfig.reactivityConfig = {
+            ...(masterConfig.reactivityConfig || {}),
+            ...(this.baseConfig.reactivityConfig || {})
+        };
+        // If a rule specifically sets reactivityConfig to 'fixed', it would use only baseConfig.reactivityConfig
+        if (pDerivRules.reactivityConfig === 'fixed' && this.baseConfig.reactivityConfig) {
+            finalTargetConfig.reactivityConfig = { ...this.baseConfig.reactivityConfig };
+        }
+
+
+        // console.log(`Instance ${this.id}: Master:`, masterConfig, `Base:`, this.baseConfig, `Rules:`, this.rules, `Computed Target:`, finalTargetConfig);
+        return this.smoothTransition(finalTargetConfig); // Return the promise
+    }
+
+    smoothTransition(targetConfig) { // visualizer and layer params removed
+        return new Promise((resolve) => {
+            const startTime = performance.now();
+            // Use this instance's current config as the starting point
+            const startConfig = { ...this.currentComputedConfig };
+
+            // targetConfig is now the fully computed specific config for this instance
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                // Use this.transitionDuration, ensure it's set in ManagedVisualizer or passed in
+                const progress = Math.min(elapsed / this.transitionDuration, 1);
+                const ease = this.easeInOutCubic(progress);
+                const newConfig = this.interpolateConfig(startConfig, targetConfig, ease);
+                this.updateConfig(newConfig); // updateConfig updates this.currentComputedConfig
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Ensure final state is exactly targetConfig
+                    this.updateConfig(targetConfig);
+                    resolve();
+                }
+            };
+            requestAnimationFrame(animate);
+        });
+    }
+
+    easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    interpolateConfig(start, end, progress) {
+        const result = {};
+
+        // Interpolate numeric values
+        for (const key in end) {
+            if (typeof end[key] === 'number' && typeof start[key] === 'number') {
+                result[key] = start[key] + (end[key] - start[key]) * progress;
+            } else if (Array.isArray(end[key]) && Array.isArray(start[key])) {
+                // Interpolate color arrays
+                result[key] = start[key].map((startVal, index) =>
+                    startVal + (end[key][index] - startVal) * progress
+                );
+            } else {
+                // For non-numeric values (like latticeStyle), switch at midpoint
+                result[key] = progress < 0.5 ? start[key] : end[key];
+            }
+        }
+
+        return result;
+    }
+
+    applyGlobalEffect(effectType, effectParams) {
+        console.log(`Instance ${this.id}: Applying global effect '${effectType}' with params:`, effectParams);
+        let needsImmediateRenderUpdate = false; // Flag if a non-transitioning change is made
+
+        switch (effectType) {
+            case 'INVERT_COLORS':
+                if (this.currentComputedConfig.baseColor) {
+                    this.currentComputedConfig.baseColor = this.currentComputedConfig.baseColor.map(c => 1.0 - c);
+                    needsImmediateRenderUpdate = true;
+                }
+                break;
+            case 'MULTIPLY_GRID_DENSITY':
+                if (effectParams && typeof effectParams.factor === 'number') {
+                    this.currentComputedConfig.gridDensity *= effectParams.factor;
+                    needsImmediateRenderUpdate = true;
+                }
+                break;
+            case 'CYCLE_GEOMETRY':
+                // Assuming 5 geometries, indexed 0-4, as per current shader comments (Hypercube to Fractal)
+                // If more are added to shader, this maxGeomIndex needs update.
+                const maxGeomIndex = 4; // Hypercube, Tetrahedron, Sphere, Torus, Fractal
+                this.currentComputedConfig.geometry = (this.currentComputedConfig.geometry + 1) % (maxGeomIndex + 1);
+                needsImmediateRenderUpdate = true;
+                break;
+            // Add more cases here, e.g., for swapping parameters if effectParams includes another instance's config
+            default:
+                console.warn(`Instance ${this.id}: Unknown global effectType '${effectType}'`);
+                return;
+        }
+
+        if (needsImmediateRenderUpdate) {
+            // For immediate changes not going through smoothTransition,
+            // the existing render loop will pick up changes to currentComputedConfig.
+            // If a transition is desired for a global effect, this method could call smoothTransition.
+            console.log(`Instance ${this.id}: Updated config for effect '${effectType}', new gridDensity: ${this.currentComputedConfig.gridDensity}, new geometry: ${this.currentComputedConfig.geometry}`);
+        }
     }
     
     render() {
@@ -528,7 +619,7 @@ class PersistentVisualizerInstance {
         // Calculate velocity influence
         const mouseVel = Math.min(this.globalVelocityState.mouseVelocity * 0.1, 1.0);
         const scrollVel = Math.min(this.globalVelocityState.scrollVelocity * 0.1, 1.0);
-        const velocityInfluence = (mouseVel + scrollVel) * this.config.intensity;
+        const velocityInfluence = (mouseVel + scrollVel) * this.currentComputedConfig.intensity;
         
         // Clear
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -542,20 +633,53 @@ class PersistentVisualizerInstance {
         this.gl.useProgram(this.program);
         
         // Set uniforms
+        const rConfig = this.currentComputedConfig.reactivityConfig || {};
+
+        // Helper to parse reactivity value which can be number or {multiplier, direction} object
+        function parseReactivityRule(ruleValue, defaultMultiplier) {
+            let multiplier = defaultMultiplier;
+            let direction = 1; // 1 for direct, -1 for inverse
+
+            if (typeof ruleValue === 'number') {
+                multiplier = ruleValue;
+            } else if (typeof ruleValue === 'object' && ruleValue !== null) {
+                multiplier = (ruleValue.multiplier !== undefined) ? ruleValue.multiplier : defaultMultiplier;
+                if (ruleValue.direction === 'inverse') {
+                    direction = -1;
+                }
+            }
+            return { multiplier, direction };
+        }
+
+        const gridDensityRule = parseReactivityRule(rConfig.gridDensityFromVelocity, 2.0);
+        const glitchRule = parseReactivityRule(rConfig.glitchFromMouseVelocity, 0.05);
+        const rotationRule = parseReactivityRule(rConfig.rotationFromScrollVelocity, 0.1);
+        const intensityRule = parseReactivityRule(rConfig.intensityFromVelocity, 1.0);
+
         this.gl.uniform1f(this.uniforms.time, this.time);
         this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
-        this.gl.uniform3fv(this.uniforms.baseColor, this.config.baseColor);
-        this.gl.uniform1f(this.uniforms.gridDensity, this.config.gridDensity + velocityInfluence * 2.0);
-        this.gl.uniform1f(this.uniforms.morphFactor, this.config.morphFactor);
-        this.gl.uniform1f(this.uniforms.dimension, this.config.dimension);
-        this.gl.uniform1f(this.uniforms.glitchIntensity, this.config.glitchIntensity + mouseVel * 0.05);
-        this.gl.uniform1f(this.uniforms.rotationSpeed, this.config.rotationSpeed + scrollVel * 0.1);
-        this.gl.uniform1f(this.uniforms.geometry, this.config.geometry);
-        this.gl.uniform1f(this.uniforms.intensity, this.config.intensity + velocityInfluence);
+        this.gl.uniform3fv(this.uniforms.baseColor, this.currentComputedConfig.baseColor || [1,1,1]);
+
+        const currentGridDensity = this.currentComputedConfig.gridDensity || 0;
+        this.gl.uniform1f(this.uniforms.gridDensity, currentGridDensity + velocityInfluence * gridDensityRule.multiplier * gridDensityRule.direction);
+
+        this.gl.uniform1f(this.uniforms.morphFactor, this.currentComputedConfig.morphFactor || 0.5);
+        this.gl.uniform1f(this.uniforms.dimension, this.currentComputedConfig.dimension || 3.0);
+
+        const currentGlitchIntensity = this.currentComputedConfig.glitchIntensity || 0;
+        this.gl.uniform1f(this.uniforms.glitchIntensity, currentGlitchIntensity + mouseVel * glitchRule.multiplier * glitchRule.direction);
+
+        const currentRotationSpeed = this.currentComputedConfig.rotationSpeed || 0;
+        this.gl.uniform1f(this.uniforms.rotationSpeed, currentRotationSpeed + scrollVel * rotationRule.multiplier * rotationRule.direction);
+
+        this.gl.uniform1f(this.uniforms.geometry, this.currentComputedConfig.geometry || 0);
+
+        const currentIntensity = this.currentComputedConfig.intensity || 0;
+        this.gl.uniform1f(this.uniforms.intensity, currentIntensity + velocityInfluence * intensityRule.multiplier * intensityRule.direction);
         
         // Set lattice style
         const latticeStyleMap = { wireframe: 0.0, solid: 1.0, hybrid: 2.0 };
-        this.gl.uniform1f(this.uniforms.latticeStyle, latticeStyleMap[this.config.latticeStyle] || 0.0);
+        this.gl.uniform1f(this.uniforms.latticeStyle, latticeStyleMap[this.currentComputedConfig.latticeStyle] || 0.0);
         
         // Draw
         const positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
@@ -587,4 +711,4 @@ class PersistentVisualizerInstance {
 }
 
 // Global instance
-window.persistentMultiVisualizer = new PersistentMultiVisualizer();
+window.visualizerManager = new VisualizerManager();

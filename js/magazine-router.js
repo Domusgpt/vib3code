@@ -170,12 +170,10 @@ var MagazineRouter = { // Converted const
             var article = this.findArticleById(section); // Converted const
             themeKey = article ? (article.theme_modifier_key || article.contentType || 'article') : 'home';
         }
-        if (window.persistentMultiVisualizer && typeof window.persistentMultiVisualizer.transitionToSection === 'function') {
-            window.persistentMultiVisualizer.transitionToSection(themeKey);
+        if (window.visualizerManager && typeof window.visualizerManager.applyMasterStyle === 'function') {
+            window.visualizerManager.applyMasterStyle(themeKey);
         } else {
-            console.warn('PersistentMultiVisualizer not found or transitionToSection method is missing.');
-            // Optionally, dispatch the event as a fallback, though direct call is preferred if the global instance is reliably present.
-            // document.dispatchEvent(new CustomEvent('sectionChange', { detail: { section: themeKey } }));
+            console.warn('VisualizerManager not found or applyMasterStyle method is missing.');
         }
     },
 
