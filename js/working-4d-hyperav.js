@@ -64,13 +64,77 @@ class Working4DHyperAV {
         
         this.config = this.themeConfigs[this.currentTheme];
         
-        // Interaction state
+        // SOPHISTICATED QUADRANT-BASED MOUSE PARAMETER MAPPING SYSTEM
+        this.mouseQuadrantSystem = {
+            quadrant1: { // Top-Right - "Active Creation"
+                gridModifier: (base, time) => base * (1.1 + Math.sin(time * 0.3) * 0.1),
+                morphModifier: (base) => base * 1.2,
+                dimensionShift: (base) => base + 0.15,
+                rotationBoost: (base) => base * 1.4,
+                glitchModifier: (base) => base * 1.3
+            },
+            quadrant2: { // Top-Left - "Contemplative Focus"  
+                gridModifier: (base, time) => base * (0.9 + Math.cos(time * 0.2) * 0.05),
+                morphModifier: (base) => base * 0.8,
+                dimensionShift: (base) => base - 0.1,
+                rotationBoost: (base) => base * 0.7,
+                glitchModifier: (base) => base * 0.6
+            },
+            quadrant3: { // Bottom-Left - "Structural Foundation"
+                gridModifier: (base, time) => base * (1.0 + Math.sin(time * 0.1) * 0.03),
+                morphModifier: (base) => base * 0.5,
+                dimensionShift: (base) => base - 0.2,
+                rotationBoost: (base) => base * 0.5,
+                glitchModifier: (base) => base * 0.4
+            },
+            quadrant4: { // Bottom-Right - "Dynamic Flow"
+                gridModifier: (base, time) => base * (1.3 + Math.sin(time * 0.4) * 0.2),
+                morphModifier: (base) => base * 1.5,
+                dimensionShift: (base) => base + 0.3,
+                rotationBoost: (base) => base * 1.8,
+                glitchModifier: (base) => base * 1.6
+            }
+        };
+        
+        this.spatialMappingFunctions = {
+            spiral: (x, y, time) => ({
+                intensity: Math.sqrt((x-0.5)**2 + (y-0.5)**2) * 2,
+                phase: Math.atan2(y-0.5, x-0.5) + time * 0.1
+            }),
+            wave: (x, y, time) => ({
+                intensity: Math.sin(x * Math.PI * 4 + time) * Math.cos(y * Math.PI * 4 + time),
+                phase: x + y + time * 0.05
+            }),
+            noise: (x, y, time) => ({
+                intensity: (Math.sin(x * 17.3) * Math.cos(y * 23.7) + Math.sin(time * 0.1)) * 0.5 + 0.5,
+                phase: (x * y + time * 0.03) % (Math.PI * 2)
+            }),
+            field: (x, y, time) => ({
+                intensity: Math.exp(-((x-0.5)**2 + (y-0.5)**2) * 3),
+                phase: time * 0.2
+            })
+        };
+        
+        // Multi-layer parameter influence system
+        this.parameterInfluenceSystem = {
+            primaryLayer: 'spiral',
+            secondaryLayer: 'wave',
+            tertiaryLayer: 'field',
+            blendFactors: { primary: 0.6, secondary: 0.3, tertiary: 0.1 }
+        };
+        
+        // Interaction state with sophisticated tracking
         this.interactionState = {
             type: 'idle',
             intensity: 0,
             mouseX: 0.5,
             mouseY: 0.5,
-            scrollVelocity: 0
+            scrollVelocity: 0,
+            currentQuadrant: 1,
+            spatialInfluence: { intensity: 0, phase: 0 },
+            lastInteractionTime: 0,
+            holdDuration: 0,
+            isHolding: false
         };
         
         this.init();
@@ -306,27 +370,90 @@ class Working4DHyperAV {
     }
     
     setupInteraction() {
-        // Mouse tracking
+        // SOPHISTICATED QUADRANT-BASED MOUSE PARAMETER MAPPING
         document.addEventListener('mousemove', (e) => {
-            this.interactionState.mouseX = e.clientX / window.innerWidth;
-            this.interactionState.mouseY = 1.0 - (e.clientY / window.innerHeight);
-            this.interactionState.type = 'move';
-            this.interactionState.intensity = 0.5;
+            const x = e.clientX / window.innerWidth;
+            const y = 1.0 - (e.clientY / window.innerHeight);
+            
+            this.interactionState.mouseX = x;
+            this.interactionState.mouseY = y;
+            this.interactionState.lastInteractionTime = performance.now();
+            
+            // Determine quadrant (1: top-right, 2: top-left, 3: bottom-left, 4: bottom-right)
+            this.interactionState.currentQuadrant = 
+                (x > 0.5 && y > 0.5) ? 1 :
+                (x <= 0.5 && y > 0.5) ? 2 :
+                (x <= 0.5 && y <= 0.5) ? 3 : 4;
+            
+            // Calculate spatial influence using multiple mapping functions
+            const time = performance.now() * 0.001;
+            const primary = this.spatialMappingFunctions[this.parameterInfluenceSystem.primaryLayer](x, y, time);
+            const secondary = this.spatialMappingFunctions[this.parameterInfluenceSystem.secondaryLayer](x, y, time);
+            const tertiary = this.spatialMappingFunctions[this.parameterInfluenceSystem.tertiaryLayer](x, y, time);
+            
+            // Blend spatial influences
+            const { primary: pWeight, secondary: sWeight, tertiary: tWeight } = this.parameterInfluenceSystem.blendFactors;
+            this.interactionState.spatialInfluence = {
+                intensity: primary.intensity * pWeight + secondary.intensity * sWeight + tertiary.intensity * tWeight,
+                phase: primary.phase * pWeight + secondary.phase * sWeight + tertiary.phase * tWeight
+            };
+            
+            this.interactionState.type = 'sophisticated_move';
+            this.interactionState.intensity = Math.min(this.interactionState.spatialInfluence.intensity, 1.0);
         });
         
-        // Scroll tracking
+        // Click and hold detection for dimensional shifts
+        document.addEventListener('mousedown', (e) => {
+            this.interactionState.isHolding = true;
+            this.interactionState.holdDuration = 0;
+            this.interactionState.type = 'hold_start';
+        });
+        
+        document.addEventListener('mouseup', (e) => {
+            this.interactionState.isHolding = false;
+            this.interactionState.holdDuration = 0;
+            this.interactionState.type = 'hold_end';
+        });
+        
+        // Enhanced scroll tracking with velocity-based parameter mapping
         let lastScrollY = window.scrollY;
+        let scrollVelocityHistory = [];
+        
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
-            this.interactionState.scrollVelocity = Math.abs(currentScrollY - lastScrollY);
-            this.interactionState.intensity = Math.min(this.interactionState.scrollVelocity * 0.01, 1.0);
+            const instantVelocity = Math.abs(currentScrollY - lastScrollY);
+            
+            // Track velocity history for smoother interactions
+            scrollVelocityHistory.push(instantVelocity);
+            if (scrollVelocityHistory.length > 10) scrollVelocityHistory.shift();
+            
+            const avgVelocity = scrollVelocityHistory.reduce((a, b) => a + b, 0) / scrollVelocityHistory.length;
+            
+            this.interactionState.scrollVelocity = avgVelocity;
+            this.interactionState.intensity = Math.min(avgVelocity * 0.02, 1.0);
+            this.interactionState.type = 'scroll_reactive';
+            
             lastScrollY = currentScrollY;
             
-            // Decay
+            // Gradual decay
             setTimeout(() => {
-                this.interactionState.intensity *= 0.9;
-            }, 100);
+                this.interactionState.intensity *= 0.85;
+            }, 150);
         });
+        
+        // Inactivity detection for return to calm state
+        setInterval(() => {
+            const timeSinceLastInteraction = performance.now() - this.interactionState.lastInteractionTime;
+            if (timeSinceLastInteraction > 3000) { // 3 seconds
+                this.interactionState.type = 'idle';
+                this.interactionState.intensity *= 0.95; // Gentle decay to calm state
+            }
+            
+            // Update hold duration for dimensional effects
+            if (this.interactionState.isHolding) {
+                this.interactionState.holdDuration += 50; // 50ms intervals
+            }
+        }, 50);
     }
     
     switchToTheme(themeName, duration = 1000) {
@@ -340,6 +467,18 @@ class Working4DHyperAV {
     render() {
         this.time = performance.now() * 0.001;
         
+        // SOPHISTICATED QUADRANT-BASED PARAMETER CALCULATION
+        const quadrant = this.mouseQuadrantSystem[`quadrant${this.interactionState.currentQuadrant}`];
+        
+        // Apply quadrant modifiers to base configuration
+        const sophisticatedConfig = {
+            gridDensity: quadrant.gridModifier(this.config.gridDensity, this.time),
+            morphFactor: quadrant.morphModifier(this.config.morphFactor),
+            dimension: quadrant.dimensionShift(this.config.dimension) + (this.interactionState.holdDuration * 0.0001), // Hold increases dimension
+            rotationSpeed: quadrant.rotationBoost(this.config.rotationSpeed) * (1 + this.interactionState.scrollVelocity * 0.01),
+            glitchIntensity: quadrant.glitchModifier(this.config.glitchIntensity) * (1 + this.interactionState.spatialInfluence.intensity)
+        };
+        
         // Clear
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
         this.gl.clearColor(0.02, 0.02, 0.08, 1.0);
@@ -347,15 +486,15 @@ class Working4DHyperAV {
         
         this.gl.useProgram(this.program);
         
-        // Set uniforms
+        // Set uniforms with sophisticated modifications
         this.gl.uniform1f(this.uniforms.time, this.time);
         this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
         this.gl.uniform3fv(this.uniforms.baseColor, this.config.baseColor);
-        this.gl.uniform1f(this.uniforms.gridDensity, this.config.gridDensity);
-        this.gl.uniform1f(this.uniforms.morphFactor, this.config.morphFactor);
-        this.gl.uniform1f(this.uniforms.dimension, this.config.dimension);
-        this.gl.uniform1f(this.uniforms.glitchIntensity, this.config.glitchIntensity);
-        this.gl.uniform1f(this.uniforms.rotationSpeed, this.config.rotationSpeed);
+        this.gl.uniform1f(this.uniforms.gridDensity, sophisticatedConfig.gridDensity);
+        this.gl.uniform1f(this.uniforms.morphFactor, sophisticatedConfig.morphFactor);
+        this.gl.uniform1f(this.uniforms.dimension, sophisticatedConfig.dimension);
+        this.gl.uniform1f(this.uniforms.glitchIntensity, sophisticatedConfig.glitchIntensity);
+        this.gl.uniform1f(this.uniforms.rotationSpeed, sophisticatedConfig.rotationSpeed);
         this.gl.uniform1f(this.uniforms.geometry, this.config.geometry);
         this.gl.uniform1f(this.uniforms.interactionIntensity, this.interactionState.intensity);
         this.gl.uniform2f(this.uniforms.mouse, this.interactionState.mouseX, this.interactionState.mouseY);
