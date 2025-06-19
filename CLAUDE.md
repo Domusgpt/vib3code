@@ -6,23 +6,23 @@ This file provides specific guidance for developing the **VIB3CODE Digital Magaz
 
 **VIB3CODE** (vib3code.com) is the flagship digital magazine establishing Exoditical Moral Architecture as the premier philosophy for ethical technology development. This platform serves as the intellectual and cultural epicenter of the EMA movement while showcasing Parserator as the practical application of EMA principles.
 
-## Core Philosophy: Editorial Excellence Meets Digital Sovereignty
+## Core Philosophy: Premium Digital Magazine with Reactive HyperAV Visuals
 
 ### The VIB3CODE Mission
 
-**"Where Digital Ethics Meets Aesthetic Excellence"**
+**"Where Technology Meets Editorial Excellence"**
 
-VIB3CODE is not just another tech blog - it's a premium digital magazine that proves ethical technology can be both morally superior AND aesthetically stunning. We demonstrate that EMA principles produce better design, better user experiences, and better business outcomes.
+VIB3CODE is a premium digital magazine focused on technology, development, and digital culture. The platform showcases the Reactive HyperAV Core as our central visual identity - an adaptive geometric visualization system that responds to user interaction and creates our distinctive brand aesthetic.
 
-### EMA as Editorial Foundation
+### Home-Master Reactive Visual System
 
-Every design decision, content choice, and technical implementation must exemplify EMA principles:
+The magazine's identity is built around the Home-Master Relational System:
 
-- **Digital Sovereignty**: Readers control their data, subscriptions, and content consumption
-- **Portability-First**: Export capabilities for articles, subscriptions, and personal data
-- **Standards Agnosticism**: Open formats, RSS feeds, email newsletters - never proprietary lock-in
-- **Transparent Competition**: Credit competitors and link to external sources freely
-- **Right to Leave**: Make unsubscribing and data export elegant experiences
+- **Editor Control**: Randomize/set home section parameters, all others auto-derive
+- **Mathematical Relationships**: Fixed rules govern how sections relate to home
+- **Scroll Reactivity**: Multi-parameter combinations (gridDensity + morphFactor, rotationSpeed + glitchIntensity, etc.)
+- **Section Identity**: Only geometry is fixed per section, everything else derives from home
+- **Creative Freedom**: Complete editorial control through home manipulation
 
 ## Development Architecture: Atom-of-Thoughts Approach
 

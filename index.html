@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <base href="/vib3code/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="VIB3CODE - Where elegant code meets digital freedom. Modern development without vendor lock-in.">
     <meta name="keywords" content="VIB3CODE, coding, development, digital freedom, parserator, no vendor lock-in">
     
-    <title>VIB3CODE - Digital Magazine for EMA Movement - FORCE v1749970345</title>
+    <title>VIB3CODE - Digital Magazine for EMA Movement - FORCE v1750357456</title>
+    
+    <!-- FORCE COMPLETE CACHE REFRESH -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <!-- Cyberpunk Dark Theme with Enhanced Parallax -->
     <link rel="stylesheet" href="styles/dark-vib3.css">
@@ -130,6 +134,268 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Home-Master Reactive System -->
+    <script src="shared-reactive-core/home-master-system.js"></script>
+    <script src="shared-reactive-core/vib3code-integration.js"></script>
+    
+    <!-- Polytopal Magazine Enhancement Styles -->
+    <style>
+        /* Polytopal Home-Master Control Panel */
+        .polytopal-controls {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1rem;
+            z-index: 1000;
+            min-width: 280px;
+            max-height: 70vh;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+            display: none; /* Hidden by default */
+        }
+        
+        .polytopal-controls.active {
+            transform: translateX(0);
+        }
+        
+        .controls-toggle {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+        
+        /* Show controls when in editor mode */
+        body.editor-mode .controls-toggle {
+            display: flex;
+        }
+        
+        body.editor-mode .polytopal-controls {
+            display: block;
+        }
+        
+        .controls-toggle:hover {
+            background: rgba(255, 0, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+        
+        .control-section {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-section:last-child {
+            border-bottom: none;
+        }
+        
+        .control-title {
+            color: #ff00ff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .control-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            margin: 0.125rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ff00ff;
+        }
+        
+        .parameter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.25rem 0;
+        }
+        
+        .parameter-label {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .parameter-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: #ff00ff;
+            min-width: 30px;
+            text-align: right;
+        }
+        
+        .control-range {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+        
+        .control-select {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.25rem;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 0.65rem;
+        }
+        
+        /* Enhanced magazine sections */
+        .magazine-section {
+            min-height: 100vh !important;
+            padding: 6rem 2rem 4rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section-expanded-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .section-header-expanded {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title-expanded {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, currentColor, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-subtitle-expanded {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 60ch;
+            margin: 0 auto;
+        }
+        
+        .content-grid-expanded {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .grid-articles {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+        
+        .grid-showcase {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        
+        .article-card-expanded {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .article-card-expanded:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .article-category-expanded {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .article-title-expanded {
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        
+        .article-excerpt-expanded {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .article-meta-expanded {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-articles,
+            .grid-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .magazine-section {
+                padding: 4rem 1rem 3rem !important;
+            }
+            
+            .polytopal-controls {
+                right: 10px;
+                min-width: 260px;
+            }
+            
+            .controls-toggle {
+                right: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Loading Screen -->
@@ -213,9 +479,412 @@
         }
     </style>
 
-    <!-- Magazine Content Container - MOVED ABOVE FOOTER -->
+    <!-- Polytopal Home-Master Control Panel -->
+    <div class="controls-toggle" onclick="toggleControls()">⚙️</div>
+    <div class="polytopal-controls" id="polytopal-controls">
+        <div class="control-section">
+            <div class="control-title">Home Master Control</div>
+            <div class="control-button" onclick="randomizeHome()">🎲 Randomize Home</div>
+            <div class="control-button" onclick="resetToDefaults()">🔄 Reset Defaults</div>
+            <div class="control-button" onclick="exportConfig()">💾 Export Config</div>
+        </div>
+        
+        <div class="control-section">
+            <div class="control-title">Home Parameters</div>
+            <div class="parameter-row">
+                <span class="parameter-label">Grid Density:</span>
+                <span class="parameter-value" id="home-grid-value">12.0</span>
+            </div>
+            <input type="range" class="control-range" min="8" max="20" step="0.5" value="12" id="home-grid-density" onchange="updateHomeParameter('gridDensity', this.value)">
+            
+            <div class="parameter-row">
+                <span class="parameter-label">Morph Factor:</span>
+                <span class="parameter-value" id="home-morph-value">0.5</span>
+            </div>
+            <input type="range" class="control-range" min="0.2" max="0.9" step="0.05" value="0.5" id="home-morph-factor" onchange="updateHomeParameter('morphFactor', this.value)">
+            
+            <div class="parameter-row">
+                <span class="parameter-label">Dimension:</span>
+                <span class="parameter-value" id="home-dimension-value">3.5</span>
+            </div>
+            <input type="range" class="control-range" min="3.1" max="3.9" step="0.1" value="3.5" id="home-dimension" onchange="updateHomeParameter('dimension', this.value)">
+        </div>
+        
+        <div class="control-section">
+            <div class="control-title">Scroll Reactivity</div>
+            <select class="control-select" id="scroll-reactivity" onchange="setScrollReactivity(this.value)">
+                <option value="velocity">Velocity Effects</option>
+                <option value="grid-only">Grid Density Only</option>
+                <option value="combined">Combined Mapping</option>
+                <option value="custom">Custom Parameters</option>
+            </select>
+        </div>
+        
+        <div class="control-section">
+            <div class="control-title">Section States</div>
+            <div class="parameter-row">
+                <span class="parameter-label">Technology:</span>
+                <span class="parameter-value" id="tech-derived">Auto-Derived</span>
+            </div>
+            <div class="parameter-row">
+                <span class="parameter-label">EMA:</span>
+                <span class="parameter-value" id="ema-derived">Auto-Derived</span>
+            </div>
+            <div class="parameter-row">
+                <span class="parameter-label">Videos:</span>
+                <span class="parameter-value" id="videos-derived">Auto-Derived</span>
+            </div>
+            <div class="parameter-row">
+                <span class="parameter-label">Podcasts:</span>
+                <span class="parameter-value" id="podcasts-derived">Auto-Derived</span>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <div class="control-title">Geometry Presets</div>
+            <div class="control-button" onclick="loadPreset('hypercube')">🔮 Hypercube</div>
+            <div class="control-button" onclick="loadPreset('tetrahedron')">🔺 Tetrahedron</div>
+            <div class="control-button" onclick="loadPreset('sphere')">🌐 Sphere</div>
+            <div class="control-button" onclick="loadPreset('torus')">🍩 Torus</div>
+            <div class="control-button" onclick="loadPreset('fractal')">🌿 Fractal</div>
+            <div class="control-button" onclick="loadPreset('crystal')">💎 Crystal</div>
+        </div>
+    </div>
+    
+    <!-- Magazine Content Container with Expanded Sections -->
     <div class="magazine-content">
-        <!-- Dynamic sections will be loaded here by the magazine router -->
+        
+        <!-- HOME SECTION -->
+        <section class="magazine-section" id="section-home" data-section="home">
+            <div class="section-expanded-content">
+                <div class="section-header-expanded">
+                    <h1 class="section-title-expanded" style="color: #ff00ff;">VIB3CODE</h1>
+                    <p class="section-subtitle-expanded">Where Technology Meets Editorial Excellence</p>
+                    <p class="section-subtitle-expanded">Pioneering the Exoditical Moral Architecture Movement Through Premium Digital Design</p>
+                </div>
+                
+                <div class="content-grid-expanded grid-showcase">
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 0, 255, 0.2);">Featured</div>
+                        <h3 class="article-title-expanded">The Digital Sovereignty Manifesto</h3>
+                        <p class="article-excerpt-expanded">Our comprehensive guide to implementing Exoditical Moral Architecture in modern software development. Learn the principles that are reshaping how we build technology.</p>
+                        <div class="article-meta-expanded">
+                            <span>Philosophy</span>
+                            <span>15 min read</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 0, 255, 0.2);">Movement</div>
+                        <h3 class="article-title-expanded">Building Bridges, Not Walls</h3>
+                        <p class="article-excerpt-expanded">How Parserator demonstrates that liberation-focused software wins both ethically and commercially. A practical case study in EMA implementation.</p>
+                        <div class="article-meta-expanded">
+                            <span>Case Study</span>
+                            <span>12 min read</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 0, 255, 0.2);">Innovation</div>
+                        <h3 class="article-title-expanded">The Home-Master Reactive System</h3>
+                        <p class="article-excerpt-expanded">Exploring the mathematical relationships that create our adaptive visual identity. How 4D geometry expresses digital philosophy.</p>
+                        <div class="article-meta-expanded">
+                            <span>Technology</span>
+                            <span>18 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ARTICLES SECTION -->
+        <section class="magazine-section" id="section-articles" data-section="articles">
+            <div class="section-expanded-content">
+                <div class="section-header-expanded">
+                    <h1 class="section-title-expanded" style="color: #00ffff;">Articles</h1>
+                    <p class="section-subtitle-expanded">Deep Dives into Digital Philosophy and Technical Implementation</p>
+                </div>
+                
+                <div class="content-grid-expanded grid-articles">
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">EMA Philosophy</div>
+                        <h3 class="article-title-expanded">The Death of Vendor Lock-in</h3>
+                        <p class="article-excerpt-expanded">Why the future belongs to platforms that embrace user sovereignty. An analysis of market forces driving the EMA movement.</p>
+                        <div class="article-meta-expanded">
+                            <span>Paul Phillips</span>
+                            <span>March 15, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">Technical Deep Dive</div>
+                        <h3 class="article-title-expanded">Implementing Data Portability at Scale</h3>
+                        <p class="article-excerpt-expanded">A technical guide to building export-first architectures. Code examples, best practices, and real-world implementation strategies.</p>
+                        <div class="article-meta-expanded">
+                            <span>Engineering Team</span>
+                            <span>March 12, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">Industry Analysis</div>
+                        <h3 class="article-title-expanded">The Wall of Openness: Q1 2024 Report</h3>
+                        <p class="article-excerpt-expanded">Our quarterly assessment of industry progress toward digital sovereignty. Which platforms are building bridges vs. walls?</p>
+                        <div class="article-meta-expanded">
+                            <span>Research Team</span>
+                            <span>March 10, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">Developer Stories</div>
+                        <h3 class="article-title-expanded">Escaping the Firebase Ecosystem</h3>
+                        <p class="article-excerpt-expanded">How one startup migrated from Google Firebase to a self-hosted solution using EMA principles. Lessons learned and costs saved.</p>
+                        <div class="article-meta-expanded">
+                            <span>Guest Author</span>
+                            <span>March 8, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">Framework Review</div>
+                        <h3 class="article-title-expanded">React vs. Vanilla: The Liberation Test</h3>
+                        <p class="article-excerpt-expanded">Evaluating frontend frameworks through the lens of digital sovereignty. Performance, portability, and long-term freedom analysis.</p>
+                        <div class="article-meta-expanded">
+                            <span>Technology Review</span>
+                            <span>March 5, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(0, 255, 255, 0.2);">Community</div>
+                        <h3 class="article-title-expanded">Building the EMA Developer Community</h3>
+                        <p class="article-excerpt-expanded">How to foster a community around ethical technology principles. Organizing, evangelism, and sustainable growth strategies.</p>
+                        <div class="article-meta-expanded">
+                            <span>Community Team</span>
+                            <span>March 3, 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- VIDEOS SECTION -->
+        <section class="magazine-section" id="section-videos" data-section="videos">
+            <div class="section-expanded-content">
+                <div class="section-header-expanded">
+                    <h1 class="section-title-expanded" style="color: #ff3366;">Videos</h1>
+                    <p class="section-subtitle-expanded">Visual Essays on Digital Philosophy and Technical Demonstrations</p>
+                </div>
+                
+                <div class="content-grid-expanded grid-showcase">
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Philosophy</div>
+                        <h3 class="article-title-expanded">The Ethics of API Design</h3>
+                        <p class="article-excerpt-expanded">A 25-minute deep dive into designing APIs that respect user sovereignty. Practical examples and philosophical foundations.</p>
+                        <div class="article-meta-expanded">
+                            <span>42:30 minutes</span>
+                            <span>1.2K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Technical Demo</div>
+                        <h3 class="article-title-expanded">Building a Portable React App</h3>
+                        <p class="article-excerpt-expanded">Live coding session showing how to build a React application with full data export capabilities and framework independence.</p>
+                        <div class="article-meta-expanded">
+                            <span>58:15 minutes</span>
+                            <span>3.4K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Case Study</div>
+                        <h3 class="article-title-expanded">Parserator: EMA in Action</h3>
+                        <p class="article-excerpt-expanded">Behind the scenes look at how Parserator implements EMA principles. Architecture decisions, trade-offs, and lessons learned.</p>
+                        <div class="article-meta-expanded">
+                            <span>35:20 minutes</span>
+                            <span>2.1K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Interview</div>
+                        <h3 class="article-title-expanded">Migration Stories: Escaping Big Tech</h3>
+                        <p class="article-excerpt-expanded">Conversations with developers who successfully migrated away from major cloud platforms. Challenges, solutions, and advice.</p>
+                        <div class="article-meta-expanded">
+                            <span>67:45 minutes</span>
+                            <span>5.7K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Tutorial</div>
+                        <h3 class="article-title-expanded">Self-Hosting Your Development Stack</h3>
+                        <p class="article-excerpt-expanded">Complete guide to setting up a self-hosted development environment. From version control to CI/CD, achieving total independence.</p>
+                        <div class="article-meta-expanded">
+                            <span>89:10 minutes</span>
+                            <span>4.8K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 51, 102, 0.2);">Analysis</div>
+                        <h3 class="article-title-expanded">The Real Cost of Vendor Lock-in</h3>
+                        <p class="article-excerpt-expanded">Data-driven analysis of hidden costs in modern development stacks. Calculating the true price of convenience.</p>
+                        <div class="article-meta-expanded">
+                            <span>28:55 minutes</span>
+                            <span>6.2K views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- PODCASTS SECTION -->
+        <section class="magazine-section" id="section-podcasts" data-section="podcasts">
+            <div class="section-expanded-content">
+                <div class="section-header-expanded">
+                    <h1 class="section-title-expanded" style="color: #ff7f00;">Podcasts</h1>
+                    <p class="section-subtitle-expanded">Digital Liberation Conversations with Industry Leaders</p>
+                </div>
+                
+                <div class="content-grid-expanded grid-articles">
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 12</div>
+                        <h3 class="article-title-expanded">The Future of Open Source with DHH</h3>
+                        <p class="article-excerpt-expanded">David Heinemeier Hansson discusses Rails, Hey, and the philosophy of building software that respects users. Deep dive into practical EMA implementation.</p>
+                        <div class="article-meta-expanded">
+                            <span>March 18, 2024</span>
+                            <span>52:30 minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 11</div>
+                        <h3 class="article-title-expanded">Building Ethical AI with Hugging Face</h3>
+                        <p class="article-excerpt-expanded">Conversation with Hugging Face leadership about democratizing AI and building platforms that empower rather than entrap developers.</p>
+                        <div class="article-meta-expanded">
+                            <span>March 11, 2024</span>
+                            <span>64:15 minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 10</div>
+                        <h3 class="article-title-expanded">Database Freedom with PostgreSQL Core Team</h3>
+                        <p class="article-excerpt-expanded">Why PostgreSQL represents the gold standard for database sovereignty. Technical deep dive into extensibility and vendor independence.</p>
+                        <div class="article-meta-expanded">
+                            <span>March 4, 2024</span>
+                            <span>48:20 minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 9</div>
+                        <h3 class="article-title-expanded">Decentralizing the Web with Protocol Labs</h3>
+                        <p class="article-excerpt-expanded">Exploring IPFS, Filecoin, and the vision of a truly decentralized internet. How blockchain technology enables data sovereignty.</p>
+                        <div class="article-meta-expanded">
+                            <span>February 26, 2024</span>
+                            <span>71:45 minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 8</div>
+                        <h3 class="article-title-expanded">The Economics of Digital Freedom</h3>
+                        <p class="article-excerpt-expanded">How businesses can thrive by embracing user sovereignty. Economic models, competitive advantages, and market opportunities in ethical tech.</p>
+                        <div class="article-meta-expanded">
+                            <span>February 19, 2024</span>
+                            <span>56:30 minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(255, 127, 0, 0.2);">Episode 7</div>
+                        <h3 class="article-title-expanded">Rust and Systems Programming Ethics</h3>
+                        <p class="article-excerpt-expanded">Why Rust represents a new paradigm in systems programming ethics. Memory safety, performance, and empowering developers to build better software.</p>
+                        <div class="article-meta-expanded">
+                            <span>February 12, 2024</span>
+                            <span>43:25 minutes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- EMA SECTION -->
+        <section class="magazine-section" id="section-ema" data-section="ema">
+            <div class="section-expanded-content">
+                <div class="section-header-expanded">
+                    <h1 class="section-title-expanded" style="color: #7f00ff;">E.M.A</h1>
+                    <p class="section-subtitle-expanded">Exoditical Moral Architecture - The Philosophy Reshaping Technology</p>
+                </div>
+                
+                <div class="content-grid-expanded grid-showcase">
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Core Principle</div>
+                        <h3 class="article-title-expanded">Digital Sovereignty</h3>
+                        <p class="article-excerpt-expanded">User data, logic, and intellectual property ownership is sacred and non-negotiable. The foundation of all ethical technology decisions.</p>
+                        <div class="article-meta-expanded">
+                            <span>Fundamental</span>
+                            <span>Always Active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Core Principle</div>
+                        <h3 class="article-title-expanded">Portability-First Design</h3>
+                        <p class="article-excerpt-expanded">Export and migration capabilities are first-class features, not afterthoughts. Freedom to leave is the ultimate empowerment.</p>
+                        <div class="article-meta-expanded">
+                            <span>Architecture</span>
+                            <span>Design Pattern</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Core Principle</div>
+                        <h3 class="article-title-expanded">Standards Agnosticism</h3>
+                        <p class="article-excerpt-expanded">Universal formats over proprietary lock-in mechanisms. Open standards enable freedom and prevent technological entrapment.</p>
+                        <div class="article-meta-expanded">
+                            <span>Technical</span>
+                            <span>Implementation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Core Principle</div>
+                        <h3 class="article-title-expanded">Transparent Competition</h3>
+                        <p class="article-excerpt-expanded">Expose walls, celebrate bridges, compete on merit alone. The Wall of Openness shows who builds freedom vs. entrapment.</p>
+                        <div class="article-meta-expanded">
+                            <span>Market Ethics</span>
+                            <span>Competitive Strategy</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Core Principle</div>
+                        <h3 class="article-title-expanded">The Sacred Departure</h3>
+                        <p class="article-excerpt-expanded">Treat user migration with respect and ceremony, not hostility. The Honorable Butcher Shop experience makes leaving elegant.</p>
+                        <div class="article-meta-expanded">
+                            <span>User Experience</span>
+                            <span>Business Philosophy</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card-expanded">
+                        <div class="article-category-expanded" style="background: rgba(127, 0, 255, 0.2);">Movement</div>
+                        <h3 class="article-title-expanded">Join the EMA Movement</h3>
+                        <p class="article-excerpt-expanded">Become part of the community reshaping technology through ethical architecture. Resources, community, and implementation guides.</p>
+                        <div class="article-meta-expanded">
+                            <span>Community</span>
+                            <span>Get Involved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
     </div>
 
     <!-- Footer -->
@@ -285,311 +954,1295 @@
     </footer>
 
 
-    <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-14 18:05 -->
-    <!-- Full HyperAV Integration System -->
+    <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-19 14:30 -->
+    <!-- Working 4D HyperAV System -->
+    <script src="js/working-4d-hyperav.js?v=1750360001"></script>
     <script src="js/hyperav-loader.js?v=1749968723"></script>
     <script src="js/vib3-visualizer-integration.js?v=1749968723"></script>
     <script src="js/theme-engine-clean.js?v=1749968723"></script>
-<script src="js/content-templates.js?v=1750014474"></script>
+    <script src="js/content-templates.js?v=1750014474"></script>
     <script src="js/magazine-router.js?v=1749968723"></script>
     <script src="js/editorial-ai-clean.js?v=1749968723"></script>
     <script src="js/interactive-features.js?v=1749968723"></script>
     <script src="js/main-fixed.js?v=1749968723"></script>
     <script src="js/parallax-fixed.js?v=1749968723"></script>
     
-    <!-- SIMPLE WORKING VISUALIZER - Direct GEN-RL-MillZ Port -->
-    <script src="js/simple-working-visualizer.js?v=1.0"></script>
+    <!-- REACTIVE HYPERAV CORE - Complete VIB3CODE Visualization System -->
     <script>
-        console.log('🚀 VIB3CODE SIMPLE WORKING VISUALIZER LOADING...');
+        console.log('🚀 VIB3CODE REACTIVE HYPERAV CORE LOADING...');
         
-        // Simple Working Visualizer Integration
-        class VIB3VisualizerIntegration {
-            constructor() {
-                this.simpleSystem = null;
-                this.isActive = false;
-                this.state = {
-                    currentSection: 'home',
-                    scrollPosition: 0,
+        // Complete ReactiveHyperAVCore from vibrant demo
+        class ReactiveHyperAVCore {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                this.time = 0;
+                this.animationId = null;
+                this.currentTheme = 'hypercube';
+                this.transitionProgress = 0;
+                this.isTransitioning = false;
+                this.transitionDuration = 1000;
+                this.transitionStart = 0;
+                this.fromConfig = null;
+                this.toConfig = null;
+                
+                this.themeConfigs = {
+                    hypercube: {
+                        baseColor: [1.0, 0.0, 1.0],
+                        gridDensity: 12.0,
+                        morphFactor: 0.5,
+                        dimension: 3.5,
+                        glitchIntensity: 0.3,
+                        rotationSpeed: 0.5,
+                        geometry: 'hypercube'
+                    },
+                    tetrahedron: {
+                        baseColor: [0.0, 1.0, 1.0],
+                        gridDensity: 8.0,
+                        morphFactor: 0.3,
+                        dimension: 3.2,
+                        glitchIntensity: 0.1,
+                        rotationSpeed: 0.3,
+                        geometry: 'tetrahedron'
+                    },
+                    sphere: {
+                        baseColor: [1.0, 1.0, 0.0],
+                        gridDensity: 15.0,
+                        morphFactor: 0.7,
+                        dimension: 3.8,
+                        glitchIntensity: 0.2,
+                        rotationSpeed: 0.4,
+                        geometry: 'sphere'
+                    },
+                    torus: {
+                        baseColor: [0.0, 1.0, 0.0],
+                        gridDensity: 10.0,
+                        morphFactor: 0.6,
+                        dimension: 3.3,
+                        glitchIntensity: 0.4,
+                        rotationSpeed: 0.6,
+                        geometry: 'torus'
+                    },
+                    klein: {
+                        baseColor: [1.0, 0.5, 0.0],
+                        gridDensity: 18.0,
+                        morphFactor: 0.8,
+                        dimension: 3.9,
+                        glitchIntensity: 0.5,
+                        rotationSpeed: 0.7,
+                        geometry: 'klein'
+                    },
+                    fractal: {
+                        baseColor: [0.5, 0.0, 1.0],
+                        gridDensity: 20.0,
+                        morphFactor: 0.9,
+                        dimension: 3.6,
+                        glitchIntensity: 0.6,
+                        rotationSpeed: 0.2,
+                        geometry: 'fractal'
+                    },
+                    wave: {
+                        baseColor: [1.0, 0.0, 0.5],
+                        gridDensity: 14.0,
+                        morphFactor: 0.4,
+                        dimension: 3.7,
+                        glitchIntensity: 0.3,
+                        rotationSpeed: 0.8,
+                        geometry: 'wave'
+                    },
+                    crystal: {
+                        baseColor: [0.0, 1.0, 0.5],
+                        gridDensity: 16.0,
+                        morphFactor: 0.2,
+                        dimension: 3.4,
+                        glitchIntensity: 0.1,
+                        rotationSpeed: 0.9,
+                        geometry: 'crystal'
+                    }
+                };
+                
+                this.interactionState = {
+                    type: 'idle',
+                    intensity: 0,
+                    lastActivity: Date.now(),
+                    holdStart: 0,
+                    isHolding: false,
                     scrollVelocity: 0,
-                    mousePosition: { x: 0.5, y: 0.5 },
-                    clickIntensity: 0,
-                    readingMetrics: {
-                        timeOnPage: 0,
-                        engagement: 0.5,
-                        contentComplexity: 0.5,
-                        scrollProgress: 0
-                    }
+                    mouseX: 0.5,
+                    mouseY: 0.5
                 };
                 
-                this.sectionPresets = {
-                    home: {
-                        geometry: 'hypercube',
-                        mood: 'dynamic',
-                        primary: '#00d9ff', secondary: '#ff0080', background: '#020010'
-                    },
-                    articles: {
-                        geometry: 'editorial',
-                        mood: 'focused-reading',
-                        primary: '#e6e6e6', secondary: '#3366ff', background: '#000208'
-                    },
-                    videos: {
-                        geometry: 'hypersphere',
-                        mood: 'engaging',
-                        primary: '#ff3366', secondary: '#33ff66', background: '#050005'
-                    },
-                    interactives: {
-                        geometry: 'hypertetrahedron',
-                        mood: 'dynamic-showcase',
-                        primary: '#ff8800', secondary: '#00ccff', background: '#020200'
-                    },
-                    philosophy: {
-                        geometry: 'hypersphere',
-                        mood: 'philosophical-depth',
-                        primary: '#8800ff', secondary: '#00ff88', background: '#000005'
-                    }
-                };
+                this.init();
             }
             
-            async init() {
-                try {
-                    console.log('🎨 Initializing Simple Working Visualizer...');
-                    
-                    // Initialize simple working system (direct GEN-RL-MillZ copy)
-                    this.simpleSystem = new SimpleWorkingVisualizerIntegration();
-                    const success = await this.simpleSystem.init();
-                    
-                    if (success) {
-                        this.isActive = true;
-                        this.setupAdvancedTracking();
-                        this.setupReadingMetrics();
-                        console.log('✅ Simple Working Visualizer Integration ready');
-                    } else {
-                        console.warn('🎨 Simple system failed, using fallback mode');
-                        this.setupFallbackMode();
-                    }
-                } catch (error) {
-                    console.warn('🎨 Simple visualizer error:', error);
-                    this.setupFallbackMode();
+            init() {
+                if (!this.gl) {
+                    console.error('WebGL not supported');
+                    return false;
                 }
                 
-                this.applySectionPreset('home');
-                this.startReadingTimer();
+                this.setupShaders();
+                this.setupInteraction();
+                this.resize();
+                
+                window.addEventListener('resize', () => this.resize());
+                
+                return true;
             }
             
-            setupAdvancedTracking() {
-                var self = this;
-                var lastScrollY = window.scrollY;
-                
-                window.addEventListener('scroll', function() {
-                    var currentScrollY = window.scrollY;
-                    self.state.scrollVelocity = currentScrollY - lastScrollY;
-                    self.state.scrollPosition = currentScrollY;
-                    
-                    // Calculate scroll progress
-                    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                    self.state.readingMetrics.scrollProgress = docHeight > 0 ? currentScrollY / docHeight : 0;
-                    
-                    lastScrollY = currentScrollY;
-                    
-                    // Send to simple system
-                    if (self.simpleSystem) {
-                        // Simple system doesn't need complex metrics
-                        console.log('📊 Scroll progress:', self.state.readingMetrics.scrollProgress);
+            setupShaders() {
+                const vertexShaderSource = `
+                    attribute vec2 a_position;
+                    void main() {
+                        gl_Position = vec4(a_position, 0.0, 1.0);
                     }
-                    
-                    // Fallback to legacy system
-                    if (window.HolographicVisualizer) {
-                        var speed = 0.2 + Math.abs(self.state.scrollVelocity) * 0.001;
-                        window.HolographicVisualizer.config.rotationSpeed = speed;
-                    }
-                    
-                    self.updateParameterDisplay();
-                });
+                `;
                 
-                document.addEventListener('mousemove', function(e) {
-                    self.state.mousePosition.x = e.clientX / window.innerWidth;
-                    self.state.mousePosition.y = e.clientY / window.innerHeight;
-                    self.updateParameterDisplay();
-                });
-                
-                document.addEventListener('click', function() {
-                    self.state.clickIntensity = 1.0;
-                    self.state.readingMetrics.engagement = Math.min(1.0, self.state.readingMetrics.engagement + 0.1);
+                const fragmentShaderSource = `
+                  precision highp float;
+                  
+                  uniform vec2 u_resolution;
+                  uniform float u_time;
+                  uniform vec2 u_mouse;
+                  uniform float u_morphFactor;
+                  uniform float u_glitchIntensity;
+                  uniform float u_rotationSpeed;
+                  uniform float u_dimension;
+                  uniform float u_gridDensity;
+                  uniform vec3 u_baseColor;
+                  uniform float u_interactionIntensity;
+                  uniform float u_geometry; // 0=hypercube, 1=tetrahedron, 2=sphere, 3=torus, 4=klein, 5=fractal, 6=wave, 7=crystal
                     
-                    setTimeout(function() {
-                        self.state.clickIntensity = Math.max(0.0, self.state.clickIntensity - 0.2);
-                    }, 200);
-                });
-            }
-            
-            setupFallbackMode() {
-                console.log('🎨 Using fallback visualizer mode');
-                this.setupScrollTracking();
-                this.setupMouseTracking(); 
-                this.setupClickTracking();
-            }
-            
-            setupScrollTracking() {
-                var self = this;
-                var lastScrollY = window.scrollY;
-                
-                window.addEventListener('scroll', function() {
-                    var currentScrollY = window.scrollY;
-                    self.state.scrollVelocity = currentScrollY - lastScrollY;
-                    self.state.scrollPosition = currentScrollY;
-                    lastScrollY = currentScrollY;
-                    
-                    if (window.HolographicVisualizer) {
-                        var speed = 0.2 + Math.abs(self.state.scrollVelocity) * 0.001;
-                        window.HolographicVisualizer.config.rotationSpeed = speed;
-                    }
-                    
-                    self.updateParameterDisplay();
-                });
-            }
-            
-            setupMouseTracking() {
-                var self = this;
-                
-                document.addEventListener('mousemove', function(e) {
-                    self.state.mousePosition.x = e.clientX / window.innerWidth;
-                    self.state.mousePosition.y = e.clientY / window.innerHeight;
-                    
-                    if (window.HolographicVisualizer) {
-                        var intensity = Math.sqrt(
-                            Math.pow(self.state.mousePosition.x - 0.5, 2) + 
-                            Math.pow(self.state.mousePosition.y - 0.5, 2)
+                    // 4D rotation matrices
+                    mat4 rotateXW(float angle) {
+                        float c = cos(angle);
+                        float s = sin(angle);
+                        return mat4(
+                            c, 0.0, 0.0, -s,
+                            0.0, 1.0, 0.0, 0.0,
+                            0.0, 0.0, 1.0, 0.0,
+                            s, 0.0, 0.0, c
                         );
-                        window.HolographicVisualizer.config.patternIntensity = 1.0 - intensity;
                     }
                     
-                    self.updateParameterDisplay();
+                    mat4 rotateYW(float angle) {
+                        float c = cos(angle);
+                        float s = sin(angle);
+                        return mat4(
+                            1.0, 0.0, 0.0, 0.0,
+                            0.0, c, 0.0, -s,
+                            0.0, 0.0, 1.0, 0.0,
+                            0.0, s, 0.0, c
+                        );
+                    }
+                    
+                    mat4 rotateZW(float angle) {
+                        float c = cos(angle);
+                        float s = sin(angle);
+                        return mat4(
+                            1.0, 0.0, 0.0, 0.0,
+                            0.0, 1.0, 0.0, 0.0,
+                            0.0, 0.0, c, -s,
+                            0.0, 0.0, s, c
+                        );
+                    }
+                    
+                    // Project 4D point to 3D
+                    vec3 project4Dto3D(vec4 p4d, float projectionDistance) {
+                        float w = p4d.w + projectionDistance;
+                        return p4d.xyz / w;
+                    }
+                    
+                    // Geometry functions
+                    float hypercubeLattice(vec3 p, float density, float morph) {
+                        vec4 p4d = vec4(p, sin(u_time * 0.5) * morph);
+                        p4d = rotateXW(u_time * u_rotationSpeed * 0.3) * 
+                              rotateYW(u_time * u_rotationSpeed * 0.2) * 
+                              rotateZW(u_time * u_rotationSpeed * 0.4) * p4d;
+                        
+                        vec3 projected = project4Dto3D(p4d, u_dimension);
+                        vec3 grid = fract(projected * density) - 0.5;
+                        return length(max(abs(grid) - 0.4, 0.0));
+                    }
+                    
+                    float tetrahedronLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        vec3 offset = vec3(0.5, 0.5, 0.5);
+                        vec3 cell = floor(p + offset);
+                        vec3 local = fract(p + offset) - 0.5;
+                        
+                        float dist = 1.0;
+                        for(int i = -1; i <= 1; i++) {
+                            for(int j = -1; j <= 1; j++) {
+                                for(int k = -1; k <= 1; k++) {
+                                    vec3 neighbor = vec3(float(i), float(j), float(k));
+                                    vec3 point = neighbor + cell;
+                                    vec3 diff = local - neighbor;
+                                    
+                                    // Tetrahedron vertices
+                                    if(mod(point.x + point.y + point.z, 2.0) < 1.0) {
+                                        dist = min(dist, length(diff));
+                                    }
+                                }
+                            }
+                        }
+                        return dist * morph;
+                    }
+                    
+                    float sphereLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        float radius = length(p);
+                        float shell = fract(radius + u_time * u_rotationSpeed) - 0.5;
+                        return abs(shell) * morph;
+                    }
+                    
+                    float torusLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        float majorRadius = 2.0;
+                        float minorRadius = 1.0;
+                        
+                        vec2 q = vec2(length(p.xz) - majorRadius, p.y);
+                        float dist = length(q) - minorRadius;
+                        
+                        float angle = atan(p.z, p.x) + u_time * u_rotationSpeed;
+                        return abs(sin(angle * 8.0) * 0.1 + dist) * morph;
+                    }
+                    
+                    float kleinLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        // Klein bottle topology approximation
+                        float u = p.x + u_time * u_rotationSpeed * 0.1;
+                        float v = p.y;
+                        
+                        vec3 klein;
+                        klein.x = cos(u) * (3.0 + cos(v));
+                        klein.y = sin(u) * (3.0 + cos(v));
+                        klein.z = sin(v) + cos(u/2.0) * sin(v);
+                        
+                        return length(p - klein * 0.1) * morph;
+                    }
+                    
+                    float fractalLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        float dist = 0.0;
+                        float scale = 1.0;
+                        
+                        for(int i = 0; i < 4; i++) {
+                            p = abs(p) - 1.0;
+                            float r = dot(p, p);
+                            if(r > 1.0) p /= r;
+                            p = p * 2.0 - 1.0;
+                            scale *= 2.0;
+                            dist = max(dist, (length(p) - 0.5) / scale);
+                        }
+                        
+                        return dist * morph;
+                    }
+                    
+                    float waveLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        float wave1 = sin(p.x + u_time * u_rotationSpeed);
+                        float wave2 = sin(p.y + u_time * u_rotationSpeed * 1.1);
+                        float wave3 = sin(p.z + u_time * u_rotationSpeed * 0.9);
+                        
+                        return abs(wave1 + wave2 + wave3) * morph * 0.1;
+                    }
+                    
+                    float crystalLattice(vec3 p, float density, float morph) {
+                        p *= density;
+                        vec3 q = abs(p);
+                        float dist = max(q.x, max(q.y, q.z)) - 1.0;
+                        
+                        // Add crystal facets
+                        float facet = max(q.x + q.y, max(q.y + q.z, q.z + q.x)) - 1.5;
+                        
+                        return max(dist, facet) * morph;
+                    }
+                    
+                    float getGeometryValue(vec3 p, int geometry, float density, float morph) {
+                        if(geometry == 0) return hypercubeLattice(p, density, morph);
+                        else if(geometry == 1) return tetrahedronLattice(p, density, morph);
+                        else if(geometry == 2) return sphereLattice(p, density, morph);
+                        else if(geometry == 3) return torusLattice(p, density, morph);
+                        else if(geometry == 4) return kleinLattice(p, density, morph);
+                        else if(geometry == 5) return fractalLattice(p, density, morph);
+                        else if(geometry == 6) return waveLattice(p, density, morph);
+                        else if(geometry == 7) return crystalLattice(p, density, morph);
+                        return hypercubeLattice(p, density, morph);
+                    }
+                    
+                    void main() {
+                        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+                        
+                        // Ray marching setup
+                        vec3 ro = vec3(0.0, 0.0, -3.0);
+                        vec3 rd = normalize(vec3(uv, 1.0));
+                        
+                        // Apply mouse interaction
+                        ro.xy += (u_mouse - 0.5) * 2.0;
+                        
+                        float totalDist = 0.0;
+                        vec3 color = vec3(0.0);
+                        
+                        // Ray marching
+                        for(int i = 0; i < 64; i++) {
+                            vec3 p = ro + rd * totalDist;
+                            
+                            float interactionMorph = u_morphFactor + u_interactionIntensity * 0.3;
+                            float interactionDensity = u_gridDensity + u_interactionIntensity * 5.0;
+                            
+                            float dist = getGeometryValue(p, u_geometry, interactionDensity, interactionMorph);
+                            
+                            if(dist < 0.01) {
+                                // Hit surface
+                                float intensity = 1.0 - float(i) / 64.0;
+                                color = u_baseColor * intensity;
+                                
+                                // Add interaction glow
+                                color += vec3(u_interactionIntensity) * 0.5;
+                                break;
+                            }
+                            
+                            totalDist += dist;
+                            if(totalDist > 10.0) break;
+                        }
+                        
+                        // Chromatic aberration glitch effect
+                        if(u_glitchIntensity > 0.0) {
+                            vec2 offset = vec2(u_glitchIntensity * 0.01);
+                            // Simple chromatic aberration without texture sampling
+                            color.r = color.r + u_glitchIntensity * 0.1;
+                            color.g = color.g * (1.0 - u_glitchIntensity * 0.05);
+                            color.b = color.b + u_glitchIntensity * 0.1;
+                        }
+                        
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                `;
+                
+                const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
+                const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
+                
+                this.program = this.createProgram(vertexShader, fragmentShader);
+                
+                // Setup vertex buffer
+                this.positionBuffer = this.gl.createBuffer();
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+                const positions = [-1, -1, 1, -1, -1, 1, 1, 1];
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+                
+                // Get uniform locations
+                this.uniforms = {
+                    time: this.gl.getUniformLocation(this.program, 'u_time'),
+                    resolution: this.gl.getUniformLocation(this.program, 'u_resolution'),
+                    baseColor: this.gl.getUniformLocation(this.program, 'u_baseColor'),
+                    gridDensity: this.gl.getUniformLocation(this.program, 'u_gridDensity'),
+                    morphFactor: this.gl.getUniformLocation(this.program, 'u_morphFactor'),
+                    dimension: this.gl.getUniformLocation(this.program, 'u_dimension'),
+                    glitchIntensity: this.gl.getUniformLocation(this.program, 'u_glitchIntensity'),
+                    rotationSpeed: this.gl.getUniformLocation(this.program, 'u_rotationSpeed'),
+                    geometry: this.gl.getUniformLocation(this.program, 'u_geometry'),
+                    interactionIntensity: this.gl.getUniformLocation(this.program, 'u_interactionIntensity'),
+                    mouse: this.gl.getUniformLocation(this.program, 'u_mouse')
+                };
+            }
+            
+            createShader(type, source) {
+                const shader = this.gl.createShader(type);
+                this.gl.shaderSource(shader, source);
+                this.gl.compileShader(shader);
+                
+                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+                    console.error('Shader compile error:', this.gl.getShaderInfoLog(shader));
+                    this.gl.deleteShader(shader);
+                    return null;
+                }
+                
+                return shader;
+            }
+            
+            createProgram(vertexShader, fragmentShader) {
+                const program = this.gl.createProgram();
+                this.gl.attachShader(program, vertexShader);
+                this.gl.attachShader(program, fragmentShader);
+                this.gl.linkProgram(program);
+                
+                if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+                    console.error('Program link error:', this.gl.getProgramInfoLog(program));
+                    this.gl.deleteProgram(program);
+                    return null;
+                }
+                
+                return program;
+            }
+            
+            setupInteraction() {
+                let lastScrollY = window.scrollY;
+                let scrollTimeout;
+                let mouseTimeout;
+                
+                // Mouse movement
+                document.addEventListener('mousemove', (e) => {
+                    this.interactionState.mouseX = e.clientX / window.innerWidth;
+                    this.interactionState.mouseY = e.clientY / window.innerHeight;
+                    this.interactionState.type = 'move';
+                    this.interactionState.intensity = 0.5;
+                    this.interactionState.lastActivity = Date.now();
+                    
+                    // Update parameter display with mouse data
+                    if (window.updateParameterDisplay) {
+                        window.updateParameterDisplay();
+                    }
+                    
+                    clearTimeout(mouseTimeout);
+                    mouseTimeout = setTimeout(() => {
+                        if (this.interactionState.type === 'move') {
+                            this.interactionState.type = 'idle';
+                            this.interactionState.intensity = 0;
+                        }
+                    }, 3000);
+                });
+                
+                // Scroll tracking
+                window.addEventListener('scroll', () => {
+                    const currentScrollY = window.scrollY;
+                    this.interactionState.scrollVelocity = Math.abs(currentScrollY - lastScrollY);
+                    this.interactionState.type = 'scroll';
+                    this.interactionState.intensity = Math.min(this.interactionState.scrollVelocity * 0.01, 1.0);
+                    this.interactionState.lastActivity = Date.now();
+                    lastScrollY = currentScrollY;
+                    
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        this.interactionState.scrollVelocity = 0;
+                        if (this.interactionState.type === 'scroll') {
+                            this.interactionState.type = 'idle';
+                            this.interactionState.intensity = 0;
+                        }
+                    }, 150);
+                });
+                
+                // Click/Hold tracking
+                document.addEventListener('mousedown', () => {
+                    this.interactionState.isHolding = true;
+                    this.interactionState.holdStart = Date.now();
+                    this.interactionState.type = 'hold';
+                    this.interactionState.intensity = 1.0;
+                    this.interactionState.lastActivity = Date.now();
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    this.interactionState.isHolding = false;
+                    this.interactionState.type = 'release';
+                    this.interactionState.intensity = 0.8;
+                    this.interactionState.lastActivity = Date.now();
+                    
+                    setTimeout(() => {
+                        if (this.interactionState.type === 'release') {
+                            this.interactionState.type = 'idle';
+                            this.interactionState.intensity = 0;
+                        }
+                    }, 500);
                 });
             }
             
-            setupClickTracking() {
-                var self = this;
-                
-                document.addEventListener('click', function() {
-                    self.state.clickIntensity = 1.0;
+            switchToTheme(themeName, duration = 1000) {
+                if (this.themeConfigs[themeName] && themeName !== this.currentTheme) {
+                    this.fromConfig = { ...this.themeConfigs[this.currentTheme] };
+                    this.toConfig = { ...this.themeConfigs[themeName] };
+                    this.currentTheme = themeName;
+                    this.isTransitioning = true;
+                    this.transitionStart = performance.now();
+                    this.transitionDuration = duration;
+                    this.transitionProgress = 0;
                     
-                    if (window.HolographicVisualizer) {
-                        window.HolographicVisualizer.config.universeModifier = 1.5;
-                        
-                        setTimeout(function() {
-                            window.HolographicVisualizer.config.universeModifier = 1.0;
-                        }, 500);
-                    }
-                });
-            }
-            
-            setupReadingMetrics() {
-                var self = this;
-                
-                // Track content complexity based on section
-                if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
-                    var originalNavigate = window.MagazineRouter.navigateToSection;
-                    window.MagazineRouter.navigateToSection = function(section, itemId) {
-                        originalNavigate.call(window.MagazineRouter, section, itemId);
-                        self.applySectionPreset(section);
-                        
-                        // Update content complexity
-                        var complexityMap = {
-                            'home': 0.7,
-                            'articles': 0.4,
-                            'videos': 0.6,
-                            'interactives': 0.9,
-                            'philosophy': 0.8
-                        };
-                        self.state.readingMetrics.contentComplexity = complexityMap[section] || 0.5;
-                    };
+                    console.log(`🎨 Transitioning to theme: ${themeName}`);
                 }
             }
             
-            startReadingTimer() {
-                var self = this;
-                var startTime = Date.now();
-                
-                setInterval(function() {
-                    self.state.readingMetrics.timeOnPage = Date.now() - startTime;
-                    
-                    // Update engagement based on time and interactions
-                    var minutes = self.state.readingMetrics.timeOnPage / 1000 / 60;
-                    if (minutes > 1) {
-                        self.state.readingMetrics.engagement = Math.min(1.0, 0.3 + (minutes * 0.1));
-                    }
-                }, 5000);
-            }
-            
-            applySectionPreset(section) {
-                console.log('🎨 Applying enhanced visualizer preset for section:', section);
-                var preset = this.sectionPresets[section] || this.sectionPresets.home;
-                
-                if (this.simpleSystem && this.isActive) {
-                    // Simple system just works
-                    console.log('🎨 Simple system running for section:', section);
-                } else {
-                    // Fallback to legacy system
-                    if (window.HolographicVisualizer && window.HolographicVisualizer.updateTheme) {
-                        window.HolographicVisualizer.updateTheme({
-                            primary: preset.primary,
-                            secondary: preset.secondary,
-                            background: preset.background
-                        });
-                    }
+            getInterpolatedConfig() {
+                if (!this.isTransitioning || !this.fromConfig || !this.toConfig) {
+                    return this.themeConfigs[this.currentTheme];
                 }
                 
-                this.state.currentSection = section;
-                this.updateParameterDisplay();
-            }
-            
-            // Legacy compatibility
-            applySectionTheme(themeKey) {
-                this.applySectionPreset(themeKey);
-            }
-            
-            updateParameterDisplay() {
-                var sectionEl = document.getElementById('param-section');
-                var scrollEl = document.getElementById('param-scroll');
-                var mouseEl = document.getElementById('param-mouse');
-                var activityEl = document.getElementById('param-activity');
-                var engagementEl = document.getElementById('param-engagement');
+                const elapsed = performance.now() - this.transitionStart;
+                this.transitionProgress = Math.min(elapsed / this.transitionDuration, 1.0);
                 
-                if (sectionEl) sectionEl.textContent = this.state.currentSection;
-                if (scrollEl) scrollEl.textContent = Math.round(this.state.scrollVelocity);
-                if (mouseEl) mouseEl.textContent = 
-                    Math.round(this.state.mousePosition.x * 100) / 100 + ', ' + 
-                    Math.round(this.state.mousePosition.y * 100) / 100;
+                // Cosine interpolation for smooth easing
+                const eased = (1 - Math.cos(this.transitionProgress * Math.PI)) / 2;
                 
-                if (activityEl) {
-                    var activity = 'idle';
-                    if (Math.abs(this.state.scrollVelocity) > 10) activity = 'scrolling';
-                    else if (this.state.clickIntensity > 0.1) activity = 'clicking';
-                    else if (Math.abs(this.state.mousePosition.x - 0.5) > 0.1 || 
-                            Math.abs(this.state.mousePosition.y - 0.5) > 0.1) activity = 'hovering';
-                    activityEl.textContent = activity;
+                const interpolated = {
+                    baseColor: [
+                        this.fromConfig.baseColor[0] + (this.toConfig.baseColor[0] - this.fromConfig.baseColor[0]) * eased,
+                        this.fromConfig.baseColor[1] + (this.toConfig.baseColor[1] - this.fromConfig.baseColor[1]) * eased,
+                        this.fromConfig.baseColor[2] + (this.toConfig.baseColor[2] - this.fromConfig.baseColor[2]) * eased
+                    ],
+                    gridDensity: this.fromConfig.gridDensity + (this.toConfig.gridDensity - this.fromConfig.gridDensity) * eased,
+                    morphFactor: this.fromConfig.morphFactor + (this.toConfig.morphFactor - this.fromConfig.morphFactor) * eased,
+                    dimension: this.fromConfig.dimension + (this.toConfig.dimension - this.fromConfig.dimension) * eased,
+                    glitchIntensity: this.fromConfig.glitchIntensity + (this.toConfig.glitchIntensity - this.fromConfig.glitchIntensity) * eased,
+                    rotationSpeed: this.fromConfig.rotationSpeed + (this.toConfig.rotationSpeed - this.fromConfig.rotationSpeed) * eased,
+                    geometry: this.transitionProgress < 0.5 ? this.fromConfig.geometry : this.toConfig.geometry
+                };
+                
+                if (this.transitionProgress >= 1.0) {
+                    this.isTransitioning = false;
+                    console.log(`✅ Transition complete: ${this.currentTheme}`);
                 }
                 
-                if (engagementEl) {
-                    engagementEl.textContent = Math.round(this.state.readingMetrics.engagement * 100) + '%';
+                return interpolated;
+            }
+            
+            getGeometryIndex(geometryName) {
+                const geometryMap = {
+                    'hypercube': 0,
+                    'tetrahedron': 1,
+                    'sphere': 2,
+                    'torus': 3,
+                    'klein': 4,
+                    'fractal': 5,
+                    'wave': 6,
+                    'crystal': 7
+                };
+                return geometryMap[geometryName] || 0;
+            }
+            
+            render() {
+                this.time = performance.now() * 0.001;
+                
+                const config = this.getInterpolatedConfig();
+                
+                // Apply interaction effects
+                const holdDuration = this.interactionState.isHolding ? 
+                    (Date.now() - this.interactionState.holdStart) / 1000 : 0;
+                
+                const interactionMultiplier = 1 + this.interactionState.intensity * 0.5;
+                const dimensionShift = holdDuration * 0.1;
+                
+                const modifiedConfig = {
+                    ...config,
+                    gridDensity: config.gridDensity * interactionMultiplier,
+                    morphFactor: Math.min(config.morphFactor * interactionMultiplier, 1.0),
+                    dimension: Math.min(config.dimension + dimensionShift, 4.0),
+                    glitchIntensity: config.glitchIntensity + this.interactionState.intensity * 0.2
+                };
+                
+                // Render
+                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+                this.gl.clearColor(0.02, 0.02, 0.08, 1.0);
+                this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+                
+                this.gl.useProgram(this.program);
+                
+                // Set uniforms
+                this.gl.uniform1f(this.uniforms.time, this.time);
+                this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
+                this.gl.uniform3fv(this.uniforms.baseColor, modifiedConfig.baseColor);
+                this.gl.uniform1f(this.uniforms.gridDensity, modifiedConfig.gridDensity);
+                this.gl.uniform1f(this.uniforms.morphFactor, modifiedConfig.morphFactor);
+                this.gl.uniform1f(this.uniforms.dimension, modifiedConfig.dimension);
+                this.gl.uniform1f(this.uniforms.glitchIntensity, modifiedConfig.glitchIntensity);
+                this.gl.uniform1f(this.uniforms.rotationSpeed, modifiedConfig.rotationSpeed);
+                this.gl.uniform1i(this.uniforms.geometry, this.getGeometryIndex(modifiedConfig.geometry));
+                this.gl.uniform1f(this.uniforms.interactionIntensity, this.interactionState.intensity);
+                this.gl.uniform2f(this.uniforms.mouse, this.interactionState.mouseX, this.interactionState.mouseY);
+                
+                // Draw
+                const positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
+                this.gl.enableVertexAttribArray(positionAttributeLocation);
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+                this.gl.vertexAttribPointer(positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0);
+                this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+                
+                this.animationId = requestAnimationFrame(() => this.render());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            start() {
+                if (!this.animationId) {
+                    this.render();
+                }
+            }
+            
+            stop() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
                 }
             }
         }
         
-        // Auto-initialize enhanced system
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🔍 Checking simple components...');
-            console.log('📦 SimpleWorkingVisualizerIntegration:', !!window.SimpleWorkingVisualizerIntegration);
-            console.log('📦 HolographicVisualizer:', !!window.HolographicVisualizer);
+        // Home-Master Integration System
+        class VIB3CodeHomeMasterIntegration {
+            constructor() {
+                this.reactiveCore = null;
+                this.currentSection = 'home';
+                this.sectionThemes = {
+                    home: 'hypercube',
+                    articles: 'tetrahedron',
+                    videos: 'sphere',
+                    podcasts: 'torus',
+                    ema: 'fractal'
+                };
+                
+                this.homeMasterConfig = {
+                    gridDensity: 12.0,
+                    morphFactor: 0.5,
+                    dimension: 3.5,
+                    glitchIntensity: 0.3,
+                    rotationSpeed: 0.5
+                };
+                
+                this.derivedParams = {
+                    articles: { gridMultiplier: 0.7, morphOffset: -0.2 },
+                    videos: { gridMultiplier: 1.2, morphOffset: 0.3 },
+                    podcasts: { speedMultiplier: 1.3, morphInvert: true },
+                    ema: { gridMultiplier: 1.5, dimensionBoost: 0.3 }
+                };
+                
+                this.init();
+            }
             
-            // Initialize simple working visualizer
-            window.VIB3VisualizerIntegration = new VIB3VisualizerIntegration();
-            await window.VIB3VisualizerIntegration.init();
+            switchToSection(sectionName) {
+                if (this.currentSection === sectionName) return;
+                
+                this.currentSection = sectionName;
+                const themeName = this.sectionThemes[sectionName] || 'hypercube';
+                
+                console.log(`🔄 Switching to section: ${sectionName} with theme: ${themeName}`);
+                
+                if (this.reactiveCore) {
+                    // Apply derived parameters based on home-master system
+                    this.applyDerivedThemeConfig(themeName, sectionName);
+                    this.reactiveCore.switchToTheme(themeName, 1500);
+                }
+                
+                // Update body data attribute for CSS targeting
+                document.body.setAttribute('data-section', sectionName);
+                
+                // Trigger visual effects
+                this.triggerSectionTransitionEffects();
+            }
+            
+            applyDerivedThemeConfig(themeName, sectionName) {
+                if (!this.reactiveCore || !this.reactiveCore.themeConfigs[themeName]) return;
+                
+                const baseConfig = this.reactiveCore.themeConfigs[themeName];
+                const derivedConfig = this.derivedParams[sectionName];
+                
+                if (derivedConfig) {
+                    // Apply home-master derived parameters
+                    if (derivedConfig.gridMultiplier) {
+                        baseConfig.gridDensity = this.homeMasterConfig.gridDensity * derivedConfig.gridMultiplier;
+                    }
+                    
+                    if (derivedConfig.morphOffset) {
+                        baseConfig.morphFactor = Math.max(0, Math.min(1, this.homeMasterConfig.morphFactor + derivedConfig.morphOffset));
+                    }
+                    
+                    if (derivedConfig.morphInvert) {
+                        baseConfig.morphFactor = 1.0 - this.homeMasterConfig.morphFactor;
+                    }
+                    
+                    if (derivedConfig.speedMultiplier) {
+                        baseConfig.rotationSpeed = this.homeMasterConfig.rotationSpeed * derivedConfig.speedMultiplier;
+                    }
+                    
+                    if (derivedConfig.dimensionBoost) {
+                        baseConfig.dimension = Math.min(4.0, this.homeMasterConfig.dimension + derivedConfig.dimensionBoost);
+                    }
+                    
+                    console.log(`📊 Applied derived config for ${sectionName}:`, baseConfig);
+                }
+            }
+            
+            triggerSectionTransitionEffects() {
+                // Add transition effect to visualizer
+                if (this.reactiveCore) {
+                    this.reactiveCore.interactionState.type = 'transition';
+                    this.reactiveCore.interactionState.intensity = 1.0;
+                    
+                    // Decay transition effect
+                    setTimeout(() => {
+                        if (this.reactiveCore.interactionState.type === 'transition') {
+                            this.reactiveCore.interactionState.type = 'idle';
+                            this.reactiveCore.interactionState.intensity = 0;
+                        }
+                    }, 2000);
+                }
+                
+                // Flash effect on parameter indicator
+                const paramDisplay = document.getElementById('vib3-param-display');
+                if (paramDisplay) {
+                    paramDisplay.style.transform = 'scale(1.1)';
+                    paramDisplay.style.borderColor = 'rgba(0, 255, 255, 0.8)';
+                    
+                    setTimeout(() => {
+                        paramDisplay.style.transform = 'scale(1.0)';
+                        paramDisplay.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    }, 500);
+                }
+            }
+            
+            init() {
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.id = 'reactive-canvas';
+                canvas.style.position = 'fixed';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.zIndex = '-1';
+                canvas.style.pointerEvents = 'none';
+                document.body.appendChild(canvas);
+                
+                // Initialize working 4D reactive core
+                this.reactiveCore = new Working4DHyperAV(canvas);
+                this.reactiveCore.start();
+                
+                // Setup section detection
+                this.setupSectionObserver();
+                
+                console.log('🎨 VIB3CODE Home-Master Integration initialized');
+            }
+            
+            setupSectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+                            const section = entry.target.getAttribute('data-section');
+                            if (section && section !== this.currentSection) {
+                                this.switchToSection(section);
+                            }
+                        }
+                    });
+                }, { threshold: 0.3 });
+                
+                // Observe all magazine sections
+                document.querySelectorAll('[data-section]').forEach(section => {
+                    observer.observe(section);
+                });
+                
+                // Add infinite scroll behavior
+                this.setupInfiniteScroll();
+            }
+            
+            setupInfiniteScroll() {
+                const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
+                let isScrolling = false;
+                
+                window.addEventListener('wheel', (e) => {
+                    if (isScrolling) return;
+                    
+                    const currentIndex = sections.indexOf(this.currentSection);
+                    let nextIndex = currentIndex;
+                    
+                    if (e.deltaY > 0 && currentIndex < sections.length - 1) {
+                        // Scroll down - next section
+                        nextIndex = currentIndex + 1;
+                    } else if (e.deltaY < 0 && currentIndex > 0) {
+                        // Scroll up - previous section
+                        nextIndex = currentIndex - 1;
+                    } else if (e.deltaY > 0 && currentIndex === sections.length - 1) {
+                        // At last section, loop to first
+                        nextIndex = 0;
+                    } else if (e.deltaY < 0 && currentIndex === 0) {
+                        // At first section, loop to last
+                        nextIndex = sections.length - 1;
+                    }
+                    
+                    if (nextIndex !== currentIndex) {
+                        e.preventDefault();
+                        isScrolling = true;
+                        
+                        const nextSection = sections[nextIndex];
+                        this.smoothScrollToSection(nextSection);
+                        
+                        setTimeout(() => {
+                            isScrolling = false;
+                        }, 1000);
+                    }
+                }, { passive: false });
+            }
+            
+            smoothScrollToSection(sectionId) {
+                const sectionElement = document.getElementById(`section-${sectionId}`);
+                if (sectionElement) {
+                    sectionElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update navigation
+                    this.updateNavigation(sectionId);
+                }
+            }
+            
+            updateNavigation(sectionId) {
+                // Update nav links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-section') === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            switchToSection(section) {
+                this.currentSection = section;
+                const theme = this.sectionThemes[section] || 'hypercube';
+                
+                if (this.reactiveCore) {
+                    this.reactiveCore.switchToTheme(theme, 1000);
+                }
+                
+                // Update parameter display
+                this.updateParameterDisplay();
+                
+                // Update navigation
+                this.updateNavigation(section);
+                
+                // Update page title
+                this.updatePageTitle(section);
+                
+                console.log(`🎨 Switched to section: ${section} (theme: ${theme})`);
+            }
+            
+            updatePageTitle(section) {
+                const sectionTitles = {
+                    home: 'VIB3CODE - Digital Magazine for EMA Movement',
+                    articles: 'VIB3CODE - Articles on Digital Philosophy',
+                    videos: 'VIB3CODE - Video Essays and Technical Demos',
+                    podcasts: 'VIB3CODE - Digital Liberation Podcast',
+                    ema: 'VIB3CODE - Exoditical Moral Architecture'
+                };
+                
+                document.title = sectionTitles[section] || 'VIB3CODE';
+            }
+            
+            updateParameterDisplay() {
+                const sectionEl = document.getElementById('param-section');
+                const activityEl = document.getElementById('param-activity');
+                
+                if (sectionEl) sectionEl.textContent = this.currentSection;
+                if (activityEl) {
+                    const state = this.reactiveCore ? this.reactiveCore.interactionState.type : 'idle';
+                    activityEl.textContent = state;
+                }
+            }
+        }
+        
+        // Global control functions
+        window.toggleControls = function() {
+            const controls = document.getElementById('polytopal-controls');
+            controls.classList.toggle('active');
+        };
+        
+        // Enable editor mode with special key combination
+        window.enableEditorMode = function() {
+            document.body.classList.add('editor-mode');
+            console.log('🎛️ Editor mode enabled - control panel now visible');
+        };
+        
+        window.disableEditorMode = function() {
+            document.body.classList.remove('editor-mode');
+            console.log('👁️ Visitor mode - control panel hidden');
+        };
+        
+        // Secret key combination to enable editor mode (Ctrl+Shift+E)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                if (document.body.classList.contains('editor-mode')) {
+                    window.disableEditorMode();
+                } else {
+                    window.enableEditorMode();
+                }
+                e.preventDefault();
+            }
+        });
+        
+        window.randomizeHome = function() {
+            if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const themes = ['hypercube', 'tetrahedron', 'sphere', 'torus', 'klein', 'fractal', 'wave', 'crystal'];
+                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                window.vib3Integration.reactiveCore.switchToTheme(randomTheme);
+            }
+        };
+        
+        window.resetToDefaults = function() {
+            if (window.vib3Integration) {
+                window.vib3Integration.switchToSection('home');
+            }
+        };
+        
+        window.loadPreset = function(theme) {
+            if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                window.vib3Integration.reactiveCore.switchToTheme(theme);
+            }
+        };
+        
+        window.updateHomeParameter = function(param, value) {
+            if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const config = window.vib3Integration.reactiveCore.themeConfigs[window.vib3Integration.reactiveCore.currentTheme];
+                if (config) {
+                    config[param] = parseFloat(value);
+                    
+                    // Update display value
+                    const displayEl = document.getElementById(`home-${param.toLowerCase().replace(/([A-Z])/g, '-$1')}-value`);
+                    if (displayEl) {
+                        displayEl.textContent = parseFloat(value).toFixed(1);
+                    }
+                    
+                    console.log(`🎮 Updated ${param}: ${value}`);
+                }
+            }
+        };
+        
+        window.setScrollReactivity = function(mode) {
+            console.log(`📜 Set scroll reactivity: ${mode}`);
+            // This would be implemented with the home-master system
+            // For now, just log the selection
+        };
+        
+        window.exportConfig = function() {
+            if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const currentConfig = {
+                    theme: window.vib3Integration.reactiveCore.currentTheme,
+                    config: window.vib3Integration.reactiveCore.themeConfigs[window.vib3Integration.reactiveCore.currentTheme],
+                    section: window.vib3Integration.currentSection
+                };
+                
+                const dataStr = JSON.stringify(currentConfig, null, 2);
+                const dataBlob = new Blob([dataStr], {type:'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `vib3code-config-${Date.now()}.json`;
+                link.click();
+                
+                console.log('💾 Exported configuration:', currentConfig);
+            }
+        };
+        
+        // Update derived parameters display
+        function updateDerivedParametersDisplay() {
+            if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const homeConfig = window.vib3Integration.reactiveCore.themeConfigs['hypercube'];
+                
+                // Calculate derived values (simplified for display)
+                const techDerived = `Grid: ${(homeConfig.gridDensity * 0.7).toFixed(1)}`;
+                const emaDerived = `Grid: ${(homeConfig.gridDensity * 1.2).toFixed(1)}`;
+                const videosDerived = `Morph: ${(1.0 - homeConfig.morphFactor).toFixed(1)}`;
+                const podcastsDerived = `Speed: ${(homeConfig.rotationSpeed * 1.3).toFixed(1)}`;
+                
+                const techEl = document.getElementById('tech-derived');
+                const emaEl = document.getElementById('ema-derived');
+                const videosEl = document.getElementById('videos-derived');
+                const podcastsEl = document.getElementById('podcasts-derived');
+                
+                if (techEl) techEl.textContent = techDerived;
+                if (emaEl) emaEl.textContent = emaDerived;
+                if (videosEl) videosEl.textContent = videosDerived;
+                if (podcastsEl) podcastsEl.textContent = podcastsDerived;
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing VIB3CODE Reactive HyperAV Core System...');
+        
+        // Infinite scroll and navigation system
+        function initializeInfiniteScrollSystem() {
+            const sections = ['home', 'articles', 'videos', 'audios', 'ema'];
+            let currentSectionIndex = 0;
+            let isTransitioning = false;
+            let scrollTimeout;
+            
+            // Enhanced scroll detection with velocity tracking
+            let lastScrollY = window.scrollY;
+            let scrollVelocity = 0;
+            let scrollDirection = 'down';
+            
+            window.addEventListener('scroll', function() {
+                const currentScrollY = window.scrollY;
+                scrollVelocity = Math.abs(currentScrollY - lastScrollY);
+                scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+                
+                // Update visualizer with scroll data
+                if (window.vib3Integration && window.vib3Integration.reactiveCore) {
+                    window.vib3Integration.reactiveCore.interactionState.scrollVelocity = scrollVelocity;
+                    window.vib3Integration.reactiveCore.interactionState.intensity = Math.min(scrollVelocity * 0.01, 1.0);
+                }
+                
+                // Update parameter display
+                updateParameterDisplay({
+                    scrollVelocity: scrollVelocity,
+                    scrollDirection: scrollDirection,
+                    scrollY: currentScrollY
+                });
+                
+                lastScrollY = currentScrollY;
+                
+                // Clear existing timeout
+                if (scrollTimeout) {
+                    clearTimeout(scrollTimeout);
+                }
+                
+                // Set new timeout for section transitions
+                scrollTimeout = setTimeout(function() {
+                    if (!isTransitioning && scrollVelocity > 20) {
+                        handleSectionTransition();
+                    }
+                }, 150);
+            });
+            
+            function handleSectionTransition() {
+                if (isTransitioning) return;
+                
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollPercentage = window.scrollY / (documentHeight - windowHeight);
+                
+                // Calculate target section based on scroll position
+                const targetIndex = Math.floor(scrollPercentage * sections.length);
+                const clampedIndex = Math.max(0, Math.min(sections.length - 1, targetIndex));
+                
+                if (clampedIndex !== currentSectionIndex) {
+                    currentSectionIndex = clampedIndex;
+                    transitionToSection(sections[currentSectionIndex]);
+                }
+            }
+            
+            function transitionToSection(sectionName) {
+                if (isTransitioning) return;
+                
+                isTransitioning = true;
+                console.log(`🎯 Transitioning to section: ${sectionName}`);
+                
+                // Update navigation state
+                updateNavigationActiveState(sectionName);
+                
+                // Apply visualizer theme with smooth transition
+                if (window.vib3Integration && window.vib3Integration.switchToSection) {
+                    window.vib3Integration.switchToSection(sectionName);
+                }
+                
+                // Update page title and URL
+                document.title = `VIB3CODE - ${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)} - Digital Magazine`;
+                
+                // Update body data attribute for CSS targeting
+                document.body.setAttribute('data-current-section', sectionName);
+                
+                // Load section content if using router
+                if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
+                    window.MagazineRouter.navigateToSection(sectionName);
+                }
+                
+                // Reset transition flag after animation
+                setTimeout(function() {
+                    isTransitioning = false;
+                }, 1000);
+            }
+            
+            // Smooth scroll to section function
+            window.smoothScrollToSection = function(sectionName) {
+                const sectionIndex = sections.indexOf(sectionName);
+                if (sectionIndex === -1) return;
+                
+                const documentHeight = document.documentElement.scrollHeight;
+                const windowHeight = window.innerHeight;
+                const targetScrollY = (sectionIndex / (sections.length - 1)) * (documentHeight - windowHeight);
+                
+                window.scrollTo({
+                    top: targetScrollY,
+                    behavior: 'smooth'
+                });
+                
+                currentSectionIndex = sectionIndex;
+                transitionToSection(sectionName);
+            };
+        }
+        
+        function initializeKeyboardNavigation() {
+            const sections = ['home', 'articles', 'videos', 'audios', 'ema'];
+            let currentIndex = 0;
+            
+            document.addEventListener('keydown', function(event) {
+                // Only handle arrow keys when not in input fields
+                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+                    return;
+                }
+                
+                switch(event.key) {
+                    case 'ArrowDown':
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        if (currentIndex < sections.length - 1) {
+                            currentIndex++;
+                            window.smoothScrollToSection(sections[currentIndex]);
+                        }
+                        break;
+                        
+                    case 'ArrowUp':
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                            window.smoothScrollToSection(sections[currentIndex]);
+                        }
+                        break;
+                        
+                    case 'Home':
+                        event.preventDefault();
+                        currentIndex = 0;
+                        window.smoothScrollToSection(sections[0]);
+                        break;
+                        
+                    case 'End':
+                        event.preventDefault();
+                        currentIndex = sections.length - 1;
+                        window.smoothScrollToSection(sections[currentIndex]);
+                        break;
+                }
+            });
+            
+            console.log('⌨️ Keyboard navigation initialized (Arrow keys, Home, End)');
+        }
+        
+        function initializeNavigationClickHandlers() {
+            // Add click handlers to navigation links
+            const navLinks = document.querySelectorAll('nav.nav-cyber .nav-links a, .magazine-nav a');
+            
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    const href = link.getAttribute('href');
+                    
+                    if (href && href.startsWith('#') && !link.getAttribute('target')) {
+                        event.preventDefault();
+                        const sectionName = href.substring(1);
+                        
+                        // Use smooth scroll to section
+                        if (window.smoothScrollToSection) {
+                            window.smoothScrollToSection(sectionName);
+                        }
+                        
+                        console.log(`🖱️ Navigation clicked: ${sectionName}`);
+                    }
+                });
+            });
+            
+            console.log('🖱️ Navigation click handlers initialized');
+        }
+        
+        window.updateParameterDisplay = function(scrollData) {
+            // Update section indicator
+            const sectionEl = document.getElementById('param-section');
+            if (sectionEl && window.vib3Integration) {
+                sectionEl.textContent = window.vib3Integration.currentSection;
+            }
+            
+            // Update scroll information
+            const scrollEl = document.getElementById('param-scroll');
+            if (scrollEl && scrollData) {
+                const scrollPercent = Math.round((scrollData.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+                scrollEl.textContent = `${scrollPercent}% ${scrollData.scrollDirection}`;
+            }
+            
+            // Update mouse position
+            const mouseEl = document.getElementById('param-mouse');
+            if (mouseEl && window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const state = window.vib3Integration.reactiveCore.interactionState;
+                mouseEl.textContent = `${state.mouseX.toFixed(2)}, ${state.mouseY.toFixed(2)}`;
+            }
+            
+            // Update activity state
+            const activityEl = document.getElementById('param-activity');
+            if (activityEl && window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const state = window.vib3Integration.reactiveCore.interactionState;
+                activityEl.textContent = state.type;
+                
+                // Color code based on activity
+                const colors = {
+                    'idle': '#666',
+                    'scroll': '#00ff80',
+                    'move': '#ff7f00',
+                    'hold': '#ff0080',
+                    'transition': '#00ffff'
+                };
+                activityEl.style.color = colors[state.type] || '#fff';
+            }
+            
+            // Update engagement level
+            const engagementEl = document.getElementById('param-engagement');
+            if (engagementEl && window.vib3Integration && window.vib3Integration.reactiveCore) {
+                const state = window.vib3Integration.reactiveCore.interactionState;
+                const engagementPercent = Math.round(state.intensity * 100);
+                engagementEl.textContent = `${engagementPercent}%`;
+                
+                // Color scale from blue to red based on engagement
+                const hue = (1 - state.intensity) * 240; // Blue (240) to Red (0)
+                engagementEl.style.color = `hsl(${hue}, 100%, 60%)`;
+            }
+        }
+        
+        function updateNavigationActiveState(currentSection) {
+            const navLinks = document.querySelectorAll('nav.nav-cyber .nav-links a, .magazine-nav a');
+            
+            navLinks.forEach(function(link) {
+                const linkSection = link.getAttribute('data-section') || 
+                                   link.getAttribute('href')?.substring(1);
+                
+                if (linkSection === currentSection) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+            
+            // Initialize home-master integration
+            window.vib3Integration = new VIB3CodeHomeMasterIntegration();
+            
+            // Update derived parameters every 2 seconds
+            setInterval(updateDerivedParametersDisplay, 2000);
+            
+            // Initial parameter display update
+            setTimeout(updateDerivedParametersDisplay, 1000);
+            
+            // Update parameter display every 100ms for real-time feedback
+            setInterval(function() {
+                if (window.updateParameterDisplay) {
+                    window.updateParameterDisplay();
+                }
+            }, 100);
+            
+            // Initialize infinite scroll and navigation
+            initializeInfiniteScrollSystem();
+            initializeKeyboardNavigation();
+            initializeNavigationClickHandlers();
+            
+            // Check if we're in development or editor mode
+            const isDev = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.search.includes('editor=true');
+            
+            if (isDev) {
+                console.log('🛠️ Development environment detected - enabling editor mode');
+                window.enableEditorMode();
+            } else {
+                console.log('👁️ Production environment - control panel hidden (use Ctrl+Shift+E to enable)');
+            }
             
             // Ensure magazine content loads
             setTimeout(function() {
                 if (window.MagazineRouter && window.MagazineRouter.navigateToSection) {
-                    var magazineContent = document.querySelector('.magazine-content');
+                    const magazineContent = document.querySelector('.magazine-content');
                     if (magazineContent && !magazineContent.innerHTML.trim()) {
                         window.MagazineRouter.navigateToSection('home');
                     }

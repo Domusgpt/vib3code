@@ -1,0 +1,29 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/*.py",
+      "**/*.bat",
+      "**/*.sh",
+      "**/*.exe",
+      "**/CLAUDE.md",
+      "**/README.md",
+      "**/*.log",
+      "**/content_pipeline/**",
+      "**/router_test_package/**",
+      "**/vib3code-enhanced-clean/**",
+      "**/*.backup",
+      "**/vib3code-expanded-magazine.html",
+      "**/vib3code-vibrant-home-master.html"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
