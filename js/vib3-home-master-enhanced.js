@@ -887,216 +887,6 @@ class VIB3HomeMasterIntegration {
     }
 }
 
-// DISABLED - Duplicate initialization causing double WebGL contexts
-// Initialize when DOM loads
-// window.addEventListener('DOMContentLoaded', function() {
-//     console.log('🏠 DOM loaded, waiting for home-master system...');
-//     
-//     // Wait for home-master system to be available
-//     const waitForHomeMaster = () => {
-//         if (typeof HomeBasedReactiveSystem !== 'undefined') {
-//             console.log('✅ HomeBasedReactiveSystem found, initializing VIB3CODE integration...');
-//             
-//             window.vib3HomeMasterIntegration = new VIB3HomeMasterIntegration();
-//             
-//             // COMPATIBILITY: Create visualizerManager interface for existing router
-//             window.visualizerManager = {
-                applyMasterStyle: (sectionKey) => {
-                    console.log(`🔄 Router requesting section: ${sectionKey}`);
-                    window.vib3HomeMasterIntegration.switchToSection(sectionKey);
-                },
-                getCurrentMasterStyleKey: () => window.vib3HomeMasterIntegration.currentSection,
-                isInTransition: () => false // Simple implementation
-            };
-            
-            // COMPREHENSIVE DEBUG INTERFACE
-            window.debugVIB3HomeMaster = {
-                // Basic controls
-                switchSection: (sectionId) => window.vib3HomeMasterIntegration.switchToSection(sectionId),
-                randomizeHome: () => window.vib3HomeMasterIntegration.homeMasterSystem.randomizeHome(),
-                getCurrentConfig: () => window.vib3HomeMasterIntegration.homeMasterSystem.getSectionConfig(
-                    window.vib3HomeMasterIntegration.currentSection
-                ),
-                
-                // PARAMETER DOCUMENTATION & LIVE MODIFICATION
-                setParameter: (param, value) => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    if (integration.currentVisualizer && integration.currentVisualizer.sectionConfig) {
-                        integration.currentVisualizer.sectionConfig[param] = value;
-                        console.log(`🎛️ Set ${param} = ${value}`);
-                        integration.logCurrentParameters();
-                    }
-                },
-                
-                // Scroll reactivity controls
-                setScrollReactivity: (params) => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    integration.homeMasterSystem.setHomeScrollReactivity(params);
-                    console.log(`🌊 Set scroll reactivity: ${params}`);
-                },
-                
-                // Live parameter monitoring
-                logCurrentParameters: () => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    if (integration.currentVisualizer && integration.currentVisualizer.sectionConfig) {
-                        const config = integration.currentVisualizer.sectionConfig;
-                        console.log('🎛️ CURRENT VISUALIZER PARAMETERS:');
-                        console.log(`   geometry: ${config.geometry} (${integration.currentSection})`);
-                        console.log(`   gridDensity: ${config.gridDensity?.toFixed(2)} (affects pattern detail)`);
-                        console.log(`   morphFactor: ${config.morphFactor?.toFixed(2)} (affects shape warping)`);
-                        console.log(`   glitchIntensity: ${config.glitchIntensity?.toFixed(2)} (affects chromatic chaos)`);
-                        console.log(`   rotationSpeed: ${config.rotationSpeed?.toFixed(2)} (affects rotation speed)`);
-                        console.log(`   dimension: ${config.dimension?.toFixed(2)} (affects 4D effects)`);
-                        console.log(`   hue: ${config.hue?.toFixed(2)} (affects color)`);
-                        console.log(`   scrollParams: [${config.scrollParams?.join(', ')}] (scroll-reactive params)`);
-                        console.log(`   scrollSensitivity: ${config.scrollSensitivity?.toFixed(2)} (scroll response strength)`);
-                    }
-                },
-                
-                // Parameter testing shortcuts
-                maxChaos: () => {
-                    window.debugVIB3HomeMaster.setParameter('gridDensity', 40);
-                    window.debugVIB3HomeMaster.setParameter('glitchIntensity', 1.0);
-                    window.debugVIB3HomeMaster.setParameter('morphFactor', 1.0);
-                    window.debugVIB3HomeMaster.setParameter('rotationSpeed', 3.0);
-                    window.debugVIB3HomeMaster.setParameter('dimension', 4.0);
-                    console.log('🔥 MAX CHAOS MODE ACTIVATED');
-                },
-                
-                minimal: () => {
-                    window.debugVIB3HomeMaster.setParameter('gridDensity', 8);
-                    window.debugVIB3HomeMaster.setParameter('glitchIntensity', 0.1);
-                    window.debugVIB3HomeMaster.setParameter('morphFactor', 0.2);
-                    window.debugVIB3HomeMaster.setParameter('rotationSpeed', 0.3);
-                    window.debugVIB3HomeMaster.setParameter('dimension', 3.2);
-                    console.log('🧘 MINIMAL MODE ACTIVATED');
-                },
-                
-                // MULTI-INSTANCE CONTROLS
-                listInstances: () => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    console.log('🎭 MULTI-INSTANCE ECOSYSTEM STATUS:');
-                    Object.keys(integration.instances).forEach(id => {
-                        const instance = integration.instances[id];
-                        console.log(`   ${id}: ${instance.type} - ${instance.targetSection || 'current'}`);
-                    });
-                    console.log(`   Total instances: ${Object.keys(integration.instances).length}`);
-                },
-                
-                toggleParticles: () => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    if (integration.particleSystem) {
-                        const canvas = integration.particleCanvas;
-                        const isVisible = canvas.style.display !== 'none';
-                        canvas.style.display = isVisible ? 'none' : 'block';
-                        console.log(`✨ Particles ${isVisible ? 'HIDDEN' : 'VISIBLE'}`);
-                    }
-                },
-                
-                intensifyHover: () => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    console.log('🔥 Intensifying hover effects...');
-                    Object.values(integration.instances).forEach(instance => {
-                        if (instance.type === 'text-background' && instance.canvas) {
-                            instance.canvas.style.opacity = '0.8';
-                            instance.canvas.style.mixBlendMode = 'screen';
-                        }
-                    });
-                },
-                
-                // GEOMETRIC LINE MODE
-                enableLineMode: () => {
-                    const integration = window.vib3HomeMasterIntegration;
-                    if (integration.currentVisualizer) {
-                        // Add wireframe rendering flag to current visualizer
-                        integration.currentVisualizer.lineMode = true;
-                        console.log('📐 GEOMETRIC LINE MODE ENABLED');
-                        console.log('   Wireframe rendering with RGB chromatic separation');
-                    }
-                },
-                
-                // RGB GLITCH EFFECTS
-                maxGlitch: () => {
-                    window.debugVIB3HomeMaster.setParameter('glitchIntensity', 1.0);
-                    const integration = window.vib3HomeMasterIntegration;
-                    if (integration.particleSystem) {
-                        console.log('🌈 MAX RGB GLITCH MODE - Particles + Shader');
-                    }
-                },
-                
-                // INTERACTIVE TESTING
-                testInteractivity: () => {
-                    console.log('🎮 INTERACTIVE TESTING MODE:');
-                    console.log('   🖱️  Move mouse around to see particle attraction');
-                    console.log('   📱 Hover over text content to see background visualizers');
-                    console.log('   🔘 Hover over navigation buttons for section previews');
-                    console.log('   📜 Scroll to trigger parameter changes');
-                    console.log('   🌀 Click sections to see geometry transitions');
-                }
-            };
-            
-            // Add method to integration class
-            window.vib3HomeMasterIntegration.logCurrentParameters = window.debugVIB3HomeMaster.logCurrentParameters;
-            
-            console.log('🎮 VIB3CODE VISUALIZER DEBUG INTERFACE:');
-            console.log('');
-            console.log('📊 PARAMETER MONITORING:');
-            console.log('   debugVIB3HomeMaster.logCurrentParameters() - Show all current values');
-            console.log('');
-            console.log('🎛️ LIVE PARAMETER CONTROL:');
-            console.log('   debugVIB3HomeMaster.setParameter("gridDensity", 25) - Pattern detail (5-50)');
-            console.log('   debugVIB3HomeMaster.setParameter("glitchIntensity", 0.8) - Chromatic chaos (0-1)');
-            console.log('   debugVIB3HomeMaster.setParameter("morphFactor", 0.7) - Shape warping (0-1)');
-            console.log('   debugVIB3HomeMaster.setParameter("rotationSpeed", 2.0) - Rotation speed (0.1-5)');
-            console.log('   debugVIB3HomeMaster.setParameter("dimension", 3.8) - 4D effects (3-4)');
-            console.log('');
-            console.log('🌊 SCROLL REACTIVITY:');
-            console.log('   debugVIB3HomeMaster.setScrollReactivity("all-chaos") - All parameters react');
-            console.log('   debugVIB3HomeMaster.setScrollReactivity("gridDensity + morphFactor") - Basic');
-            console.log('   debugVIB3HomeMaster.setScrollReactivity("dimensional") - 4D effects');
-            console.log('');
-            console.log('🌀 SECTION SWITCHING:');
-            console.log('   debugVIB3HomeMaster.switchSection("home") - Hypercube geometry');
-            console.log('   debugVIB3HomeMaster.switchSection("articles") - Tetrahedron geometry');
-            console.log('   debugVIB3HomeMaster.switchSection("videos") - Sphere geometry');
-            console.log('   debugVIB3HomeMaster.switchSection("podcasts") - Torus geometry');
-            console.log('   debugVIB3HomeMaster.switchSection("ema") - Wave geometry');
-            console.log('');
-            console.log('🔥 PRESET MODES:');
-            console.log('   debugVIB3HomeMaster.maxChaos() - Maximum visual intensity');
-            console.log('   debugVIB3HomeMaster.minimal() - Calm, minimal effects');
-            console.log('   debugVIB3HomeMaster.randomizeHome() - Random new parameters');
-            console.log('   debugVIB3HomeMaster.maxGlitch() - RGB chromatic chaos');
-            console.log('');
-            console.log('🎭 MULTI-INSTANCE CONTROLS:');
-            console.log('   debugVIB3HomeMaster.listInstances() - Show all visualizer instances');
-            console.log('   debugVIB3HomeMaster.toggleParticles() - Show/hide particle overlay');
-            console.log('   debugVIB3HomeMaster.intensifyHover() - Boost hover effects');
-            console.log('   debugVIB3HomeMaster.enableLineMode() - Geometric wireframe mode');
-            console.log('');
-            console.log('🎮 INTERACTIVE TESTING:');
-            console.log('   debugVIB3HomeMaster.testInteractivity() - Show interaction guide');
-            console.log('');
-            console.log('💡 TIPS:');
-            console.log('   🖱️  Move mouse to attract particles');
-            console.log('   📱 Hover text content for background visualizers');
-            console.log('   📜 Scroll to trigger parameter reactivity');
-            console.log('   🔘 Hover nav buttons for section previews');
-            
-            // Auto-log current parameters
-            setTimeout(() => {
-                window.debugVIB3HomeMaster.logCurrentParameters();
-            }, 2000);
-            
-        } else {
-            console.log('⏳ Waiting for HomeBasedReactiveSystem...');
-            setTimeout(waitForHomeMaster, 500);
-        }
-    };
-    
-    waitForHomeMaster();
-});
-
 // VIB3 PARTICLE SYSTEM - Reactive particles using same parameter space
 class VIB3ParticleSystem {
     constructor(canvas, integration) {
@@ -1198,9 +988,6 @@ class VIB3ParticleSystem {
             const glitchIntensity = config.glitchIntensity || 0.3;
             const dimension = config.dimension || 3.5;
             
-            // Geometric influence based on current section geometry
-            this.applyGeometricForces(particle, config, time, index);
-            
             // Mouse influence
             const mouseX = this.mouseInfluence.x * this.canvas.width;
             const mouseY = this.mouseInfluence.y * this.canvas.height;
@@ -1212,21 +999,6 @@ class VIB3ParticleSystem {
                 const force = (150 - distance) / 150;
                 particle.vx += (dx / distance) * force * 0.1;
                 particle.vy += (dy / distance) * force * 0.1;
-            }
-            
-            // Glitch effects
-            if (glitchIntensity > 0.5) {
-                particle.glitchPhase += 0.2;
-                const glitchX = Math.sin(particle.glitchPhase) * glitchIntensity * 10;
-                const glitchY = Math.cos(particle.glitchPhase * 1.3) * glitchIntensity * 10;
-                particle.x += glitchX;
-                particle.y += glitchY;
-            }
-            
-            // 4D effects
-            if (dimension > 3.5) {
-                const w = Math.sin(time * 0.5 + index * 0.1) * (dimension - 3.5);
-                particle.size = Math.max(0.5, particle.size * (1 + w * 0.2));
             }
             
             // Update position
@@ -1248,62 +1020,6 @@ class VIB3ParticleSystem {
         });
     }
     
-    applyGeometricForces(particle, config, time, index) {
-        const geometry = config.geometry;
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        
-        switch (geometry) {
-            case 'hypercube':
-                // Grid-based attraction
-                const gridSize = 50 + (config.gridDensity || 12) * 3;
-                const targetX = Math.round(particle.x / gridSize) * gridSize;
-                const targetY = Math.round(particle.y / gridSize) * gridSize;
-                particle.vx += (targetX - particle.x) * 0.01;
-                particle.vy += (targetY - particle.y) * 0.01;
-                break;
-                
-            case 'tetrahedron':
-                // Triangular vertex attraction
-                const angle = (index / this.particles.length) * Math.PI * 2;
-                const radius = 100 + Math.sin(time + index) * 50;
-                const triangleX = centerX + Math.cos(angle) * radius;
-                const triangleY = centerY + Math.sin(angle) * radius;
-                particle.vx += (triangleX - particle.x) * 0.02;
-                particle.vy += (triangleY - particle.y) * 0.02;
-                break;
-                
-            case 'sphere':
-                // Radial forces
-                const dx = particle.x - centerX;
-                const dy = particle.y - centerY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const targetRadius = 150 + Math.sin(time * 0.5) * 50;
-                if (distance > 0) {
-                    const force = (targetRadius - distance) / distance * 0.01;
-                    particle.vx += dx * force;
-                    particle.vy += dy * force;
-                }
-                break;
-                
-            case 'torus':
-                // Circular flow
-                const torusAngle = Math.atan2(particle.y - centerY, particle.x - centerX);
-                const flowSpeed = (config.rotationSpeed || 0.5) * 0.5;
-                particle.vx += -Math.sin(torusAngle) * flowSpeed;
-                particle.vy += Math.cos(torusAngle) * flowSpeed;
-                break;
-                
-            case 'wave':
-                // Wave pattern forces
-                const waveX = Math.sin(particle.y * 0.01 + time) * 2;
-                const waveY = Math.cos(particle.x * 0.01 + time) * 2;
-                particle.vx += waveX * 0.1;
-                particle.vy += waveY * 0.1;
-                break;
-        }
-    }
-    
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -1320,41 +1036,15 @@ class VIB3ParticleSystem {
         this.particles.forEach(particle => {
             this.ctx.save();
             
-            // RGB chromatic separation for glitch effects
-            if ((config.glitchIntensity || 0) > 0.3) {
-                const offset = (config.glitchIntensity || 0) * 3;
-                
-                // Red channel
-                this.ctx.globalCompositeOperation = 'screen';
-                this.ctx.fillStyle = `hsla(0, 100%, 50%, ${0.3 + particle.life * 0.4})`;
-                this.ctx.beginPath();
-                this.ctx.arc(particle.x - offset, particle.y, particle.size, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                // Green channel  
-                this.ctx.fillStyle = `hsla(120, 100%, 50%, ${0.3 + particle.life * 0.4})`;
-                this.ctx.beginPath();
-                this.ctx.arc(particle.x, particle.y - offset * 0.5, particle.size, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                // Blue channel
-                this.ctx.fillStyle = `hsla(240, 100%, 50%, ${0.3 + particle.life * 0.4})`;
-                this.ctx.beginPath();
-                this.ctx.arc(particle.x + offset, particle.y + offset * 0.5, particle.size, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                this.ctx.globalCompositeOperation = 'source-over';
-            } else {
-                // Normal rendering
-                const hue = particle.hue * 360;
-                const saturation = 80 + (config.morphFactor || 0.5) * 20;
-                const lightness = 50 + (config.dimension || 3.5) * 10;
-                
-                this.ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${0.4 + particle.life * 0.4})`;
-                this.ctx.beginPath();
-                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                this.ctx.fill();
-            }
+            // Normal rendering
+            const hue = particle.hue * 360;
+            const saturation = 80 + (config.morphFactor || 0.5) * 20;
+            const lightness = 50 + (config.dimension || 3.5) * 10;
+            
+            this.ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${0.4 + particle.life * 0.4})`;
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fill();
             
             this.ctx.restore();
         });
@@ -1428,8 +1118,6 @@ window.debugVIB3HomeMaster = {
             console.log('Current Section:', window.vib3HomeMasterIntegration.currentSection);
             console.log('Main Visualizer:', !!window.vib3HomeMasterIntegration.mainVisualizer);
             console.log('Particle System:', !!window.vib3HomeMasterIntegration.particleSystem);
-            console.log('Text Visualizers:', window.vib3HomeMasterIntegration.textBackgroundVisualizers.length);
-            console.log('Nav Previews:', window.vib3HomeMasterIntegration.navPreviewVisualizers.length);
         }
     },
     
