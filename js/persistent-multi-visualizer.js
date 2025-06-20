@@ -845,5 +845,7 @@ class ManagedVisualizer {
     }
 }
 
-// Global instance
+// Export both class and instance
+window.VisualizerManager = VisualizerManager;
+window.ManagedVisualizer = ManagedVisualizer;
 window.visualizerManager = new VisualizerManager();

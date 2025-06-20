@@ -61,12 +61,16 @@ class VIB3CodeVisualizerInit {
     createCanvasElements() {
         console.log('🎨 Creating canvas elements...');
         
-        // EMERGENCY: Remove ALL existing canvases to prevent conflicts
+        // EMERGENCY: Remove ALL existing canvases except logo canvas
         const existingCanvases = document.querySelectorAll('canvas');
-        console.log(`🧹 Removing ${existingCanvases.length} existing canvases to prevent conflicts`);
+        console.log(`🧹 Checking ${existingCanvases.length} existing canvases for conflicts`);
         existingCanvases.forEach(canvas => {
-            console.log(`Removing canvas: ${canvas.id || 'unnamed'} with class: ${canvas.className}`);
-            canvas.remove();
+            if (canvas.id === 'logo-visualizer-canvas') {
+                console.log('🪟 Preserving logo visualizer canvas for "3" window effect');
+            } else {
+                console.log(`Removing canvas: ${canvas.id || 'unnamed'} with class: ${canvas.className}`);
+                canvas.remove();
+            }
         });
         
         // Define the canvas configurations
@@ -75,6 +79,12 @@ class VIB3CodeVisualizerInit {
             { id: 'vib3-content-canvas', className: 'vib3-content-visualizer', zIndex: 0 },
             { id: 'vib3-ambient-canvas', className: 'vib3-ambient-visualizer', zIndex: -1 }
         ];
+        
+        // Don't remove the logo visualizer canvas
+        const logoCanvas = document.getElementById('logo-visualizer-canvas');
+        if (logoCanvas) {
+            console.log('🪟 Preserving logo visualizer canvas for "3" window effect');
+        }
         
         canvasConfigs.forEach(config => {
             // Remove existing canvas if present
@@ -286,11 +296,55 @@ class VIB3CodeVisualizerInit {
             manager.globalVelocityState
         );
         
+        // Create logo visualizer instance for the "3" window
+        const logoCanvas = document.getElementById('logo-visualizer-canvas');
+        let logoInstance = null;
+        if (logoCanvas) {
+            logoInstance = manager.addInstance(
+                'vib3-logo',
+                logoCanvas,
+                {
+                    geometry: 0, // Hypercube
+                    baseColor: [1.0, 0.0, 1.0], // Magenta
+                    gridDensity: 25.0, // Very dense for small size
+                    morphFactor: 0.8,
+                    dimension: 3.8,
+                    glitchIntensity: 0.4,
+                    rotationSpeed: 0.8,
+                    latticeStyle: 'hybrid',
+                    intensity: 0.9, // High intensity for visibility
+                    transitionDuration: 800
+                },
+                {
+                    parameterDerivation: {
+                        intensity: 'fixed', // Keep high intensity
+                        rotationSpeed: { multiplierRelativeToMaster: 2.0 } // Spin faster
+                    },
+                    eventReactions: {
+                        'GLOBAL_MOUSE_MOVE_UPDATE': {
+                            rotationSpeed: {
+                                source: 'raw.mouseVelocity',
+                                multiplier: 0.1,
+                                min: 0.5,
+                                max: 2.0
+                            }
+                        }
+                    },
+                    allowedAdjustments: ['rotationSpeed', 'glitchIntensity']
+                },
+                manager.globalVelocityState
+            );
+            console.log('🪟 Logo visualizer instance created for "3" window');
+        }
+        
         if (headerInstance && contentInstance && ambientInstance) {
             console.log('✅ All visualizer instances created successfully');
             console.log('- Header instance: High intensity with scroll reactivity');
             console.log('- Content instance: Medium intensity with tetrahedron geometry');
             console.log('- Ambient instance: Subtle background with sphere geometry');
+            if (logoInstance) {
+                console.log('- Logo instance: High-speed visualizer in "3" window');
+            }
         } else {
             console.error('❌ Failed to create some visualizer instances');
         }

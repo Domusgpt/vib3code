@@ -135,16 +135,29 @@
         }
         
         .section-expanded-content {
-            background: rgba(0, 0, 0, 0.3) !important;
-            padding: 40px 20px !important;
+            background: rgba(0, 0, 0, 0.5) !important;
+            backdrop-filter: blur(10px) !important;
+            padding: 60px 40px !important;
             min-height: 80vh !important;
+            border-radius: 20px !important;
+            margin: 40px auto !important;
+            max-width: 1400px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
         .content-grid-expanded {
             display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
-            gap: 24px !important;
-            margin-top: 32px !important;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+            gap: 32px !important;
+            margin-top: 48px !important;
+        }
+        
+        .magazine-section {
+            min-height: 100vh !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: relative !important;
         }
         
         /* PERSISTENT VISUALIZER LAYERS */
@@ -1057,8 +1070,13 @@
     <!-- Navigation -->
     <nav class="nav-cyber" id="main-nav" style="background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: 80px;">
         <div class="nav-content" style="display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; padding: 0 2rem; height: 100%;">
-            <a href="/" class="logo-cyber" style="text-decoration: none;">
-                <span class="logo-text" style="font-size: 2rem; font-weight: 900; color: #ffffff; text-shadow: 0 0 20px #ff00ff; font-family: 'Orbitron', monospace; letter-spacing: 0.1em;">VIB<span style="color: #ff00ff;">3</span>CODE</span>
+            <a href="/" class="logo-cyber" style="text-decoration: none; position: relative;">
+                <span class="logo-text" style="font-size: 2.5rem; font-weight: 900; color: #ffffff; text-shadow: 0 0 20px #ff00ff; font-family: 'Orbitron', monospace; letter-spacing: 0.1em; position: relative; display: inline-flex; align-items: center;">
+                    VIB<span id="logo-3-window" style="position: relative; display: inline-block; width: 2.2rem; height: 2.2rem; margin: 0 0.1rem; border-radius: 8px; overflow: hidden; border: 2px solid #ff00ff; box-shadow: 0 0 20px rgba(255, 0, 255, 0.5); background: rgba(0, 0, 0, 0.8);">
+                        <canvas id="logo-visualizer-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ff00ff; font-size: 1.8rem; font-weight: 900; text-shadow: 0 0 10px #ff00ff; z-index: 2; mix-blend-mode: screen;">3</span>
+                    </span>CODE
+                </span>
                 <span class="logo-pulse"></span>
             </a>
             
