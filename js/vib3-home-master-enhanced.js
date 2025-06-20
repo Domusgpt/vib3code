@@ -505,16 +505,17 @@ class VIB3HomeMasterIntegration {
         this.instances = {}; // Track all visualizer instances
         this.interactionInfluences = new Map(); // Track hover/touch influences
         
+        // TEMPORARILY DISABLE TO REDUCE WEBGL CONTEXT COUNT
         // CREATE TEXT BACKGROUND VISUALIZERS (INVERSE PARAMETERS)
-        this.createTextBackgroundVisualizers();
+        // this.createTextBackgroundVisualizers();
         
-        // CREATE UI ELEMENT VISUALIZERS  
-        this.createUIElementVisualizers();
+        // REDUCE UI ELEMENT VISUALIZERS (LIMIT TO PREVENT TOO MANY WEBGL CONTEXTS)
+        // this.createUIElementVisualizers();
         
-        // CREATE PARTICLE OVERLAY SYSTEM
+        // CREATE PARTICLE OVERLAY SYSTEM (2D CANVAS - NO WEBGL)
         this.createParticleOverlay();
         
-        console.log('✅ Multi-instance reactive ecosystem ready');
+        console.log('✅ Multi-instance reactive ecosystem ready (reduced for performance)');
     }
     
     createTextBackgroundVisualizers() {
@@ -886,19 +887,20 @@ class VIB3HomeMasterIntegration {
     }
 }
 
+// DISABLED - Duplicate initialization causing double WebGL contexts
 // Initialize when DOM loads
-window.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 DOM loaded, waiting for home-master system...');
-    
-    // Wait for home-master system to be available
-    const waitForHomeMaster = () => {
-        if (typeof HomeBasedReactiveSystem !== 'undefined') {
-            console.log('✅ HomeBasedReactiveSystem found, initializing VIB3CODE integration...');
-            
-            window.vib3HomeMasterIntegration = new VIB3HomeMasterIntegration();
-            
-            // COMPATIBILITY: Create visualizerManager interface for existing router
-            window.visualizerManager = {
+// window.addEventListener('DOMContentLoaded', function() {
+//     console.log('🏠 DOM loaded, waiting for home-master system...');
+//     
+//     // Wait for home-master system to be available
+//     const waitForHomeMaster = () => {
+//         if (typeof HomeBasedReactiveSystem !== 'undefined') {
+//             console.log('✅ HomeBasedReactiveSystem found, initializing VIB3CODE integration...');
+//             
+//             window.vib3HomeMasterIntegration = new VIB3HomeMasterIntegration();
+//             
+//             // COMPATIBILITY: Create visualizerManager interface for existing router
+//             window.visualizerManager = {
                 applyMasterStyle: (sectionKey) => {
                     console.log(`🔄 Router requesting section: ${sectionKey}`);
                     window.vib3HomeMasterIntegration.switchToSection(sectionKey);
@@ -1163,7 +1165,16 @@ class VIB3ParticleSystem {
     }
     
     update() {
+        // Safety check - ensure configuration is available
+        if (!this.integration.homeMasterSystem.currentHome) {
+            return; // Skip update if system not ready
+        }
+        
         const config = this.integration.homeMasterSystem.getSectionConfig(this.integration.currentSection || 'home');
+        if (!config) {
+            return; // Skip update if config not available
+        }
+        
         const time = performance.now() * 0.001;
         
         // Update particle count based on grid density
@@ -1296,7 +1307,15 @@ class VIB3ParticleSystem {
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
+        // Safety check - ensure configuration is available
+        if (!this.integration.homeMasterSystem.currentHome) {
+            return; // Skip render if system not ready
+        }
+        
         const config = this.integration.homeMasterSystem.getSectionConfig(this.integration.currentSection || 'home');
+        if (!config) {
+            return; // Skip render if config not available
+        }
         
         this.particles.forEach(particle => {
             this.ctx.save();
