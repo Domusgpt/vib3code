@@ -191,23 +191,23 @@ class VIB3EnhancedVisualizer {
                 float g = getGeometryValue(vec3(p.xy + gOffset, p.z), dynamicGridDensity, u_geometry);
                 float b = getGeometryValue(vec3(p.xy + bOffset, p.z), dynamicGridDensity, u_geometry);
                 
-                // Enhanced color with vibrant gradients
-                vec3 baseColor = vec3(0.01, 0.02, 0.05);
-                vec3 latticeColor = u_baseColor;
+                // Enhanced color with vibrant gradients - BOOST VIBRANCY
+                vec3 baseColor = vec3(0.05, 0.08, 0.15); // Brighter base
+                vec3 latticeColor = u_baseColor * 2.5; // MASSIVE color boost
                 
-                // Rich gradient modulation like reference site
+                // Rich gradient modulation like reference site - BOOST AMPLITUDE
                 vec3 gradientMod = vec3(
-                    1.0 + 0.5 * sin(u_time * 0.8 + length(p) * 3.0),
-                    1.0 + 0.5 * sin(u_time * 1.1 + length(p) * 2.5),
-                    1.0 + 0.5 * sin(u_time * 0.6 + length(p) * 3.5)
+                    1.0 + 1.5 * sin(u_time * 0.8 + length(p) * 3.0), // 3x amplitude
+                    1.0 + 1.5 * sin(u_time * 1.1 + length(p) * 2.5), // 3x amplitude
+                    1.0 + 1.5 * sin(u_time * 0.6 + length(p) * 3.5)  // 3x amplitude
                 );
                 
                 latticeColor *= gradientMod;
                 
                 vec3 color = mix(baseColor, latticeColor, vec3(r, g, b));
                 
-                // Enhanced glow
-                color += u_baseColor * 0.15 * (0.6 + 0.4 * sin(u_time * 0.4)) * u_intensity;
+                // Enhanced glow - MASSIVE BOOST
+                color += u_baseColor * 0.8 * (0.6 + 0.4 * sin(u_time * 0.4)) * u_intensity;
                 
                 // Enhanced depth effects
                 float depth = 1.0 + sin(length(p) * 12.0 + u_time * 4.0) * 0.25;
@@ -342,7 +342,7 @@ class VIB3EnhancedVisualizer {
         this.gl.uniform1f(this.uniforms.glitchIntensity, this.sectionConfig.glitchIntensity || 0.3);
         this.gl.uniform1f(this.uniforms.rotationSpeed, this.sectionConfig.rotationSpeed || 0.5);
         this.gl.uniform1f(this.uniforms.geometry, this.getGeometryNumber(this.sectionConfig.geometry));
-        this.gl.uniform1f(this.uniforms.intensity, 0.8);
+        this.gl.uniform1f(this.uniforms.intensity, 2.5); // MASSIVE intensity boost
         
         this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
     }
@@ -475,8 +475,21 @@ class VIB3HomeMasterIntegration {
         `;
         document.body.insertBefore(this.mainCanvas, document.body.firstChild);
         
-        // Initialize visualizer with home config
+        // Initialize visualizer with home config - BOOST VIBRANCY 
         const homeConfig = this.homeMasterSystem.getSectionConfig('home');
+        
+        // MASSIVELY BOOST all vibrancy parameters for WOAH factor
+        if (homeConfig) {
+            homeConfig.gridDensity = (homeConfig.gridDensity || 12) * 2.0; // Double density
+            homeConfig.glitchIntensity = Math.max(0.8, (homeConfig.glitchIntensity || 0.3) * 3); // Triple glitch
+            homeConfig.dimension = Math.max(3.8, homeConfig.dimension || 3.5); // Max 4D 
+            homeConfig.morphFactor = Math.max(0.7, homeConfig.morphFactor || 0.5); // High morph
+            homeConfig.rotationSpeed = (homeConfig.rotationSpeed || 0.5) * 2.5; // Much faster
+            homeConfig.hue = homeConfig.hue || 0.83; // Vibrant magenta
+            homeConfig.saturation = 1.0; // MAX saturation
+            homeConfig.brightness = 1.0; // MAX brightness
+        }
+        
         this.currentVisualizer = new VIB3EnhancedVisualizer(this.mainCanvas, homeConfig);
     }
     
