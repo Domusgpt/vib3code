@@ -1811,8 +1811,9 @@
 
 
     <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-19 14:30 -->
-    <!-- PERSISTENT MULTI-VISUALIZER SYSTEM (3-4 instances, parameter morphing) -->
+    <!-- PHASE 2B VISUALIZER MANAGER SYSTEM -->
     <script src="js/persistent-multi-visualizer.js?v=1750368900"></script>
+    <script src="js/vib3code-visualizer-init.js?v=1750369500"></script>
     <script src="js/theme-engine-clean.js?v=1749968723"></script>
     <script src="js/content-templates.js?v=1750014474"></script>
     <script src="js/magazine-router.js?v=1749968723"></script>
@@ -1878,26 +1879,93 @@
         </div>
     </div>
     
-    <!-- PERSISTENT MULTI-VISUALIZER INTEGRATION -->
+    <!-- PHASE 2B VISUALIZER INTEGRATION & TESTING -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎨 Initializing Persistent Multi-Visualizer System...');
+            console.log('🎨 VIB3CODE Magazine - Phase 2b Integration Ready');
             
-            // The persistent multi-visualizer automatically initializes
-            // 3 canvas layers: header, content, ambient
-            // Parameters morph smoothly on navigation events
-            
-            // Integration with existing navigation system
-            if (window.persistentMultiVisualizer) {
-                console.log('✅ Persistent Multi-Visualizer ready');
-                console.log('- 3 persistent layers with smooth parameter morphing');
-                console.log('- Portal transitions between geometries');
-                console.log('- Velocity-based effects (1/10th intensity)');
-                console.log('- Ready for text animation integration');
-            } else {
-                console.error('❌ Persistent Multi-Visualizer not found');
-            }
+            // Wait a moment for full initialization
+            setTimeout(() => {
+                if (window.visualizerManager) {
+                    console.log('✅ VisualizerManager active with Phase 2b architecture');
+                    console.log('- Rule-based parameter derivation');
+                    console.log('- Master style presets with auto-computed instances');
+                    console.log('- Global velocity tracking and reactive updates');
+                    console.log('- Portal transitions between geometric spaces');
+                    
+                    // Get current state
+                    const state = window.getVisualizerState();
+                    if (state) {
+                        console.log('📊 Current Visualizer State:', state);
+                    }
+                    
+                    // Test automatic section transitions
+                    setTimeout(() => {
+                        console.log('🧪 Testing automatic section transitions...');
+                        window.testVisualizerEffects();
+                    }, 2000);
+                    
+                } else {
+                    console.warn('⚠️ VisualizerManager not found - checking initialization...');
+                    
+                    // Check if vib3CodeVisualizer exists
+                    if (window.vib3CodeVisualizer) {
+                        console.log('✅ VIB3CODE Visualizer Init found');
+                        const state = window.vib3CodeVisualizer.getCurrentState();
+                        console.log('Current state:', state);
+                    }
+                }
+            }, 1000);
         });
+        
+        // Global testing functions for manual verification
+        window.testPortalTransitions = function() {
+            if (!window.visualizerManager) return;
+            
+            console.log('🌀 Testing portal transitions through all sections...');
+            const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
+            let index = 0;
+            
+            const cycleTransitions = () => {
+                if (index < sections.length) {
+                    const section = sections[index];
+                    console.log(`🌀 Transitioning to: ${section}`);
+                    window.visualizerManager.applyMasterStyle(section);
+                    index++;
+                    setTimeout(cycleTransitions, 3000);
+                } else {
+                    console.log('🏠 Returning to home');
+                    window.visualizerManager.applyMasterStyle('home');
+                }
+            };
+            
+            cycleTransitions();
+        };
+        
+        // Enhanced parameter display updates
+        window.updateParameterDisplay = function() {
+            if (!window.visualizerManager) return;
+            
+            const currentSection = window.visualizerManager.getCurrentMasterStyleKey();
+            const isTransitioning = window.visualizerManager.isInTransition();
+            
+            // Update section display
+            const sectionElement = document.getElementById('param-section');
+            if (sectionElement) {
+                sectionElement.textContent = currentSection;
+                sectionElement.className = isTransitioning ? 'data-value state-transition' : 'data-value state-idle';
+            }
+            
+            // Update activity display
+            const activityElement = document.getElementById('param-activity');
+            if (activityElement) {
+                activityElement.textContent = isTransitioning ? 'transitioning' : 'reactive';
+                activityElement.className = isTransitioning ? 'data-value state-transition' : 'data-value state-idle';
+            }
+        };
+        
+        // Update parameter display every second
+        setInterval(window.updateParameterDisplay, 1000);
     </script>
 </body>
 </html>
