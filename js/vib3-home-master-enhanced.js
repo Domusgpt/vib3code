@@ -472,6 +472,16 @@ window.addEventListener('DOMContentLoaded', function() {
             
             window.vib3HomeMasterIntegration = new VIB3HomeMasterIntegration();
             
+            // COMPATIBILITY: Create visualizerManager interface for existing router
+            window.visualizerManager = {
+                applyMasterStyle: (sectionKey) => {
+                    console.log(`🔄 Router requesting section: ${sectionKey}`);
+                    window.vib3HomeMasterIntegration.switchToSection(sectionKey);
+                },
+                getCurrentMasterStyleKey: () => window.vib3HomeMasterIntegration.currentSection,
+                isInTransition: () => false // Simple implementation
+            };
+            
             // Expose for debugging
             window.debugVIB3HomeMaster = {
                 switchSection: (sectionId) => window.vib3HomeMasterIntegration.switchToSection(sectionId),
