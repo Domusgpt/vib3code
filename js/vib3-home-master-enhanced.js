@@ -6,8 +6,10 @@
  */
 
 console.log('🏠 VIB3CODE Home-Master Enhanced System loading...');
+console.log('🔧 Script successfully parsed and executing...');
 
 // Enhanced 4D visualizer with proper home-master integration
+console.log('🎨 Creating VIB3EnhancedVisualizer class...');
 class VIB3EnhancedVisualizer {
     constructor(canvas, sectionConfig) {
         this.canvas = canvas;
@@ -435,6 +437,7 @@ class VIB3EnhancedVisualizer {
 }
 
 // Main integration system
+console.log('🏠 Creating VIB3HomeMasterIntegration class...');
 class VIB3HomeMasterIntegration {
     constructor() {
         this.homeMasterSystem = new HomeBasedReactiveSystem();
