@@ -16,18 +16,17 @@ class HomeBasedReactiveSystem {
   constructor() {
     // ONLY GEOMETRIES ARE FIXED PER SECTION (Brand DNA)
     this.FIXED_GEOMETRIES = {
-      homepage: 'hypercube',
-      technology: 'tetrahedron', 
-      ema: 'sphere',
-      pricing: 'crystal',
-      docs: 'fractal',
-      about: 'torus'
+      home: 'hypercube',
+      articles: 'tetrahedron', 
+      videos: 'sphere',
+      podcasts: 'torus',
+      ema: 'wave'
     };
     
     // MATHEMATICAL RELATIONSHIP RULES (UNCHANGING ARCHITECTURE)
     this.RELATIONSHIP_DNA = {
-      technology: {
-        // Parameter relationships to home
+      articles: {
+        // Parameter relationships to home (tetrahedron - technical precision)
         gridDensity: home => home.gridDensity * 0.7,        // 70% of home
         morphFactor: home => 1.0 - home.morphFactor,       // OPPOSITE
         rotationSpeed: home => home.rotationSpeed * 1.5,   // 150% faster
@@ -44,59 +43,48 @@ class HomeBasedReactiveSystem {
         scrollMapsTo: null    // Uses same params as home by default
       },
       
-      ema: {
-        gridDensity: home => home.gridDensity * 1.2,        // 120% of home
-        morphFactor: home => home.morphFactor * 0.5,        // Half morphing
-        rotationSpeed: home => home.rotationSpeed * 0.3,    // Much slower
-        glitchIntensity: home => home.glitchIntensity * 2.0, // Double glitch
-        dimension: home => Math.min(4.0, home.dimension + 0.3), // More dimensional
+      videos: {
+        // Sphere - infinite potential, dynamic content
+        gridDensity: home => home.gridDensity * 1.5,        // 150% density
+        morphFactor: home => home.morphFactor * 0.3,        // Less morphing, stable
+        rotationSpeed: home => home.rotationSpeed * 0.3,    // Much slower, smooth
+        glitchIntensity: home => home.glitchIntensity * 0.1, // Minimal glitch
+        dimension: home => Math.min(4.0, home.dimension + 0.8), // More dimensional
         lineThickness: home => home.lineThickness * 0.8,   // Thinner
-        patternIntensity: home => home.patternIntensity * 1.3, // More intense
+        patternIntensity: home => home.patternIntensity * 0.7, // Less intense
+        
+        hueShift: 0.83,  // Pink-red shift from magenta
+        scrollDirection: 1.2,  // More sensitive, same direction
+        scrollMapsTo: null
+      },
+      
+      podcasts: {
+        // Torus - continuous flow, audio streams
+        gridDensity: home => home.gridDensity * 1.0,        // Same as home
+        morphFactor: home => home.morphFactor * 0.8,        // Flowing morphing
+        rotationSpeed: home => home.rotationSpeed * 0.6,    // Steady rotation
+        glitchIntensity: home => home.glitchIntensity * 0.4, // Some glitch
+        dimension: home => Math.min(4.0, home.dimension + 0.6), // More dimensional
+        lineThickness: home => home.lineThickness,          // Same thickness
+        patternIntensity: home => home.patternIntensity * 1.0, // Same intensity
+        
+        hueShift: 0.5,   // Green shift from magenta
+        scrollDirection: 0.8,  // Slightly less sensitive
+        scrollMapsTo: null
+      },
+      
+      ema: {
+        // Wave function - probability spaces, freedom
+        gridDensity: home => home.gridDensity * 1.6,        // 160% density
+        morphFactor: home => home.morphFactor * 0.4,        // Controlled morphing
+        rotationSpeed: home => home.rotationSpeed * 0.9,    // Slightly slower
+        glitchIntensity: home => home.glitchIntensity * 0.3, // Clean, less glitch
+        dimension: home => Math.min(4.0, home.dimension + 0.3), // More dimensional
+        lineThickness: home => home.lineThickness * 1.0,   // Same thickness
+        patternIntensity: home => home.patternIntensity * 1.0, // Same intensity
         
         hueShift: 0.66,  // 240 degree color shift (yellow from magenta)
-        scrollDirection: 0.5,  // Half sensitivity, same direction
-        scrollMapsTo: null
-      },
-      
-      pricing: {
-        gridDensity: home => Math.max(5, home.gridDensity - 3), // Home minus 3, min 5
-        morphFactor: home => Math.min(1.0, home.morphFactor + 0.3), // Home plus 0.3
-        rotationSpeed: home => home.rotationSpeed * 2.0,    // Double speed
-        glitchIntensity: home => home.glitchIntensity * 0.1, // Minimal glitch
-        dimension: home => home.dimension * 0.8,            // Less dimensional
-        lineThickness: home => home.lineThickness,          // Same thickness
-        patternIntensity: home => home.patternIntensity * 0.6, // Less intense
-        
-        hueShift: 0.5,   // Complementary color (180 degrees) - mint from magenta
-        scrollDirection: 1,  // Same direction as home
-        scrollMapsTo: ['dimension', 'lineThickness'] // Different scroll params
-      },
-      
-      docs: {
-        gridDensity: home => home.gridDensity * 1.5,        // 150% density
-        morphFactor: home => home.morphFactor * 1.8,        // High morphing
-        rotationSpeed: home => home.rotationSpeed * 0.8,    // Slightly slower
-        glitchIntensity: home => home.glitchIntensity * 3.0, // Maximum chaos
-        dimension: home => Math.min(4.0, home.dimension + 0.7), // Highest dimensional
-        lineThickness: home => home.lineThickness * 0.5,   // Much thinner
-        patternIntensity: home => home.patternIntensity * 2.0, // Double intensity
-        
-        hueShift: 0.25,  // 90 degree shift (purple)
-        scrollDirection: 1.5,  // More sensitive, same direction
-        scrollMapsTo: null
-      },
-      
-      about: {
-        gridDensity: home => home.gridDensity * 0.5,        // Half density
-        morphFactor: home => home.morphFactor * 1.2,        // More fluid
-        rotationSpeed: home => home.rotationSpeed * 0.6,    // Slower
-        glitchIntensity: home => home.glitchIntensity * 0.8, // Slightly less glitch
-        dimension: home => home.dimension * 0.9,            // Slightly less dimensional
-        lineThickness: home => home.lineThickness * 1.5,   // Thicker
-        patternIntensity: home => home.patternIntensity,    // Same intensity
-        
-        hueShift: 0.125, // 45 degree shift (orange-green)
-        scrollDirection: -0.7,  // Opposite but less sensitive
+        scrollDirection: 1.1,  // Slightly more sensitive
         scrollMapsTo: null
       }
     };

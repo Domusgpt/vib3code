@@ -788,7 +788,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     
-    <!-- Home-Master Reactive System -->
+    <!-- Home-Master Reactive System - CORE SYSTEM -->
     <script src="shared-reactive-core/home-master-system.js"></script>
     <script src="shared-reactive-core/vib3code-integration.js"></script>
     
@@ -1873,8 +1873,7 @@
 
     <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-19 14:30 -->
     <!-- PHASE 2B VISUALIZER MANAGER SYSTEM -->
-    <script src="js/persistent-multi-visualizer.js?v=1750368900"></script>
-    <script src="js/vib3code-visualizer-init.js?v=1750369500"></script>
+    <script src="js/vib3-home-master-enhanced.js?v=1750373000"></script>
     <script src="js/theme-engine-clean.js?v=1749968723"></script>
     <script src="js/content-templates.js?v=1750014474"></script>
     <script src="js/magazine-router.js?v=1749968723"></script>
@@ -1945,58 +1944,60 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🎨 VIB3CODE Magazine - Phase 2b Integration Ready');
             
-            // Wait a moment for full initialization
+            // Wait a moment for enhanced system initialization
             setTimeout(() => {
-                if (window.visualizerManager) {
-                    console.log('✅ VisualizerManager active with Phase 2b architecture');
-                    console.log('- Rule-based parameter derivation');
-                    console.log('- Master style presets with auto-computed instances');
-                    console.log('- Global velocity tracking and reactive updates');
-                    console.log('- Portal transitions between geometric spaces');
+                if (window.enhancedVisualizerManager) {
+                    console.log('✅ Enhanced VisualizerManager active with vibrant shader system');
+                    console.log('- Spiral/tunnel effects with chromatic aberration');
+                    console.log('- Multi-layer visualization (background + content overlay)');
+                    console.log('- Enhanced 4D transformations and dimensional shifts');
+                    console.log('- Rich gradient effects matching reference site vibrancy');
+                    console.log('- Adaptive performance monitoring');
                     
-                    // Get current state
-                    const state = window.getVisualizerState();
-                    if (state) {
-                        console.log('📊 Current Visualizer State:', state);
+                    // Enhanced debug interface
+                    if (window.debugEnhancedVisualizer) {
+                        console.log('📊 Enhanced Visualizer Debug Interface Available:');
+                        console.log('   window.debugEnhancedVisualizer.applyTheme("articles")');
+                        console.log('   window.debugEnhancedVisualizer.manager');
+                        console.log('   window.debugEnhancedVisualizer.instances');
                     }
                     
-                    // Test automatic section transitions
+                    // Test enhanced section transitions
                     setTimeout(() => {
-                        console.log('🧪 Testing automatic section transitions...');
-                        window.testVisualizerEffects();
+                        console.log('🧪 Testing enhanced section transitions...');
+                        if (window.debugEnhancedVisualizer) {
+                            window.debugEnhancedVisualizer.applyTheme('articles');
+                            setTimeout(() => window.debugEnhancedVisualizer.applyTheme('home'), 2000);
+                        }
                     }, 2000);
                     
+                } else if (window.visualizerManager) {
+                    console.log('⚠️ Basic VisualizerManager found, but enhanced system not loaded');
                 } else {
-                    console.warn('⚠️ VisualizerManager not found - checking initialization...');
-                    
-                    // Check if vib3CodeVisualizer exists
-                    if (window.vib3CodeVisualizer) {
-                        console.log('✅ VIB3CODE Visualizer Init found');
-                        const state = window.vib3CodeVisualizer.getCurrentState();
-                        console.log('Current state:', state);
-                    }
+                    console.warn('❌ No visualizer manager found - checking initialization...');
                 }
             }, 1000);
         });
         
-        // Global testing functions for manual verification
+        // Enhanced testing functions for manual verification
         window.testPortalTransitions = function() {
-            if (!window.visualizerManager) return;
+            const manager = window.enhancedVisualizerManager || window.visualizerManager;
+            if (!manager) return;
             
-            console.log('🌀 Testing portal transitions through all sections...');
+            console.log('🌀 Testing enhanced portal transitions through all sections...');
             const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
             let index = 0;
             
             const cycleTransitions = () => {
                 if (index < sections.length) {
                     const section = sections[index];
-                    console.log(`🌀 Transitioning to: ${section}`);
-                    window.visualizerManager.applyMasterStyle(section);
+                    console.log(`🌀 Enhanced transition to: ${section}`);
+                    manager.applyMasterStyle(section);
                     index++;
                     setTimeout(cycleTransitions, 3000);
                 } else {
-                    console.log('🏠 Returning to home');
-                    window.visualizerManager.applyMasterStyle('home');
+                    console.log('🏠 Returning to enhanced home');
+                    manager.applyMasterStyle('home');
                 }
             };
             
@@ -2005,10 +2006,11 @@
         
         // Enhanced parameter display updates
         window.updateParameterDisplay = function() {
-            if (!window.visualizerManager) return;
+            const manager = window.enhancedVisualizerManager || window.visualizerManager;
+            if (!manager) return;
             
-            const currentSection = window.visualizerManager.getCurrentMasterStyleKey();
-            const isTransitioning = window.visualizerManager.isInTransition();
+            const currentSection = manager.getCurrentMasterStyleKey();
+            const isTransitioning = manager.isInTransition();
             
             // Update section display
             const sectionElement = document.getElementById('param-section');
