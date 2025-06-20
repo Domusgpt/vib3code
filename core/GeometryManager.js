@@ -126,13 +126,125 @@ class HypertetrahedronGeometry extends BaseGeometry {
     }
 }
 
+class HypertorusGeometry extends BaseGeometry {
+    getShaderCode() {
+        return `
+            // Hypertorus - Continuous flow geometry for audio streams
+            // Uniforms used: u_dimension, u_time, u_morphFactor, u_gridDensity, u_lineThickness
+            // u_universeModifier, u_audioBass, u_audioMid, u_audioHigh, u_rotationSpeed
+            float calculateLattice(vec3 p) {
+                float density = max(0.1, u_gridDensity * 0.8 * (1.0 + u_audioBass * 0.3));
+                float dynamicThickness = max(0.002, u_lineThickness * (1.0 + u_audioMid * 0.8));
+                
+                // 3D torus construction
+                float majorRadius = 0.6;
+                float minorRadius = 0.25;
+                vec3 p_scaled = p * density * 0.4;
+                float r1 = length(p_scaled.xy);
+                float torusDistance = length(vec2(r1 - majorRadius, p_scaled.z)) - minorRadius;
+                float lattice3D = 1.0 - smoothstep(0.0, dynamicThickness * 2.0, abs(torusDistance));
+                
+                float finalLattice = lattice3D;
+                float dim_factor = smoothstep(3.0, 4.5, u_dimension);
+                
+                if (dim_factor > 0.01) {
+                    // 4D torus with flowing w-coordinate
+                    float angle = atan(p.y, p.x);
+                    float w_coord = sin(angle * 3.0 + u_time * 0.5) * cos(p.z * 2.0 + u_time * 0.3) 
+                                  * dim_factor * (0.5 + u_morphFactor * 0.5 + u_audioMid * 0.7);
+                    
+                    vec4 p4d = vec4(p, w_coord);
+                    float baseSpeed = u_rotationSpeed * 0.9;
+                    float time_rot1 = u_time * 0.25 * baseSpeed + u_audioHigh * 0.3;
+                    float time_rot2 = u_time * 0.33 * baseSpeed + u_audioBass * 0.2;
+                    p4d = rotXW(time_rot1) * rotYW(time_rot2) * p4d;
+                    
+                    vec3 projectedP = project4Dto3D(p4d);
+                    vec3 p4d_scaled = projectedP * density * 0.4;
+                    float r1_4d = length(p4d_scaled.xy);
+                    float torusDistance4D = length(vec2(r1_4d - majorRadius, p4d_scaled.z)) - minorRadius;
+                    float lattice4D = 1.0 - smoothstep(0.0, dynamicThickness * 2.0, abs(torusDistance4D));
+                    
+                    finalLattice = mix(lattice3D, lattice4D, smoothstep(0.0, 1.0, u_morphFactor));
+                }
+                
+                return pow(max(0.0, finalLattice), max(0.1, u_universeModifier));
+            }
+        `;
+    }
+}
+
+class HyperwaveGeometry extends BaseGeometry {
+    getShaderCode() {
+        return `
+            // Hyperwave - Quantum probability spaces and wave functions
+            // Uniforms used: u_dimension, u_time, u_morphFactor, u_gridDensity, u_shellWidth
+            // u_universeModifier, u_audioBass, u_audioMid, u_audioHigh, u_rotationSpeed
+            float calculateLattice(vec3 p) {
+                float density = max(0.1, u_gridDensity * 1.2 * (1.0 + u_audioBass * 0.6));
+                float waveAmplitude = max(0.1, u_shellWidth * (1.0 + u_audioMid * 1.2));
+                
+                // 3D wave interference patterns
+                vec3 p_wave = p * density * 0.3;
+                float wave1 = sin(p_wave.x * 2.5 + u_time * 0.7) * cos(p_wave.y * 2.0 + u_time * 0.5);
+                float wave2 = cos(p_wave.z * 3.0 + u_time * 0.4) * sin(length(p_wave) * 1.5 + u_time * 0.6);
+                float wave3 = sin((p_wave.x + p_wave.y) * 1.8 + u_time * 0.8) * cos((p_wave.y + p_wave.z) * 2.2 + u_time * 0.3);
+                
+                float waveInterference = (wave1 + wave2 + wave3) / 3.0;
+                float lattice3D = smoothstep(-waveAmplitude, waveAmplitude, waveInterference);
+                
+                float finalLattice = lattice3D;
+                float dim_factor = smoothstep(3.0, 4.5, u_dimension);
+                
+                if (dim_factor > 0.01) {
+                    // 4D quantum wave function
+                    float w_coord = sin(length(p) * 4.0 + u_time * 0.4) 
+                                  * cos(p.x * p.y * p.z * 8.0 + u_time * 0.6)
+                                  * dim_factor * (0.4 + u_morphFactor * 0.6 + u_audioHigh * 0.8);
+                    
+                    vec4 p4d = vec4(p, w_coord);
+                    float baseSpeed = u_rotationSpeed * 1.1;
+                    float time_rot1 = u_time * 0.35 * baseSpeed + u_audioMid * 0.4;
+                    float time_rot2 = u_time * 0.28 * baseSpeed + u_audioHigh * 0.3;
+                    float time_rot3 = u_time * 0.42 * baseSpeed + u_audioBass * 0.2;
+                    p4d = rotXW(time_rot1) * rotYZ(time_rot2) * rotZW(time_rot3) * p4d;
+                    
+                    vec3 projectedP = project4Dto3D(p4d);
+                    vec3 p4d_wave = projectedP * density * 0.3;
+                    float wave1_4d = sin(p4d_wave.x * 2.5 + u_time * 0.7) * cos(p4d_wave.y * 2.0 + u_time * 0.5);
+                    float wave2_4d = cos(p4d_wave.z * 3.0 + u_time * 0.4) * sin(length(p4d_wave) * 1.5 + u_time * 0.6);
+                    float wave3_4d = sin((p4d_wave.x + p4d_wave.y) * 1.8 + u_time * 0.8) * cos((p4d_wave.y + p4d_wave.z) * 2.2 + u_time * 0.3);
+                    
+                    float waveInterference4D = (wave1_4d + wave2_4d + wave3_4d) / 3.0;
+                    float lattice4D = smoothstep(-waveAmplitude, waveAmplitude, waveInterference4D);
+                    
+                    finalLattice = mix(lattice3D, lattice4D, smoothstep(0.0, 1.0, u_morphFactor));
+                }
+                
+                return pow(max(0.0, finalLattice), max(0.1, u_universeModifier));
+            }
+        `;
+    }
+}
+
 class GeometryManager {
     constructor(options = {}) { this.options = { defaultGeometry: 'hypercube', ...options }; this.geometries = {}; this._initGeometries(); }
-    _initGeometries() { this.registerGeometry('hypercube', new HypercubeGeometry()); this.registerGeometry('hypersphere', new HypersphereGeometry()); this.registerGeometry('hypertetrahedron', new HypertetrahedronGeometry()); }
+    _initGeometries() { 
+        this.registerGeometry('hypercube', new HypercubeGeometry()); 
+        this.registerGeometry('hypersphere', new HypersphereGeometry()); 
+        this.registerGeometry('hypertetrahedron', new HypertetrahedronGeometry()); 
+        this.registerGeometry('hypertorus', new HypertorusGeometry());
+        this.registerGeometry('hyperwave', new HyperwaveGeometry());
+        // Aliases for home-master system compatibility
+        this.registerGeometry('sphere', new HypersphereGeometry());
+        this.registerGeometry('tetrahedron', new HypertetrahedronGeometry());
+        this.registerGeometry('torus', new HypertorusGeometry());
+        this.registerGeometry('wave', new HyperwaveGeometry());
+    }
     registerGeometry(name, instance) { const lowerCaseName = name.toLowerCase(); if (!(instance instanceof BaseGeometry)) { console.error(`Invalid geometry object for '${lowerCaseName}'.`); return; } if (this.geometries[lowerCaseName]) { /* console.warn(`Overwriting geometry '${lowerCaseName}'.`); */ } this.geometries[lowerCaseName] = instance; }
     getGeometry(name) { const lowerCaseName = name ? name.toLowerCase() : this.options.defaultGeometry; const geometry = this.geometries[lowerCaseName]; if (!geometry) { console.warn(`Geometry '${name}' not found. Using default.`); return this.geometries[this.options.defaultGeometry.toLowerCase()]; } return geometry; }
     getGeometryTypes() { return Object.keys(this.geometries); }
 }
 
-export { GeometryManager, BaseGeometry, HypercubeGeometry, HypersphereGeometry, HypertetrahedronGeometry };
+export { GeometryManager, BaseGeometry, HypercubeGeometry, HypersphereGeometry, HypertetrahedronGeometry, HypertorusGeometry, HyperwaveGeometry };
 export default GeometryManager;

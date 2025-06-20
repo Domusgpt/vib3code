@@ -17,6 +17,8 @@ class VIB3EnhancedVisualizer {
         this.sectionConfig = sectionConfig;
         this.time = 0;
         this.animationId = null;
+        this.isSimpleFallback = false;
+        this.use2DFallback = false;
         
         if (!this.gl) {
             console.error('❌ WebGL not supported, creating fallback 2D canvas');
@@ -25,8 +27,11 @@ class VIB3EnhancedVisualizer {
         }
         
         this.setupEnhancedShaders();
-        this.resize();
-        this.start();
+        
+        if (!this.use2DFallback) {
+            this.resize();
+            this.start();
+        }
     }
     
     setupEnhancedShaders() {
@@ -236,9 +241,23 @@ class VIB3EnhancedVisualizer {
             }
         `;
         
+        console.log('🔧 Creating enhanced 4D shaders...');
         const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
         const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
+        
+        if (!vertexShader || !fragmentShader) {
+            console.error('❌ Failed to compile shaders, falling back to simple mode');
+            this.setupSimpleFallback();
+            return;
+        }
+        
         this.program = this.createProgram(vertexShader, fragmentShader);
+        
+        if (!this.program) {
+            console.error('❌ Failed to create shader program, falling back to simple mode');
+            this.setupSimpleFallback();
+            return;
+        }
         
         // Setup geometry
         this.positionBuffer = this.gl.createBuffer();
@@ -280,18 +299,106 @@ class VIB3EnhancedVisualizer {
     }
     
     createProgram(vertexShader, fragmentShader) {
-        const program = this.gl.createProgram();
-        this.gl.attachShader(program, vertexShader);
-        this.gl.attachShader(program, fragmentShader);
-        this.gl.linkProgram(program);
-        
-        if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-            console.error('Enhanced 4D program link error:', this.gl.getProgramInfoLog(program));
-            this.gl.deleteProgram(program);
+        // Check if shaders are valid before creating program
+        if (!vertexShader || !fragmentShader) {
+            console.error('❌ Cannot create program: Invalid shaders', {
+                vertexShader: !!vertexShader,
+                fragmentShader: !!fragmentShader
+            });
             return null;
         }
         
-        return program;
+        const program = this.gl.createProgram();
+        if (!program) {
+            console.error('❌ Failed to create WebGL program');
+            return null;
+        }
+        
+        try {
+            this.gl.attachShader(program, vertexShader);
+            this.gl.attachShader(program, fragmentShader);
+            this.gl.linkProgram(program);
+            
+            if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+                const linkError = this.gl.getProgramInfoLog(program);
+                console.error('❌ Enhanced 4D program link error:', linkError);
+                this.gl.deleteProgram(program);
+                return null;
+            }
+            
+            console.log('✅ Enhanced 4D shader program created successfully');
+            return program;
+            
+        } catch (error) {
+            console.error('❌ Exception during program creation:', error);
+            this.gl.deleteProgram(program);
+            return null;
+        }
+    }
+    
+    setupSimpleFallback() {
+        console.log('🔄 Setting up simple WebGL fallback...');
+        
+        // Simple vertex shader
+        const simpleVertexShader = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+        
+        // Simple fragment shader
+        const simpleFragmentShader = `
+            precision mediump float;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec3 u_baseColor;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                float time = u_time * 0.5;
+                
+                // Simple animated pattern
+                float pattern = sin(uv.x * 10.0 + time) * sin(uv.y * 10.0 + time * 0.8);
+                pattern = pattern * 0.5 + 0.5;
+                
+                vec3 color = u_baseColor * pattern * 0.5;
+                gl_FragColor = vec4(color, 0.3);
+            }
+        `;
+        
+        const vertexShader = this.createShader(this.gl.VERTEX_SHADER, simpleVertexShader);
+        const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, simpleFragmentShader);
+        
+        if (vertexShader && fragmentShader) {
+            this.program = this.createProgram(vertexShader, fragmentShader);
+            if (this.program) {
+                console.log('✅ Simple fallback shader program created');
+                this.isSimpleFallback = true;
+                
+                // Setup geometry and uniforms for simple fallback
+                this.positionBuffer = this.gl.createBuffer();
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+                const positions = [-1, -1, 1, -1, -1, 1, 1, 1];
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+                
+                // Get simple uniform locations
+                this.uniforms = {
+                    time: this.gl.getUniformLocation(this.program, 'u_time'),
+                    resolution: this.gl.getUniformLocation(this.program, 'u_resolution'),
+                    baseColor: this.gl.getUniformLocation(this.program, 'u_baseColor')
+                };
+                
+                this.positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
+                
+            } else {
+                console.error('❌ Even simple fallback failed, using 2D canvas');
+                this.use2DFallback = true;
+            }
+        } else {
+            console.error('❌ Simple fallback shader compilation failed, using 2D canvas');
+            this.use2DFallback = true;
+        }
     }
     
     // Map geometry names to numbers
@@ -324,12 +431,20 @@ class VIB3EnhancedVisualizer {
     }
     
     render() {
-        if (this.fallbackMode) {
+        if (this.use2DFallback || this.fallbackMode) {
             this.render2DFallback();
             return;
         }
         
-        if (!this.gl || !this.program || !this.sectionConfig) return;
+        if (!this.gl || !this.program || !this.sectionConfig) {
+            // If we don't have required WebGL components, fall back to 2D
+            if (!this.use2DFallback) {
+                console.log('🔄 Switching to 2D fallback due to missing WebGL components');
+                this.use2DFallback = true;
+                this.create2DFallback();
+            }
+            return;
+        }
         
         this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -351,13 +466,17 @@ class VIB3EnhancedVisualizer {
             this.sectionConfig.hue || 1.0, 
             this.sectionConfig.saturation || 0.0, 
             this.sectionConfig.brightness || 1.0);
-        this.gl.uniform1f(this.uniforms.gridDensity, this.sectionConfig.gridDensity || 12.0);
-        this.gl.uniform1f(this.uniforms.morphFactor, this.sectionConfig.morphFactor || 0.5);
-        this.gl.uniform1f(this.uniforms.dimension, this.sectionConfig.dimension || 3.5);
-        this.gl.uniform1f(this.uniforms.glitchIntensity, this.sectionConfig.glitchIntensity || 0.3);
-        this.gl.uniform1f(this.uniforms.rotationSpeed, this.sectionConfig.rotationSpeed || 0.5);
-        this.gl.uniform1f(this.uniforms.geometry, this.getGeometryNumber(this.sectionConfig.geometry));
-        this.gl.uniform1f(this.uniforms.intensity, 2.5); // MASSIVE intensity boost
+        
+        // Only set advanced uniforms if not in simple fallback mode
+        if (!this.isSimpleFallback) {
+            this.gl.uniform1f(this.uniforms.gridDensity, this.sectionConfig.gridDensity || 12.0);
+            this.gl.uniform1f(this.uniforms.morphFactor, this.sectionConfig.morphFactor || 0.5);
+            this.gl.uniform1f(this.uniforms.dimension, this.sectionConfig.dimension || 3.5);
+            this.gl.uniform1f(this.uniforms.glitchIntensity, this.sectionConfig.glitchIntensity || 0.3);
+            this.gl.uniform1f(this.uniforms.rotationSpeed, this.sectionConfig.rotationSpeed || 0.5);
+            this.gl.uniform1f(this.uniforms.geometry, this.getGeometryNumber(this.sectionConfig.geometry));
+            this.gl.uniform1f(this.uniforms.intensity, 2.5); // MASSIVE intensity boost
+        }
         
         this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
     }

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIB3CODE - Polytopal Kernel Test v1750400000</title>
+    
+    <!-- FORCE CACHE REFRESH -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <style>
+        /* CLEAN TEST STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Inter', Arial, sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            padding: 40px 20px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .status {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .controls {
+            margin: 30px 0;
+        }
+        
+        .btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #ffffff;
+            padding: 12px 24px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        
+        #polytopal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: #0a0a0a;
+        }
+        
+        .debug-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .debug-row {
+            margin: 3px 0;
+        }
+        
+        .debug-label {
+            color: #888;
+        }
+        
+        .debug-value {
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="polytopal-canvas"></canvas>
+    
+    <div class="test-container">
+        <h1>VIB3CODE Polytopal Kernel Test</h1>
+        
+        <div class="status" id="system-status">
+            🔄 Initializing Polytopal Kernel System...
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="testGeometry()">🔮 Test Geometries</button>
+            <button class="btn" onclick="testProjections()">📐 Test Projections</button>
+            <button class="btn" onclick="randomizeAll()">🎲 Randomize</button>
+            <button class="btn" onclick="toggleDebug()">🐛 Debug</button>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="switchSection('home')">🏠 Home</button>
+            <button class="btn" onclick="switchSection('articles')">📚 Articles</button>
+            <button class="btn" onclick="switchSection('videos')">🎥 Videos</button>
+            <button class="btn" onclick="switchSection('podcasts')">🎧 Podcasts</button>
+            <button class="btn" onclick="switchSection('ema')">⚡ EMA</button>
+        </div>
+    </div>
+    
+    <div class="debug-info" id="debug-panel" style="display: none;">
+        <div class="debug-row">
+            <span class="debug-label">System:</span>
+            <span class="debug-value" id="debug-system">Loading...</span>
+        </div>
+        <div class="debug-row">
+            <span class="debug-label">FPS:</span>
+            <span class="debug-value" id="debug-fps">--</span>
+        </div>
+        <div class="debug-row">
+            <span class="debug-label">Mode:</span>
+            <span class="debug-value" id="debug-mode">Unknown</span>
+        </div>
+        <div class="debug-row">
+            <span class="debug-label">Geometry:</span>
+            <span class="debug-value" id="debug-geometry">hypercube</span>
+        </div>
+        <div class="debug-row">
+            <span class="debug-label">Section:</span>
+            <span class="debug-value" id="debug-section">home</span>
+        </div>
+    </div>
+
+    <!-- Load Home Master System -->
+    <script src="shared-reactive-core/home-master-system.js"></script>
+    
+    <!-- Load Enhanced Polytopal Kernel (ES6 modules) -->
+    <script type="module" src="core/GeometryManager.js?v=1750400000"></script>
+    <script type="module" src="core/ProjectionManager.js?v=1750400000"></script>
+    <script type="module" src="core/ShaderManager.js?v=1750400000"></script>
+    <script type="module" src="core/HypercubeCore.js?v=1750400000"></script>
+    <script type="module" src="core/PolytopalKernelCore.js?v=1750400000"></script>
+    <script type="module" src="js/vib3-polytopal-kernel-integration-enhanced.js?v=1750400000"></script>
+    
+    <!-- Fallback for non-module browsers -->
+    <script nomodule src="js/vib3-home-master-enhanced.js?v=1750391700"></script>
+
+    <script>
+        // Global test functions
+        let currentSystem = null;
+        let debugVisible = false;
+        
+        // Wait for system initialization
+        setTimeout(() => {
+            checkSystemStatus();
+            updateDebugInfo();
+        }, 2000);
+        
+        function checkSystemStatus() {
+            const statusEl = document.getElementById('system-status');
+            
+            if (window.vib3PolytopalKernel) {
+                statusEl.innerHTML = '✅ Enhanced Polytopal Kernel Active';
+                statusEl.style.borderColor = '#00ff00';
+                currentSystem = window.vib3PolytopalKernel;
+                document.getElementById('debug-system').textContent = 'Enhanced ES6';
+                document.getElementById('debug-mode').textContent = 'WebGL Kernel';
+            } else if (window.debugPolytopalKernel) {
+                statusEl.innerHTML = '✅ Polytopal Debug Interface Active';
+                statusEl.style.borderColor = '#ffff00';
+                currentSystem = window.debugPolytopalKernel;
+                document.getElementById('debug-system').textContent = 'Debug Interface';
+                document.getElementById('debug-mode').textContent = 'WebGL Fallback';
+            } else if (window.vib3HomeMasterIntegration) {
+                statusEl.innerHTML = '⚠️ Home Master System Active (Fallback)';
+                statusEl.style.borderColor = '#ff8800';
+                document.getElementById('debug-system').textContent = 'Home Master';
+                document.getElementById('debug-mode').textContent = 'WebGL/2D Fallback';
+            } else {
+                statusEl.innerHTML = '❌ No Visualization System Found';
+                statusEl.style.borderColor = '#ff0000';
+                document.getElementById('debug-system').textContent = 'None';
+                document.getElementById('debug-mode').textContent = 'Failed';
+            }
+        }
+        
+        function updateDebugInfo() {
+            if (window.debugPolytopalKernel) {
+                const status = window.debugPolytopalKernel.status();
+                if (status) {
+                    document.getElementById('debug-fps').textContent = status.performance?.fps || '--';
+                    document.getElementById('debug-geometry').textContent = status.currentGeometry || 'unknown';
+                }
+            }
+            
+            setTimeout(updateDebugInfo, 1000);
+        }
+        
+        function testGeometry() {
+            if (currentSystem?.switchGeometry || window.debugPolytopalKernel?.switchGeometry) {
+                const geometries = ['hypercube', 'tetrahedron', 'sphere', 'torus', 'wave'];
+                const randomGeometry = geometries[Math.floor(Math.random() * geometries.length)];
+                
+                if (currentSystem?.switchGeometry) {
+                    currentSystem.switchGeometry(randomGeometry);
+                } else if (window.debugPolytopalKernel?.switchGeometry) {
+                    window.debugPolytopalKernel.switchGeometry(randomGeometry);
+                }
+                
+                document.getElementById('debug-geometry').textContent = randomGeometry;
+                console.log(`🔮 Switched to geometry: ${randomGeometry}`);
+            } else {
+                console.log('❌ No geometry switching available');
+            }
+        }
+        
+        function testProjections() {
+            if (window.debugPolytopalKernel?.switchProjection) {
+                const projections = ['perspective', 'stereographic', 'kaleidoscope', 'hyperslice', 'isometric', 'orthographic'];
+                const randomProjection = projections[Math.floor(Math.random() * projections.length)];
+                window.debugPolytopalKernel.switchProjection(randomProjection);
+                console.log(`📐 Switched to projection: ${randomProjection}`);
+            } else {
+                console.log('❌ No projection switching available');
+            }
+        }
+        
+        function randomizeAll() {
+            if (window.debugPolytopalKernel?.randomize) {
+                window.debugPolytopalKernel.randomize();
+                console.log('🎲 Randomized all parameters');
+            } else if (window.homeMasterSystem?.randomizeHome) {
+                window.homeMasterSystem.randomizeHome();
+                console.log('🎲 Randomized home master parameters');
+            } else {
+                console.log('❌ No randomization available');
+            }
+        }
+        
+        function switchSection(sectionId) {
+            if (currentSystem?.switchSection) {
+                currentSystem.switchSection(sectionId);
+            } else if (window.debugPolytopalKernel) {
+                console.log(`🔄 Manual section switch: ${sectionId}`);
+            }
+            
+            document.getElementById('debug-section').textContent = sectionId;
+            console.log(`🏠 Switched to section: ${sectionId}`);
+        }
+        
+        function toggleDebug() {
+            debugVisible = !debugVisible;
+            const debugPanel = document.getElementById('debug-panel');
+            debugPanel.style.display = debugVisible ? 'block' : 'none';
+            
+            if (window.debugPolytopalKernel) {
+                if (debugVisible) {
+                    window.debugPolytopalKernel.enableDebug();
+                } else {
+                    window.debugPolytopalKernel.disableDebug();
+                }
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (event) => {
+            switch(event.key) {
+                case '1': switchSection('home'); break;
+                case '2': switchSection('articles'); break;
+                case '3': switchSection('videos'); break;
+                case '4': switchSection('podcasts'); break;
+                case '5': switchSection('ema'); break;
+                case 'g': testGeometry(); break;
+                case 'p': testProjections(); break;
+                case 'r': randomizeAll(); break;
+                case 'd': toggleDebug(); break;
+            }
+        });
+        
+        // Auto-check system every 5 seconds
+        setInterval(checkSystemStatus, 5000);
+        
+        console.log('🧪 VIB3CODE Clean Test Interface Ready');
+        console.log('Keyboard shortcuts: 1-5 (sections), G (geometry), P (projection), R (randomize), D (debug)');
+    </script>
+</body>
+</html>

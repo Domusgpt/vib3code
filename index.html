@@ -6,18 +6,40 @@
     <meta name="description" content="VIB3CODE - Where elegant code meets digital freedom. Modern development without vendor lock-in.">
     <meta name="keywords" content="VIB3CODE, coding, development, digital freedom, parserator, no vendor lock-in">
     
-    <title>VIB3CODE - Digital Magazine for EMA Movement - ENHANCED-HEADERS v1750369000</title>
+    <title>VIB3CODE - Polytopal Kernel Architecture - WORKING v1750410000</title>
     
     <!-- FORCE COMPLETE CACHE REFRESH -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="cache-bust" content="1750410000">
     
-    <!-- IMMEDIATE STYLE FIXES FOR TEXT VISIBILITY -->
+    <!-- CLEAN VISUAL FIXES -->
     <style>
-        /* EMERGENCY TEXT VISIBILITY FIXES */
-        body, * {
+        /* EMERGENCY VISUAL RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a !important;
             color: #ffffff !important;
+            font-family: 'Inter', sans-serif !important;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Ensure canvas is behind content */
+        canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: -1 !important;
+            background: #0a0a0a !important;
         }
         
         .article-title-expanded {
@@ -199,6 +221,7 @@
     <link rel="stylesheet" href="styles/sections.css">
     <link rel="stylesheet" href="styles/magazine.css">
     <link rel="stylesheet" href="styles/magazine-enhanced.css">
+    <link rel="stylesheet" href="css/glassmorphic-ui-enhanced.css">
     <!-- Embedded Glassmorphic UI Styles -->
     <style>
         /* VIB3CODE Glassmorphic UI - Context-Aware Design */
@@ -1209,6 +1232,156 @@
         </div>
     </div>
     
+    <!-- ENHANCED POLYTOPAL KERNEL DEBUG & CONFIGURATION INTERFACE -->
+    <div id="polytopal-debug" class="glass-debug-panel">
+        <div class="debug-title">🔮 Polytopal Kernel Debug</div>
+        <div class="debug-content">
+            <div class="debug-row">
+                <span class="debug-label">FPS:</span>
+                <span class="debug-value" id="debug-fps">--</span>
+            </div>
+            <div class="debug-row">
+                <span class="debug-label">Quality:</span>
+                <span class="debug-value" id="debug-quality">1.0</span>
+            </div>
+            <div class="debug-row">
+                <span class="debug-label">Geometry:</span>
+                <span class="debug-value" id="debug-geometry">hypercube</span>
+            </div>
+            <div class="debug-row">
+                <span class="debug-label">Projection:</span>
+                <span class="debug-value" id="debug-projection">perspective</span>
+            </div>
+            <div class="debug-row">
+                <span class="debug-label">Section:</span>
+                <span class="debug-value" id="debug-section">home</span>
+            </div>
+            <div class="debug-controls">
+                <button class="glass-button" onclick="window.debugPolytopalKernel?.randomize()">🎲 Randomize</button>
+                <button class="glass-button" onclick="toggleConfigEditor()">⚙️ Config</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ENHANCED CONFIGURATION EDITOR -->
+    <div id="polytopal-config" class="glass-config-panel">
+        <div class="config-header">
+            <h3>🎛️ Polytopal Kernel Configuration</h3>
+            <button class="glass-button" onclick="toggleConfigEditor()">✕</button>
+        </div>
+        
+        <div class="config-section">
+            <h4>🎨 Visualization</h4>
+            <div class="config-row">
+                <label>Geometry Type:</label>
+                <select class="glass-control" id="config-geometry" onchange="updateGeometry()">
+                    <option value="hypercube">🔮 Hypercube</option>
+                    <option value="tetrahedron">🔺 Tetrahedron</option>
+                    <option value="sphere">🌐 Sphere</option>
+                    <option value="torus">🍩 Torus</option>
+                    <option value="wave">🌊 Wave</option>
+                </select>
+            </div>
+            <div class="config-row">
+                <label>Projection Method:</label>
+                <select class="glass-control" id="config-projection" onchange="updateProjection()">
+                    <option value="perspective">📐 Perspective</option>
+                    <option value="stereographic">🌟 Stereographic</option>
+                    <option value="kaleidoscope">🔮 Kaleidoscope</option>
+                    <option value="hyperslice">🔪 Hyperslice</option>
+                    <option value="isometric">📏 Isometric</option>
+                    <option value="orthographic">📊 Orthographic</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="config-section">
+            <h4>⚡ Performance</h4>
+            <div class="config-row">
+                <label>Target FPS:</label>
+                <div class="glass-slider">
+                    <input type="range" min="30" max="120" value="60" id="config-fps" onchange="updateTargetFPS()">
+                </div>
+                <span id="config-fps-value">60</span>
+            </div>
+            <div class="config-row">
+                <label>Quality Level:</label>
+                <div class="glass-slider">
+                    <input type="range" min="0.3" max="1.5" step="0.1" value="1.0" id="config-quality" onchange="updateQuality()">
+                </div>
+                <span id="config-quality-value">1.0</span>
+            </div>
+            <div class="config-row">
+                <label>Adaptive Quality:</label>
+                <input type="checkbox" class="glass-checkbox" id="config-adaptive" checked onchange="updateAdaptiveQuality()">
+            </div>
+        </div>
+        
+        <div class="config-section">
+            <h4>🎛️ Interface</h4>
+            <div class="config-row">
+                <label>Debug Interface:</label>
+                <input type="checkbox" class="glass-checkbox" id="config-debug" onchange="toggleDebugInterface()">
+            </div>
+            <div class="config-row">
+                <label>Gesture Control:</label>
+                <input type="checkbox" class="glass-checkbox" id="config-gestures" checked onchange="updateGestureControl()">
+            </div>
+            <div class="config-row">
+                <label>Keyboard Shortcuts:</label>
+                <input type="checkbox" class="glass-checkbox" id="config-keyboard" checked onchange="updateKeyboardShortcuts()">
+            </div>
+        </div>
+        
+        <div class="config-section">
+            <h4>🎮 Presets</h4>
+            <div class="config-preset-buttons">
+                <button class="glass-button" onclick="loadPreset('performance')">⚡ Performance</button>
+                <button class="glass-button" onclick="loadPreset('quality')">✨ Quality</button>
+                <button class="glass-button" onclick="loadPreset('artistic')">🎨 Artistic</button>
+                <button class="glass-button" onclick="loadPreset('minimal')">🎯 Minimal</button>
+            </div>
+        </div>
+        
+        <div class="config-section">
+            <h4>💾 Save/Load</h4>
+            <div class="config-buttons">
+                <button class="glass-button" onclick="saveCurrentConfig()">💾 Save Current</button>
+                <button class="glass-button" onclick="loadSavedConfig()">📂 Load Saved</button>
+                <button class="glass-button" onclick="resetToDefaults()">🔄 Reset Defaults</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FLOATING NAVIGATION ELEMENTS (ENHANCED) -->
+    <div id="floating-nav" class="floating-nav-system">
+        <div class="nav-ring">
+            <div class="nav-element" data-section="home" onclick="switchToSection('home')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-preview" id="preview-home"></div>
+            </div>
+            <div class="nav-element" data-section="articles" onclick="switchToSection('articles')">
+                <div class="nav-icon">📚</div>
+                <div class="nav-preview" id="preview-articles"></div>
+            </div>
+            <div class="nav-element" data-section="videos" onclick="switchToSection('videos')">
+                <div class="nav-icon">🎥</div>
+                <div class="nav-preview" id="preview-videos"></div>
+            </div>
+            <div class="nav-element" data-section="podcasts" onclick="switchToSection('podcasts')">
+                <div class="nav-icon">🎧</div>
+                <div class="nav-preview" id="preview-podcasts"></div>
+            </div>
+            <div class="nav-element" data-section="ema" onclick="switchToSection('ema')">
+                <div class="nav-icon">⚡</div>
+                <div class="nav-preview" id="preview-ema"></div>
+            </div>
+        </div>
+        <div class="nav-center" onclick="randomizeAllParameters()">
+            <div class="nav-center-icon">🔮</div>
+        </div>
+    </div>
+    
     <!-- Magazine Content Container with Expanded Sections -->
     <div class="magazine-content">
         
@@ -1872,42 +2045,61 @@
     </footer>
 
 
-    <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-19 14:30 -->
-    <!-- PHASE 2B VISUALIZER MANAGER SYSTEM - LOAD BEFORE ROUTER -->
-    <script src="js/vib3-home-master-enhanced.js?v=1750391700"></script>
+    <!-- POLYTOPAL KERNEL SYSTEM v2.0 - ENHANCED ARCHITECTURE -->
+    <!-- Load Core Modules First -->
+    <script type="module" src="core/GeometryManager.js?v=1750410000"></script>
+    <script type="module" src="core/ProjectionManager.js?v=1750410000"></script>
+    <script type="module" src="core/ShaderManager.js?v=1750410000"></script>
+    <script type="module" src="core/HypercubeCore.js?v=1750410000"></script>
+    <script type="module" src="core/PolytopalKernelCore.js?v=1750410000"></script>
     
-    <!-- Wait for visualizer then load router -->
+    <!-- Load Polytopal Integration System -->
+    <script type="module" src="js/vib3-polytopal-kernel-integration-enhanced.js?v=1750410000"></script>
+    
+    <!-- Fallback for non-module browsers -->
+    <script nomodule src="js/vib3-home-master-enhanced.js?v=1750410000"></script>
+    
+    <!-- Wait for Polytopal Kernel System then load router -->
     <script>
-        // Ensure visualizerManager exists before loading router
-        function waitForVisualizerManager() {
-            if (window.visualizerManager) {
-                console.log('✅ VisualizerManager found, loading router...');
+        // Enhanced system detection for Polytopal Kernel
+        function waitForPolytopalSystem() {
+            const hasPolytopal = window.vib3PolytopalIntegration || window.vib3PolytopalSystemReady;
+            const hasVisualizer = window.visualizerManager;
+            const hasHomeMaster = window.HomeBasedReactiveSystem;
+            
+            if (hasPolytopal && hasVisualizer && hasHomeMaster) {
+                console.log('✅ VIB3CODE Polytopal Kernel System ready, loading router...');
                 loadRouter();
             } else {
-                console.log('⏳ Waiting for visualizerManager...');
-                setTimeout(waitForVisualizerManager, 100);
+                console.log(`⏳ Waiting for Polytopal System... (P:${!!hasPolytopal} V:${!!hasVisualizer} H:${!!hasHomeMaster})`);
+                setTimeout(waitForPolytopalSystem, 200);
             }
         }
         
         function loadRouter() {
             const script = document.createElement('script');
             script.src = 'js/magazine-router.js?v=1749968724';
+            script.onload = () => {
+                console.log('✅ Magazine router loaded with Polytopal Kernel support');
+            };
             document.head.appendChild(script);
         }
         
-        // Start waiting
-        waitForVisualizerManager();
+        // Start waiting for polytopal system
+        waitForPolytopalSystem();
         
-        // Debug visualizer status every 2 seconds
+        // Enhanced debug monitoring
         setInterval(() => {
-            console.log('🔍 VISUALIZER DEBUG:', {
-                'window.vib3HomeMasterIntegration': !!window.vib3HomeMasterIntegration,
-                'window.visualizerManager': !!window.visualizerManager,
-                'window.HomeBasedReactiveSystem': !!window.HomeBasedReactiveSystem,
-                'vib3-home-master-canvas': !!document.getElementById('vib3-home-master-canvas'),
-                'canvases': document.querySelectorAll('canvas').length
+            console.log('🔍 POLYTOPAL KERNEL DEBUG:', {
+                'PolytopalIntegration': !!window.vib3PolytopalIntegration,
+                'PolytopalSystemReady': !!window.vib3PolytopalSystemReady,
+                'VisualizerManager': !!window.visualizerManager,
+                'HomeMasterSystem': !!window.HomeBasedReactiveSystem,
+                'DebugInterface': !!window.debugPolytopalKernel,
+                'MainCanvas': !!document.getElementById('vib3-polytopal-kernel-canvas'),
+                'TotalCanvases': document.querySelectorAll('canvas').length
             });
-        }, 2000);
+        }, 3000);
     </script>
     
     <script src="js/theme-engine-clean.js?v=1749968723"></script>
@@ -2064,6 +2256,269 @@
         
         // Update parameter display every second
         setInterval(window.updateParameterDisplay, 1000);
+        
+        // ===== ENHANCED POLYTOPAL KERNEL INTERFACE FUNCTIONS =====
+        
+        // Configuration Editor Functions
+        window.toggleConfigEditor = function() {
+            const panel = document.getElementById('polytopal-config');
+            if (panel) {
+                panel.classList.toggle('active');
+            }
+        };
+        
+        window.toggleDebugInterface = function() {
+            const panel = document.getElementById('polytopal-debug');
+            const checkbox = document.getElementById('config-debug');
+            
+            if (panel && checkbox) {
+                if (checkbox.checked) {
+                    panel.classList.add('active');
+                    window.debugPolytopalKernel?.enableDebug();
+                } else {
+                    panel.classList.remove('active');
+                    window.debugPolytopalKernel?.disableDebug();
+                }
+            }
+        };
+        
+        // Visualization Control Functions
+        window.updateGeometry = function() {
+            const select = document.getElementById('config-geometry');
+            if (select && window.debugPolytopalKernel) {
+                window.debugPolytopalKernel.switchGeometry(select.value);
+                document.getElementById('debug-geometry').textContent = select.value;
+            }
+        };
+        
+        window.updateProjection = function() {
+            const select = document.getElementById('config-projection');
+            if (select && window.debugPolytopalKernel) {
+                window.debugPolytopalKernel.switchProjection(select.value);
+                document.getElementById('debug-projection').textContent = select.value;
+            }
+        };
+        
+        // Performance Control Functions
+        window.updateTargetFPS = function() {
+            const slider = document.getElementById('config-fps');
+            const display = document.getElementById('config-fps-value');
+            if (slider && display) {
+                display.textContent = slider.value;
+                // Update kernel config if available
+                if (window.vib3PolytopalKernel?.config) {
+                    window.vib3PolytopalKernel.config.rendering.targetFPS = parseInt(slider.value);
+                }
+            }
+        };
+        
+        window.updateQuality = function() {
+            const slider = document.getElementById('config-quality');
+            const display = document.getElementById('config-quality-value');
+            if (slider && display) {
+                display.textContent = slider.value;
+                document.getElementById('debug-quality').textContent = slider.value;
+                // Apply quality setting
+                if (window.vib3PolytopalKernel?.performanceMonitor) {
+                    window.vib3PolytopalKernel.performanceMonitor.quality = parseFloat(slider.value);
+                }
+            }
+        };
+        
+        window.updateAdaptiveQuality = function() {
+            const checkbox = document.getElementById('config-adaptive');
+            if (checkbox && window.vib3PolytopalKernel?.performanceMonitor) {
+                window.vib3PolytopalKernel.performanceMonitor.adaptiveQuality = checkbox.checked;
+            }
+        };
+        
+        // Interface Control Functions
+        window.updateGestureControl = function() {
+            const checkbox = document.getElementById('config-gestures');
+            if (checkbox && window.vib3PolytopalKernel?.config) {
+                window.vib3PolytopalKernel.config.visualization.enableGestureControl = checkbox.checked;
+            }
+        };
+        
+        window.updateKeyboardShortcuts = function() {
+            const checkbox = document.getElementById('config-keyboard');
+            if (checkbox && window.vib3PolytopalKernel?.config) {
+                window.vib3PolytopalKernel.config.interface.enableKeyboardShortcuts = checkbox.checked;
+            }
+        };
+        
+        // Section Navigation Functions
+        window.switchToSection = function(sectionId) {
+            if (window.vib3PolytopalKernel) {
+                window.vib3PolytopalKernel.switchSection(sectionId);
+            } else if (window.debugPolytopalKernel) {
+                // Fallback to debug interface
+                console.log(`Switching to section: ${sectionId}`);
+            }
+            
+            // Update debug display
+            const debugSection = document.getElementById('debug-section');
+            if (debugSection) {
+                debugSection.textContent = sectionId;
+            }
+            
+            // Update floating nav active state
+            document.querySelectorAll('.nav-element').forEach(el => {
+                el.classList.remove('active');
+            });
+            const activeElement = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeElement) {
+                activeElement.classList.add('active');
+            }
+        };
+        
+        window.randomizeAllParameters = function() {
+            if (window.debugPolytopalKernel) {
+                window.debugPolytopalKernel.randomize();
+            } else if (window.homeMasterSystem) {
+                window.homeMasterSystem.randomizeHome();
+            }
+            console.log('🎲 All parameters randomized');
+        };
+        
+        // Preset Management Functions
+        window.loadPreset = function(presetName) {
+            const presets = {
+                'performance': {
+                    targetFPS: 60,
+                    quality: 0.7,
+                    adaptive: true,
+                    geometry: 'hypercube',
+                    projection: 'perspective'
+                },
+                'quality': {
+                    targetFPS: 30,
+                    quality: 1.5,
+                    adaptive: false,
+                    geometry: 'sphere',
+                    projection: 'stereographic'
+                },
+                'artistic': {
+                    targetFPS: 45,
+                    quality: 1.2,
+                    adaptive: true,
+                    geometry: 'torus',
+                    projection: 'kaleidoscope'
+                },
+                'minimal': {
+                    targetFPS: 60,
+                    quality: 0.5,
+                    adaptive: true,
+                    geometry: 'tetrahedron',
+                    projection: 'isometric'
+                }
+            };
+            
+            const preset = presets[presetName];
+            if (preset) {
+                // Update UI elements
+                document.getElementById('config-fps').value = preset.targetFPS;
+                document.getElementById('config-fps-value').textContent = preset.targetFPS;
+                document.getElementById('config-quality').value = preset.quality;
+                document.getElementById('config-quality-value').textContent = preset.quality;
+                document.getElementById('config-adaptive').checked = preset.adaptive;
+                document.getElementById('config-geometry').value = preset.geometry;
+                document.getElementById('config-projection').value = preset.projection;
+                
+                // Apply settings
+                window.updateTargetFPS();
+                window.updateQuality();
+                window.updateAdaptiveQuality();
+                window.updateGeometry();
+                window.updateProjection();
+                
+                console.log(`✨ Loaded preset: ${presetName}`);
+            }
+        };
+        
+        window.saveCurrentConfig = function() {
+            const config = {
+                targetFPS: document.getElementById('config-fps').value,
+                quality: document.getElementById('config-quality').value,
+                adaptive: document.getElementById('config-adaptive').checked,
+                geometry: document.getElementById('config-geometry').value,
+                projection: document.getElementById('config-projection').value,
+                gestures: document.getElementById('config-gestures').checked,
+                keyboard: document.getElementById('config-keyboard').checked,
+                debug: document.getElementById('config-debug').checked
+            };
+            
+            localStorage.setItem('vib3-polytopal-config', JSON.stringify(config));
+            console.log('💾 Configuration saved to localStorage');
+        };
+        
+        window.loadSavedConfig = function() {
+            const saved = localStorage.getItem('vib3-polytopal-config');
+            if (saved) {
+                try {
+                    const config = JSON.parse(saved);
+                    
+                    // Apply saved configuration
+                    document.getElementById('config-fps').value = config.targetFPS || 60;
+                    document.getElementById('config-quality').value = config.quality || 1.0;
+                    document.getElementById('config-adaptive').checked = config.adaptive !== false;
+                    document.getElementById('config-geometry').value = config.geometry || 'hypercube';
+                    document.getElementById('config-projection').value = config.projection || 'perspective';
+                    document.getElementById('config-gestures').checked = config.gestures !== false;
+                    document.getElementById('config-keyboard').checked = config.keyboard !== false;
+                    document.getElementById('config-debug').checked = config.debug || false;
+                    
+                    // Apply all settings
+                    window.updateTargetFPS();
+                    window.updateQuality();
+                    window.updateAdaptiveQuality();
+                    window.updateGeometry();
+                    window.updateProjection();
+                    window.updateGestureControl();
+                    window.updateKeyboardShortcuts();
+                    window.toggleDebugInterface();
+                    
+                    console.log('📂 Configuration loaded from localStorage');
+                } catch (error) {
+                    console.error('❌ Failed to load saved configuration:', error);
+                }
+            } else {
+                console.log('ℹ️ No saved configuration found');
+            }
+        };
+        
+        window.resetToDefaults = function() {
+            // Reset to default values
+            document.getElementById('config-fps').value = 60;
+            document.getElementById('config-quality').value = 1.0;
+            document.getElementById('config-adaptive').checked = true;
+            document.getElementById('config-geometry').value = 'hypercube';
+            document.getElementById('config-projection').value = 'perspective';
+            document.getElementById('config-gestures').checked = true;
+            document.getElementById('config-keyboard').checked = true;
+            document.getElementById('config-debug').checked = false;
+            
+            // Apply default settings
+            window.updateTargetFPS();
+            window.updateQuality();
+            window.updateAdaptiveQuality();
+            window.updateGeometry();
+            window.updateProjection();
+            window.updateGestureControl();
+            window.updateKeyboardShortcuts();
+            window.toggleDebugInterface();
+            
+            console.log('🔄 Configuration reset to defaults');
+        };
+        
+        // Initialize configuration panel when kernel is ready
+        setTimeout(() => {
+            if (window.vib3PolytopalKernel || window.debugPolytopalKernel) {
+                // Try to load saved configuration
+                window.loadSavedConfig();
+                console.log('⚙️ Enhanced Polytopal Kernel interface ready');
+            }
+        }, 2000);
     </script>
 </body>
 </html>
