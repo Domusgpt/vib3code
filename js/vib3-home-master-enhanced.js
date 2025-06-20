@@ -107,8 +107,8 @@ class VIB3EnhancedVisualizer {
                 float lattice = 1.0 - smoothstep(0.0, 0.08, minDist);
                 
                 // Technical precision flow
-                float precision = sin(p.x * 8.0 + u_time * 0.8) * cos(p.y * 8.0 + u_time * 0.6) * 0.2 + 0.8;
-                return lattice * precision;
+                float precisionFlow = sin(p.x * 8.0 + u_time * 0.8) * cos(p.y * 8.0 + u_time * 0.6) * 0.2 + 0.8;
+                return lattice * precisionFlow;
             }
             
             float sphereLattice(vec3 p, float gridSize) {
