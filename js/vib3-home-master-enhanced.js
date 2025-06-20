@@ -56,23 +56,13 @@ class VIB3EnhancedVisualizer {
             mat4 rotateXW(float theta) {
                 float c = cos(theta);
                 float s = sin(theta);
-                return mat4(
-                    c, 0.0, 0.0, -s,
-                    0.0, 1.0, 0.0, 0.0,
-                    0.0, 0.0, 1.0, 0.0,
-                    s, 0.0, 0.0, c
-                );
+                return mat4(c, 0.0, 0.0, -s, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, s, 0.0, 0.0, c);
             }
             
             mat4 rotateYW(float theta) {
                 float c = cos(theta);
                 float s = sin(theta);
-                return mat4(
-                    1.0, 0.0, 0.0, 0.0,
-                    0.0, c, 0.0, -s,
-                    0.0, 0.0, 1.0, 0.0,
-                    0.0, s, 0.0, c
-                );
+                return mat4(1.0, 0.0, 0.0, 0.0, 0.0, c, 0.0, -s, 0.0, 0.0, 1.0, 0.0, 0.0, s, 0.0, c);
             }
             
             vec3 project4Dto3D(vec4 p) {
