@@ -176,20 +176,35 @@ class VIB3EnhancedVisualizer {
                     p = project4Dto3D(p4d);
                 }
                 
-                // Get geometry value with proper morphing
-                float dynamicGridDensity = u_gridDensity * (0.8 + 0.2 * u_morphFactor);
-                float lattice = getGeometryValue(p, dynamicGridDensity, u_geometry);
+                // ANIMATED GRID SYSTEM - Dynamic geometry evolution
+                float pulseGrid = u_gridDensity * (0.6 + 0.8 * sin(u_time * 0.7 + length(p) * 2.0));
+                float breathingGrid = u_gridDensity * (1.0 + 0.4 * u_morphFactor * sin(u_time * 1.2));
+                float dynamicGridDensity = mix(pulseGrid, breathingGrid, u_morphFactor);
                 
-                // Enhanced chromatic aberration
-                float glitchAmount = u_glitchIntensity * (0.08 + 0.05 * sin(u_time * 6.0));
+                // RGB MOIRÉ INTERFERENCE PATTERNS
+                float moireFreq1 = 15.0 + 5.0 * sin(u_time * 0.3);
+                float moireFreq2 = 18.0 + 3.0 * cos(u_time * 0.5);
+                float moirePattern1 = sin(p.x * moireFreq1) * sin(p.y * moireFreq1);
+                float moirePattern2 = cos(p.x * moireFreq2 + u_time) * cos(p.y * moireFreq2 + u_time * 0.8);
+                float moireInterference = (moirePattern1 + moirePattern2) * 0.1 * u_glitchIntensity;
                 
-                vec2 rOffset = vec2(glitchAmount, glitchAmount * 0.6);
-                vec2 gOffset = vec2(-glitchAmount * 0.4, glitchAmount * 0.3);
-                vec2 bOffset = vec2(glitchAmount * 0.2, -glitchAmount * 0.5);
+                // GEOMETRY-RESPONSIVE CHROMATIC SEPARATION
+                float glitchBase = u_glitchIntensity * (0.15 + 0.1 * sin(u_time * 8.0));
+                float geometryInfluence = 0.5 + 0.5 * sin(length(p) * 10.0 + u_time * 2.0);
                 
-                float r = getGeometryValue(vec3(p.xy + rOffset, p.z), dynamicGridDensity, u_geometry);
+                vec2 rOffset = vec2(glitchBase * (1.0 + moireInterference), glitchBase * 0.8 * geometryInfluence);
+                vec2 gOffset = vec2(-glitchBase * 0.6 * geometryInfluence, glitchBase * (1.0 + moireInterference * 0.5));
+                vec2 bOffset = vec2(glitchBase * 0.4 * (1.0 + moireInterference), -glitchBase * 0.9 * geometryInfluence);
+                
+                // Sample geometry with chromatic offsets + grid animation
+                float r = getGeometryValue(vec3(p.xy + rOffset, p.z), dynamicGridDensity * 1.1, u_geometry);
                 float g = getGeometryValue(vec3(p.xy + gOffset, p.z), dynamicGridDensity, u_geometry);
-                float b = getGeometryValue(vec3(p.xy + bOffset, p.z), dynamicGridDensity, u_geometry);
+                float b = getGeometryValue(vec3(p.xy + bOffset, p.z), dynamicGridDensity * 0.9, u_geometry);
+                
+                // Add RGB-specific moiré interference
+                r += moireInterference * 1.2;
+                g += moireInterference * 0.7;
+                b += moireInterference * 1.0;
                 
                 // Enhanced color with vibrant gradients - BOOST VIBRANCY
                 vec3 baseColor = vec3(0.05, 0.08, 0.15); // Brighter base
@@ -454,11 +469,313 @@ class VIB3HomeMasterIntegration {
         // Create main canvas for visualizer (now config is ready)
         this.createMainCanvas();
         
+        // CREATE COHESIVE NAVIGATION SYSTEM
+        this.createGeometricNavigationSystem();
+        
         // Set up section detection
         this.setupSectionDetection();
         
         console.log('✅ VIB3CODE Home-Master Enhanced System ready');
         console.log('🔄 Section-based geometry switching: home=hypercube, articles=tetrahedron, videos=sphere, podcasts=torus, ema=wave');
+    }
+    
+    createGeometricNavigationSystem() {
+        console.log('🎯 Creating cohesive geometric navigation system...');
+        
+        // Create navigation overlay that responds to visualizer
+        this.createNavigationOverlay();
+        
+        // Setup interactive navigation elements
+        this.setupInteractiveNavigation();
+        
+        // Create geometric transition indicators
+        this.createGeometricIndicators();
+        
+        // Setup user interaction system
+        this.setupUserInteractionSystem();
+        
+        console.log('✅ Cohesive navigation system ready');
+    }
+    
+    createNavigationOverlay() {
+        // Create floating navigation that follows geometric patterns
+        this.navOverlay = document.createElement('div');
+        this.navOverlay.id = 'geometric-nav-overlay';
+        this.navOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            mix-blend-mode: screen;
+        `;
+        document.body.appendChild(this.navOverlay);
+        
+        // Create geometric navigation indicators
+        this.createGeometricNavElements();
+    }
+    
+    createGeometricNavElements() {
+        const sections = ['home', 'articles', 'videos', 'podcasts', 'ema'];
+        const geometries = ['hypercube', 'tetrahedron', 'sphere', 'torus', 'wave'];
+        
+        sections.forEach((section, index) => {
+            const navElement = document.createElement('div');
+            navElement.className = `geometric-nav-element nav-${section}`;
+            navElement.dataset.section = section;
+            navElement.dataset.geometry = geometries[index];
+            
+            // Position elements in geometric pattern
+            const angle = (index / sections.length) * Math.PI * 2;
+            const radius = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+            const x = window.innerWidth / 2 + Math.cos(angle) * radius;
+            const y = window.innerHeight / 2 + Math.sin(angle) * radius;
+            
+            navElement.style.cssText = `
+                position: absolute;
+                left: ${x}px;
+                top: ${y}px;
+                width: 60px;
+                height: 60px;
+                transform: translate(-50%, -50%);
+                pointer-events: auto;
+                cursor: pointer;
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                backdrop-filter: blur(10px);
+                transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: bold;
+                color: white;
+                text-transform: uppercase;
+                text-align: center;
+                line-height: 1;
+            `;
+            
+            navElement.innerHTML = section.charAt(0);
+            
+            // Add hover effects that sync with visualizer
+            navElement.addEventListener('mouseenter', () => {
+                this.previewGeometry(geometries[index]);
+                navElement.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                navElement.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.5)';
+            });
+            
+            navElement.addEventListener('mouseleave', () => {
+                this.stopGeometryPreview();
+                navElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                navElement.style.boxShadow = 'none';
+            });
+            
+            navElement.addEventListener('click', () => {
+                this.switchToSection(section);
+                this.animateNavSelection(navElement);
+            });
+            
+            this.navOverlay.appendChild(navElement);
+        });
+    }
+    
+    previewGeometry(geometry) {
+        // Temporarily boost parameters for geometry preview
+        if (this.currentVisualizer && this.homeMasterSystem.currentHome) {
+            const previewConfig = { ...this.homeMasterSystem.getSectionConfig(this.currentSection) };
+            previewConfig.glitchIntensity = Math.min(1.0, previewConfig.glitchIntensity + 0.3);
+            previewConfig.intensity = Math.min(2.0, previewConfig.intensity + 0.5);
+            previewConfig.rotationSpeed = Math.min(3.0, previewConfig.rotationSpeed + 0.5);
+            
+            this.currentVisualizer.updateConfig(previewConfig);
+        }
+    }
+    
+    stopGeometryPreview() {
+        // Return to normal parameters
+        if (this.currentVisualizer && this.homeMasterSystem.currentHome) {
+            const normalConfig = this.homeMasterSystem.getSectionConfig(this.currentSection);
+            this.currentVisualizer.updateConfig(normalConfig);
+        }
+    }
+    
+    animateNavSelection(element) {
+        // Create selection pulse effect
+        element.style.animation = 'none';
+        setTimeout(() => {
+            element.style.animation = 'nav-pulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        }, 10);
+    }
+    
+    createGeometricIndicators() {
+        // Create geometric status indicator
+        this.geometricIndicator = document.createElement('div');
+        this.geometricIndicator.id = 'geometric-status-indicator';
+        this.geometricIndicator.style.cssText = `
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 200;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        `;
+        document.body.appendChild(this.geometricIndicator);
+        
+        // Add CSS animations for navigation
+        this.addNavigationCSS();
+        
+        this.updateGeometricIndicator();
+    }
+    
+    addNavigationCSS() {
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes nav-pulse {
+                0% { transform: translate(-50%, -50%) scale(1.1); }
+                50% { transform: translate(-50%, -50%) scale(1.4); box-shadow: 0 0 50px rgba(255, 255, 255, 0.8); }
+                100% { transform: translate(-50%, -50%) scale(1.1); }
+            }
+            
+            .geometric-nav-element:hover {
+                animation: nav-hover 2s infinite ease-in-out;
+            }
+            
+            @keyframes nav-hover {
+                0%, 100% { filter: brightness(1); }
+                50% { filter: brightness(1.3) saturate(1.2); }
+            }
+            
+            .geometric-nav-element.active {
+                animation: nav-active 3s infinite ease-in-out;
+            }
+            
+            @keyframes nav-active {
+                0%, 100% { 
+                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+                    filter: brightness(1.1);
+                }
+                50% { 
+                    box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+                    filter: brightness(1.3) hue-rotate(20deg);
+                }
+            }
+            
+            #geometric-status-indicator {
+                animation: status-glow 4s infinite ease-in-out;
+            }
+            
+            @keyframes status-glow {
+                0%, 100% { filter: brightness(1); }
+                50% { filter: brightness(1.2) drop-shadow(0 0 10px currentColor); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    updateGeometricIndicator() {
+        if (this.geometricIndicator) {
+            const config = this.homeMasterSystem.getSectionConfig(this.currentSection);
+            const geometry = config?.geometry || 'hypercube';
+            this.geometricIndicator.textContent = `${geometry} mode`;
+            
+            // Update color based on geometry
+            const colors = {
+                hypercube: '#ff00ff',
+                tetrahedron: '#00ffff', 
+                sphere: '#ff3366',
+                torus: '#00ff80',
+                wave: '#8000ff'
+            };
+            this.geometricIndicator.style.borderColor = colors[geometry] || '#ffffff';
+            this.geometricIndicator.style.color = colors[geometry] || '#ffffff';
+        }
+    }
+    
+    setupUserInteractionSystem() {
+        // Global keyboard shortcuts for navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey || e.metaKey) return; // Don't interfere with browser shortcuts
+            
+            switch(e.key) {
+                case '1': this.switchToSection('home'); break;
+                case '2': this.switchToSection('articles'); break;
+                case '3': this.switchToSection('videos'); break;
+                case '4': this.switchToSection('podcasts'); break;
+                case '5': this.switchToSection('ema'); break;
+                case 'r': this.homeMasterSystem.randomizeHome(); break;
+                case 'c': this.homeMasterSystem.setHomeScrollReactivity('all-chaos'); break;
+                case 'm': this.homeMasterSystem.setHomeScrollReactivity('minimal'); break;
+            }
+        });
+        
+        // Global mouse gestures for parameter control
+        let mouseStartY = 0;
+        let isDragging = false;
+        
+        document.addEventListener('mousedown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                mouseStartY = e.clientY;
+                isDragging = true;
+                e.preventDefault();
+            }
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaY = (mouseStartY - e.clientY) / window.innerHeight;
+                const currentConfig = this.homeMasterSystem.getSectionConfig(this.currentSection);
+                
+                if (currentConfig && this.currentVisualizer) {
+                    // Adjust intensity based on vertical mouse movement
+                    const newIntensity = Math.max(0.1, Math.min(2.0, currentConfig.intensity + deltaY * 2));
+                    const adjustedConfig = { ...currentConfig, intensity: newIntensity };
+                    this.currentVisualizer.updateConfig(adjustedConfig);
+                }
+                e.preventDefault();
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        console.log('🎮 User interaction system active:');
+        console.log('   Keys 1-5: Navigate sections');
+        console.log('   R: Randomize parameters');
+        console.log('   C: Chaos mode');
+        console.log('   M: Minimal mode');
+        console.log('   Ctrl+Drag: Adjust intensity');
+    }
+    
+    setupInteractiveNavigation() {
+        // Enhanced navigation that responds to visualizer state
+        const existingNav = document.querySelectorAll('nav a[data-section]');
+        existingNav.forEach(navLink => {
+            navLink.addEventListener('mouseenter', () => {
+                const section = navLink.dataset.section;
+                const geometry = this.homeMasterSystem.FIXED_GEOMETRIES[section];
+                if (geometry) {
+                    this.previewGeometry(geometry);
+                }
+            });
+            
+            navLink.addEventListener('mouseleave', () => {
+                this.stopGeometryPreview();
+            });
+        });
     }
     
     createMainCanvas() {
@@ -891,7 +1208,27 @@ class VIB3HomeMasterIntegration {
             
             // Update visualizer with new geometry
             this.currentVisualizer.updateConfig(sectionConfig);
+            
+            // Update navigation system
+            this.updateGeometricIndicator();
+            this.updateNavigationState(sectionId);
         }
+    }
+    
+    updateNavigationState(currentSection) {
+        // Update geometric navigation elements
+        const navElements = document.querySelectorAll('.geometric-nav-element');
+        navElements.forEach(element => {
+            if (element.dataset.section === currentSection) {
+                element.style.background = 'rgba(255, 255, 255, 0.3)';
+                element.style.borderWidth = '3px';
+                element.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            } else {
+                element.style.background = 'rgba(255, 255, 255, 0.1)';
+                element.style.borderWidth = '2px';
+                element.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
+        });
     }
     
     executeContentPortalTransition(fromGeometry, toGeometry, targetSection) {
