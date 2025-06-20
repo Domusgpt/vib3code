@@ -36,7 +36,7 @@
         this.setupCardAnimations();
         this.setupNewsletterForm();
         this.setupAudioContext();
-        this.setupPersistentVisualizers(); // Call the new method
+        // this.setupPersistentVisualizers(); // DISABLED - Using new vib3code-visualizer-init.js instead
         
         var self = this;
         setTimeout(function() {

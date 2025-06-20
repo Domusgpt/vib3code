@@ -15,8 +15,13 @@ class VIB3CodeVisualizerInit {
     }
     
     init() {
+        console.log('🎨 VIB3CODE Visualizer Init starting...');
+        console.log('- VisualizerManager available:', typeof window.VisualizerManager);
+        console.log('- visualizerManager instance:', !!window.visualizerManager);
+        
         if (typeof window.VisualizerManager === 'undefined') {
             console.error('❌ VisualizerManager not found. Make sure persistent-multi-visualizer.js is loaded first.');
+            console.log('Available globals:', Object.keys(window).filter(k => k.includes('visual') || k.includes('Visual')));
             return;
         }
         
@@ -31,6 +36,15 @@ class VIB3CodeVisualizerInit {
     }
     
     setupVisualizers() {
+        console.log('🔧 Setting up visualizers...');
+        
+        // Debug existing canvases
+        const existingCanvases = document.querySelectorAll('canvas');
+        console.log('Existing canvases before setup:', existingCanvases.length);
+        existingCanvases.forEach((canvas, i) => {
+            console.log(`Canvas ${i+1}: id="${canvas.id}", class="${canvas.className}"`);
+        });
+        
         this.createCanvasElements();
         this.defineInstanceConfigurations();
         this.createVisualizerInstances();
@@ -46,6 +60,14 @@ class VIB3CodeVisualizerInit {
     
     createCanvasElements() {
         console.log('🎨 Creating canvas elements...');
+        
+        // EMERGENCY: Remove ALL existing canvases to prevent conflicts
+        const existingCanvases = document.querySelectorAll('canvas');
+        console.log(`🧹 Removing ${existingCanvases.length} existing canvases to prevent conflicts`);
+        existingCanvases.forEach(canvas => {
+            console.log(`Removing canvas: ${canvas.id || 'unnamed'} with class: ${canvas.className}`);
+            canvas.remove();
+        });
         
         // Define the canvas configurations
         const canvasConfigs = [
