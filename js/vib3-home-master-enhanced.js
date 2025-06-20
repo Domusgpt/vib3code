@@ -434,6 +434,7 @@ class VIB3HomeMasterIntegration {
         this.currentVisualizer = null;
         this.currentSection = 'home';
         this.mainCanvas = null;
+        this.isTransitioning = false;
         
         this.init();
     }
@@ -869,15 +870,185 @@ class VIB3HomeMasterIntegration {
     
     switchToSection(sectionId) {
         console.log(`🔄 Home-Master switching to section: ${sectionId.toUpperCase()}`);
+        
+        // Store previous section for transition
+        const previousSection = this.currentSection;
+        const previousGeometry = this.homeMasterSystem.getSectionConfig(previousSection)?.geometry || 'hypercube';
+        
+        // Set transition state
+        this.isTransitioning = true;
         this.currentSection = sectionId;
         
         // Get derived config from home-master system
         const sectionConfig = this.homeMasterSystem.getSectionConfig(sectionId);
+        const newGeometry = sectionConfig?.geometry || 'hypercube';
         
         if (sectionConfig && this.currentVisualizer) {
-            console.log(`🎨 Applying ${sectionConfig.geometry} geometry with derived parameters`);
+            console.log(`🎨 Transitioning from ${previousGeometry} → ${newGeometry}`);
+            
+            // Execute content portal animation
+            this.executeContentPortalTransition(previousGeometry, newGeometry, sectionId);
+            
+            // Update visualizer with new geometry
             this.currentVisualizer.updateConfig(sectionConfig);
         }
+    }
+    
+    executeContentPortalTransition(fromGeometry, toGeometry, targetSection) {
+        console.log(`🌀 Portal transition: ${fromGeometry} → ${toGeometry}`);
+        
+        // Find content containers
+        const allSections = document.querySelectorAll('[id^="section-"]');
+        const targetContent = document.querySelector(`#section-${targetSection}`);
+        const currentVisible = document.querySelector('.magazine-content [style*="block"], .magazine-content .active');
+        
+        // PHASE 1: Portal OUT animation (based on current geometry)
+        this.animateContentPortalOut(currentVisible, fromGeometry).then(() => {
+            
+            // PHASE 2: Hide current content
+            allSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active', 'portal-in', 'portal-out');
+            });
+            
+            // PHASE 3: Portal IN animation (based on target geometry)  
+            if (targetContent) {
+                targetContent.style.display = 'block';
+                targetContent.classList.add('active');
+                this.animateContentPortalIn(targetContent, toGeometry);
+            }
+            
+            // Clear transition state
+            setTimeout(() => {
+                this.isTransitioning = false;
+            }, 1000);
+        });
+    }
+    
+    animateContentPortalOut(element, geometry) {
+        return new Promise((resolve) => {
+            if (!element) {
+                resolve();
+                return;
+            }
+            
+            element.classList.add('portal-out');
+            
+            // Apply geometry-specific exit animations
+            switch (geometry) {
+                case 'hypercube':
+                    // Cubic grid dissolution
+                    element.style.transform = 'scale(0.8) rotateX(45deg) rotateY(45deg)';
+                    element.style.filter = 'blur(8px) brightness(0.3)';
+                    element.style.clipPath = 'polygon(20% 20%, 80% 20%, 80% 80%, 20% 80%)';
+                    break;
+                    
+                case 'tetrahedron':
+                    // Triangular collapse
+                    element.style.transform = 'scale(0.1) rotate(120deg)';
+                    element.style.filter = 'blur(12px) hue-rotate(60deg)';
+                    element.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+                    break;
+                    
+                case 'sphere':
+                    // Radial implosion
+                    element.style.transform = 'scale(0.1)';
+                    element.style.filter = 'blur(15px) contrast(2)';
+                    element.style.borderRadius = '50%';
+                    element.style.clipPath = 'circle(10% at center)';
+                    break;
+                    
+                case 'torus':
+                    // Spiral collapse
+                    element.style.transform = 'scale(0.2) rotate(720deg)';
+                    element.style.filter = 'blur(10px) saturate(3)';
+                    element.style.clipPath = 'ellipse(20% 40% at center)';
+                    break;
+                    
+                case 'wave':
+                    // Wave dissolution
+                    element.style.transform = 'scaleY(0.1) skewX(45deg)';
+                    element.style.filter = 'blur(6px) brightness(0.4)';
+                    element.style.clipPath = 'polygon(0% 50%, 25% 40%, 50% 60%, 75% 30%, 100% 50%, 100% 100%, 0% 100%)';
+                    break;
+                    
+                default:
+                    element.style.transform = 'scale(0.8)';
+                    element.style.filter = 'blur(8px)';
+            }
+            
+            element.style.opacity = '0';
+            element.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            setTimeout(resolve, 600);
+        });
+    }
+    
+    animateContentPortalIn(element, geometry) {
+        if (!element) return;
+        
+        element.classList.add('portal-in');
+        
+        // Start with exit state, then animate to normal
+        switch (geometry) {
+            case 'hypercube':
+                // Cubic grid formation
+                element.style.transform = 'scale(0.5) rotateX(90deg) rotateY(90deg)';
+                element.style.filter = 'blur(15px) brightness(2)';
+                element.style.clipPath = 'polygon(45% 45%, 55% 45%, 55% 55%, 45% 55%)';
+                break;
+                
+            case 'tetrahedron':
+                // Triangular emergence
+                element.style.transform = 'scale(0.1) rotate(-120deg)';
+                element.style.filter = 'blur(20px) hue-rotate(-60deg)';
+                element.style.clipPath = 'polygon(50% 50%, 50% 50%, 50% 50%)';
+                break;
+                
+            case 'sphere':
+                // Radial expansion
+                element.style.transform = 'scale(0.1)';
+                element.style.filter = 'blur(25px) contrast(3)';
+                element.style.borderRadius = '50%';
+                element.style.clipPath = 'circle(0% at center)';
+                break;
+                
+            case 'torus':
+                // Spiral emergence
+                element.style.transform = 'scale(0.1) rotate(-720deg)';
+                element.style.filter = 'blur(20px) saturate(5)';
+                element.style.clipPath = 'ellipse(5% 10% at center)';
+                break;
+                
+            case 'wave':
+                // Wave formation
+                element.style.transform = 'scaleY(0.1) skewX(-45deg)';
+                element.style.filter = 'blur(15px) brightness(2)';
+                element.style.clipPath = 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%)';
+                break;
+                
+            default:
+                element.style.transform = 'scale(0.5)';
+                element.style.filter = 'blur(15px)';
+        }
+        
+        element.style.opacity = '0';
+        element.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        
+        // Animate to normal state
+        setTimeout(() => {
+            element.style.transform = 'scale(1) rotate(0deg)';
+            element.style.filter = 'blur(0px) brightness(1) hue-rotate(0deg) contrast(1) saturate(1)';
+            element.style.opacity = '1';
+            element.style.borderRadius = '';
+            element.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+        }, 50);
+        
+        // Clean up classes after animation
+        setTimeout(() => {
+            element.classList.remove('portal-in', 'portal-out');
+            element.style.transition = '';
+        }, 800);
     }
     
     updateVisualizerConfig(allConfigs) {
@@ -1095,6 +1266,12 @@ if (typeof HomeBasedReactiveSystem === 'undefined') {
                 if (window.vib3HomeMasterIntegration) {
                     window.vib3HomeMasterIntegration.switchSection(section);
                 }
+            },
+            getCurrentMasterStyleKey: function() {
+                return window.vib3HomeMasterIntegration ? window.vib3HomeMasterIntegration.currentSection : 'home';
+            },
+            isInTransition: function() {
+                return window.vib3HomeMasterIntegration ? window.vib3HomeMasterIntegration.isTransitioning : false;
             }
         };
         console.log('✅ Magazine router compatibility interface created');
