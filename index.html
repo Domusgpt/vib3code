@@ -1872,11 +1872,45 @@
 
 
     <!-- Core Scripts - FORCE CACHE REFRESH - 2025-06-19 14:30 -->
-    <!-- PHASE 2B VISUALIZER MANAGER SYSTEM -->
-    <script src="js/vib3-home-master-enhanced.js?v=1750373000"></script>
+    <!-- PHASE 2B VISUALIZER MANAGER SYSTEM - LOAD BEFORE ROUTER -->
+    <script src="js/vib3-home-master-enhanced.js?v=1750373001"></script>
+    
+    <!-- Wait for visualizer then load router -->
+    <script>
+        // Ensure visualizerManager exists before loading router
+        function waitForVisualizerManager() {
+            if (window.visualizerManager) {
+                console.log('✅ VisualizerManager found, loading router...');
+                loadRouter();
+            } else {
+                console.log('⏳ Waiting for visualizerManager...');
+                setTimeout(waitForVisualizerManager, 100);
+            }
+        }
+        
+        function loadRouter() {
+            const script = document.createElement('script');
+            script.src = 'js/magazine-router.js?v=1749968724';
+            document.head.appendChild(script);
+        }
+        
+        // Start waiting
+        waitForVisualizerManager();
+        
+        // Debug visualizer status every 2 seconds
+        setInterval(() => {
+            console.log('🔍 VISUALIZER DEBUG:', {
+                'window.vib3HomeMasterIntegration': !!window.vib3HomeMasterIntegration,
+                'window.visualizerManager': !!window.visualizerManager,
+                'window.HomeBasedReactiveSystem': !!window.HomeBasedReactiveSystem,
+                'vib3-home-master-canvas': !!document.getElementById('vib3-home-master-canvas'),
+                'canvases': document.querySelectorAll('canvas').length
+            });
+        }, 2000);
+    </script>
+    
     <script src="js/theme-engine-clean.js?v=1749968723"></script>
     <script src="js/content-templates.js?v=1750014474"></script>
-    <script src="js/magazine-router.js?v=1749968723"></script>
     <script src="js/editorial-ai-clean.js?v=1749968723"></script>
     <script src="js/interactive-features.js?v=1749968723"></script>
     <script src="js/main-fixed.js?v=1749968723"></script>
