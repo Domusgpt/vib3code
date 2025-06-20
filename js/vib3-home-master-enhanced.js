@@ -491,6 +491,75 @@ class VIB3HomeMasterIntegration {
         }
         
         this.currentVisualizer = new VIB3EnhancedVisualizer(this.mainCanvas, homeConfig);
+        
+        // SETUP SCROLL REACTIVITY
+        this.setupScrollReactivity();
+    }
+    
+    setupScrollReactivity() {
+        console.log('🌊 Setting up scroll reactivity for visualizer...');
+        
+        let lastScrollY = window.scrollY;
+        let scrollVelocity = 0;
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            scrollVelocity = Math.abs(currentScrollY - lastScrollY);
+            lastScrollY = currentScrollY;
+            
+            // Apply scroll effects to current visualizer
+            if (this.currentVisualizer && this.currentVisualizer.sectionConfig) {
+                const config = this.currentVisualizer.sectionConfig;
+                const scrollParams = config.scrollParams || ['gridDensity', 'morphFactor'];
+                const scrollSensitivity = config.scrollSensitivity || 1.0;
+                const scrollDirection = config.scrollDirection || 1;
+                
+                // Modify parameters based on scroll velocity
+                const scrollEffect = scrollVelocity * 0.05 * scrollSensitivity * scrollDirection;
+                
+                scrollParams.forEach(param => {
+                    if (config[param] !== undefined) {
+                        const baseValue = config[param];
+                        const modified = baseValue + scrollEffect;
+                        
+                        // Apply with bounds checking
+                        switch(param) {
+                            case 'gridDensity':
+                                config[param] = Math.max(5, Math.min(50, modified));
+                                break;
+                            case 'morphFactor':
+                                config[param] = Math.max(0, Math.min(1, modified));
+                                break;
+                            case 'glitchIntensity':
+                                config[param] = Math.max(0, Math.min(1, modified));
+                                break;
+                            case 'rotationSpeed':
+                                config[param] = Math.max(0.1, Math.min(5, modified));
+                                break;
+                            case 'dimension':
+                                config[param] = Math.max(3, Math.min(4, modified));
+                                break;
+                        }
+                    }
+                });
+            }
+            
+            // Reset scroll velocity after a delay
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                scrollVelocity = 0;
+                // Reset parameters to base values
+                if (this.currentVisualizer) {
+                    const baseConfig = this.homeMasterSystem.getSectionConfig(this.currentSection);
+                    if (baseConfig) {
+                        this.currentVisualizer.updateConfig(baseConfig);
+                    }
+                }
+            }, 200);
+        });
+        
+        console.log('✅ Scroll reactivity enabled');
     }
     
     setupSectionDetection() {
@@ -564,18 +633,108 @@ window.addEventListener('DOMContentLoaded', function() {
                 isInTransition: () => false // Simple implementation
             };
             
-            // Expose for debugging
+            // COMPREHENSIVE DEBUG INTERFACE
             window.debugVIB3HomeMaster = {
+                // Basic controls
                 switchSection: (sectionId) => window.vib3HomeMasterIntegration.switchToSection(sectionId),
                 randomizeHome: () => window.vib3HomeMasterIntegration.homeMasterSystem.randomizeHome(),
                 getCurrentConfig: () => window.vib3HomeMasterIntegration.homeMasterSystem.getSectionConfig(
                     window.vib3HomeMasterIntegration.currentSection
-                )
+                ),
+                
+                // PARAMETER DOCUMENTATION & LIVE MODIFICATION
+                setParameter: (param, value) => {
+                    const integration = window.vib3HomeMasterIntegration;
+                    if (integration.currentVisualizer && integration.currentVisualizer.sectionConfig) {
+                        integration.currentVisualizer.sectionConfig[param] = value;
+                        console.log(`🎛️ Set ${param} = ${value}`);
+                        integration.logCurrentParameters();
+                    }
+                },
+                
+                // Scroll reactivity controls
+                setScrollReactivity: (params) => {
+                    const integration = window.vib3HomeMasterIntegration;
+                    integration.homeMasterSystem.setHomeScrollReactivity(params);
+                    console.log(`🌊 Set scroll reactivity: ${params}`);
+                },
+                
+                // Live parameter monitoring
+                logCurrentParameters: () => {
+                    const integration = window.vib3HomeMasterIntegration;
+                    if (integration.currentVisualizer && integration.currentVisualizer.sectionConfig) {
+                        const config = integration.currentVisualizer.sectionConfig;
+                        console.log('🎛️ CURRENT VISUALIZER PARAMETERS:');
+                        console.log(`   geometry: ${config.geometry} (${integration.currentSection})`);
+                        console.log(`   gridDensity: ${config.gridDensity?.toFixed(2)} (affects pattern detail)`);
+                        console.log(`   morphFactor: ${config.morphFactor?.toFixed(2)} (affects shape warping)`);
+                        console.log(`   glitchIntensity: ${config.glitchIntensity?.toFixed(2)} (affects chromatic chaos)`);
+                        console.log(`   rotationSpeed: ${config.rotationSpeed?.toFixed(2)} (affects rotation speed)`);
+                        console.log(`   dimension: ${config.dimension?.toFixed(2)} (affects 4D effects)`);
+                        console.log(`   hue: ${config.hue?.toFixed(2)} (affects color)`);
+                        console.log(`   scrollParams: [${config.scrollParams?.join(', ')}] (scroll-reactive params)`);
+                        console.log(`   scrollSensitivity: ${config.scrollSensitivity?.toFixed(2)} (scroll response strength)`);
+                    }
+                },
+                
+                // Parameter testing shortcuts
+                maxChaos: () => {
+                    window.debugVIB3HomeMaster.setParameter('gridDensity', 40);
+                    window.debugVIB3HomeMaster.setParameter('glitchIntensity', 1.0);
+                    window.debugVIB3HomeMaster.setParameter('morphFactor', 1.0);
+                    window.debugVIB3HomeMaster.setParameter('rotationSpeed', 3.0);
+                    window.debugVIB3HomeMaster.setParameter('dimension', 4.0);
+                    console.log('🔥 MAX CHAOS MODE ACTIVATED');
+                },
+                
+                minimal: () => {
+                    window.debugVIB3HomeMaster.setParameter('gridDensity', 8);
+                    window.debugVIB3HomeMaster.setParameter('glitchIntensity', 0.1);
+                    window.debugVIB3HomeMaster.setParameter('morphFactor', 0.2);
+                    window.debugVIB3HomeMaster.setParameter('rotationSpeed', 0.3);
+                    window.debugVIB3HomeMaster.setParameter('dimension', 3.2);
+                    console.log('🧘 MINIMAL MODE ACTIVATED');
+                }
             };
             
-            console.log('🎮 Debug commands available:');
-            console.log('   window.debugVIB3HomeMaster.switchSection("articles")');
-            console.log('   window.debugVIB3HomeMaster.randomizeHome()');
+            // Add method to integration class
+            window.vib3HomeMasterIntegration.logCurrentParameters = window.debugVIB3HomeMaster.logCurrentParameters;
+            
+            console.log('🎮 VIB3CODE VISUALIZER DEBUG INTERFACE:');
+            console.log('');
+            console.log('📊 PARAMETER MONITORING:');
+            console.log('   debugVIB3HomeMaster.logCurrentParameters() - Show all current values');
+            console.log('');
+            console.log('🎛️ LIVE PARAMETER CONTROL:');
+            console.log('   debugVIB3HomeMaster.setParameter("gridDensity", 25) - Pattern detail (5-50)');
+            console.log('   debugVIB3HomeMaster.setParameter("glitchIntensity", 0.8) - Chromatic chaos (0-1)');
+            console.log('   debugVIB3HomeMaster.setParameter("morphFactor", 0.7) - Shape warping (0-1)');
+            console.log('   debugVIB3HomeMaster.setParameter("rotationSpeed", 2.0) - Rotation speed (0.1-5)');
+            console.log('   debugVIB3HomeMaster.setParameter("dimension", 3.8) - 4D effects (3-4)');
+            console.log('');
+            console.log('🌊 SCROLL REACTIVITY:');
+            console.log('   debugVIB3HomeMaster.setScrollReactivity("all-chaos") - All parameters react');
+            console.log('   debugVIB3HomeMaster.setScrollReactivity("gridDensity + morphFactor") - Basic');
+            console.log('   debugVIB3HomeMaster.setScrollReactivity("dimensional") - 4D effects');
+            console.log('');
+            console.log('🌀 SECTION SWITCHING:');
+            console.log('   debugVIB3HomeMaster.switchSection("home") - Hypercube geometry');
+            console.log('   debugVIB3HomeMaster.switchSection("articles") - Tetrahedron geometry');
+            console.log('   debugVIB3HomeMaster.switchSection("videos") - Sphere geometry');
+            console.log('   debugVIB3HomeMaster.switchSection("podcasts") - Torus geometry');
+            console.log('   debugVIB3HomeMaster.switchSection("ema") - Wave geometry');
+            console.log('');
+            console.log('🔥 PRESET MODES:');
+            console.log('   debugVIB3HomeMaster.maxChaos() - Maximum visual intensity');
+            console.log('   debugVIB3HomeMaster.minimal() - Calm, minimal effects');
+            console.log('   debugVIB3HomeMaster.randomizeHome() - Random new parameters');
+            console.log('');
+            console.log('💡 TIP: Scroll the page to see scroll reactivity in action!');
+            
+            // Auto-log current parameters
+            setTimeout(() => {
+                window.debugVIB3HomeMaster.logCurrentParameters();
+            }, 2000);
             
         } else {
             console.log('⏳ Waiting for HomeBasedReactiveSystem...');
