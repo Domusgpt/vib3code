@@ -441,19 +441,20 @@ class VIB3HomeMasterIntegration {
     init() {
         console.log('🏠 Initializing VIB3CODE Home-Master Enhanced System...');
         
-        // Create main canvas for visualizer
-        this.createMainCanvas();
+        // Load initial configuration FIRST (before creating visualizers)
+        console.log('🎲 Initializing home master system parameters...');
+        this.homeMasterSystem.randomizeHome();
         
-        // Set up home-master system
+        // Set up home-master system callbacks
         this.homeMasterSystem.onChange((allConfigs) => {
             this.updateVisualizerConfig(allConfigs);
         });
         
+        // Create main canvas for visualizer (now config is ready)
+        this.createMainCanvas();
+        
         // Set up section detection
         this.setupSectionDetection();
-        
-        // Load initial configuration
-        this.homeMasterSystem.randomizeHome();
         
         console.log('✅ VIB3CODE Home-Master Enhanced System ready');
         console.log('🔄 Section-based geometry switching: home=hypercube, articles=tetrahedron, videos=sphere, podcasts=torus, ema=wave');
@@ -1112,13 +1113,26 @@ class VIB3ParticleSystem {
     }
     
     initializeParticles() {
+        // Safety check - ensure home master system is initialized
+        if (!this.integration.homeMasterSystem.currentHome) {
+            console.log('🔄 HomeMasterSystem not ready, initializing...');
+            this.integration.homeMasterSystem.randomizeHome();
+        }
+        
         const config = this.integration.homeMasterSystem.getSectionConfig(this.integration.currentSection || 'home');
+        if (!config) {
+            console.error('❌ Failed to get section config for particle initialization');
+            return;
+        }
+        
         const particleCount = Math.floor((config.gridDensity || 12) * 3); // Scale with grid density
         
         this.particles = [];
         for (let i = 0; i < particleCount; i++) {
             this.particles.push(this.createParticle(config, i));
         }
+        
+        console.log(`✅ Initialized ${particleCount} particles for section: ${this.integration.currentSection}`);
     }
     
     createParticle(config, index) {
@@ -1350,3 +1364,94 @@ class VIB3ParticleSystem {
 }
 
 console.log('✅ VIB3CODE Home-Master Enhanced Integration loaded');
+
+// CRITICAL INITIALIZATION CODE
+console.log('🚀 Initializing VIB3CODE Home-Master Integration...');
+
+// Check dependencies first
+if (typeof HomeBasedReactiveSystem === 'undefined') {
+    console.error('❌ HomeBasedReactiveSystem not found - check shared-reactive-core loading');
+    window.vib3HomeMasterIntegration = false;
+} else {
+    // Create and store the main integration
+    console.log('🔧 Creating VIB3HomeMasterIntegration...');
+    try {
+        window.vib3HomeMasterIntegration = new VIB3HomeMasterIntegration();
+        console.log('✅ VIB3HomeMasterIntegration created successfully');
+        console.log('🎯 Integration status:', !!window.vib3HomeMasterIntegration);
+        
+        // Compatibility interface for magazine router
+        window.visualizerManager = {
+            applyMasterStyle: function(section) {
+                if (window.vib3HomeMasterIntegration) {
+                    window.vib3HomeMasterIntegration.switchSection(section);
+                }
+            }
+        };
+        console.log('✅ Magazine router compatibility interface created');
+        
+    } catch (error) {
+        console.error('❌ Failed to create VIB3HomeMasterIntegration:', error);
+        console.error('Error details:', error.message);
+        console.error('Stack trace:', error.stack);
+        window.vib3HomeMasterIntegration = false;
+    }
+}
+
+// Debug interface setup
+console.log('🛠️ Setting up debug interface...');
+window.debugVIB3HomeMaster = {
+    status: () => {
+        console.log('=== VIB3CODE DEBUG STATUS ===');
+        console.log('HomeMasterIntegration:', !!window.vib3HomeMasterIntegration);
+        console.log('VisualizerManager:', !!window.visualizerManager);
+        if (window.vib3HomeMasterIntegration) {
+            console.log('Current Section:', window.vib3HomeMasterIntegration.currentSection);
+            console.log('Main Visualizer:', !!window.vib3HomeMasterIntegration.mainVisualizer);
+            console.log('Particle System:', !!window.vib3HomeMasterIntegration.particleSystem);
+            console.log('Text Visualizers:', window.vib3HomeMasterIntegration.textBackgroundVisualizers.length);
+            console.log('Nav Previews:', window.vib3HomeMasterIntegration.navPreviewVisualizers.length);
+        }
+    },
+    
+    switchSection: (section) => {
+        if (window.vib3HomeMasterIntegration) {
+            window.vib3HomeMasterIntegration.switchSection(section);
+            console.log(`Switched to section: ${section}`);
+        }
+    },
+    
+    randomizeHome: () => {
+        if (window.vib3HomeMasterIntegration) {
+            window.vib3HomeMasterIntegration.homeMasterSystem.randomizeHome();
+            console.log('Home parameters randomized');
+        }
+    },
+    
+    setScrollReactivity: (mode) => {
+        if (window.vib3HomeMasterIntegration) {
+            window.vib3HomeMasterIntegration.homeMasterSystem.setHomeScrollReactivity(mode);
+            console.log(`Scroll reactivity set to: ${mode}`);
+        }
+    },
+    
+    maxChaos: () => {
+        if (window.vib3HomeMasterIntegration) {
+            window.vib3HomeMasterIntegration.homeMasterSystem.setHomeScrollReactivity('all-chaos');
+            console.log('🔥 MAXIMUM CHAOS MODE ACTIVATED');
+        }
+    },
+    
+    getConfig: () => {
+        if (window.vib3HomeMasterIntegration) {
+            return window.vib3HomeMasterIntegration.homeMasterSystem.getAllConfigurations();
+        }
+    }
+};
+
+console.log('🔥 VIB3CODE Enhanced System fully initialized!');
+console.log('Type debugVIB3HomeMaster.status() to check system status');
+console.log('Type debugVIB3HomeMaster.maxChaos() for maximum visual intensity');
+
+// Signal readiness to index.html
+window.vib3SystemReady = true;
