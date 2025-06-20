@@ -17,7 +17,8 @@ class VIB3EnhancedVisualizer {
         this.animationId = null;
         
         if (!this.gl) {
-            console.error('❌ WebGL not supported');
+            console.error('❌ WebGL not supported, creating fallback 2D canvas');
+            this.create2DFallback();
             return;
         }
         
@@ -36,7 +37,7 @@ class VIB3EnhancedVisualizer {
         
         // ENHANCED 4D FRAGMENT SHADER with proper geometry mapping
         const fragmentShaderSource = `
-            precision highp float;
+            precision mediump float;
             
             uniform float u_time;
             uniform vec2 u_resolution;
@@ -46,20 +47,30 @@ class VIB3EnhancedVisualizer {
             uniform float u_dimension;
             uniform float u_glitchIntensity;
             uniform float u_rotationSpeed;
-            uniform float u_geometry; // 0=hypercube, 1=tetrahedron, 2=sphere, 3=torus, 4=wave
+            uniform float u_geometry;
             uniform float u_intensity;
             
             // 4D rotation matrices for PROPER 4D polytopal math
             mat4 rotateXW(float theta) {
                 float c = cos(theta);
                 float s = sin(theta);
-                return mat4(c, 0, 0, -s, 0, 1, 0, 0, 0, 0, 1, 0, s, 0, 0, c);
+                return mat4(
+                    c, 0.0, 0.0, -s,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    s, 0.0, 0.0, c
+                );
             }
             
             mat4 rotateYW(float theta) {
                 float c = cos(theta);
                 float s = sin(theta);
-                return mat4(1, 0, 0, 0, 0, c, 0, -s, 0, 0, 1, 0, 0, s, 0, c);
+                return mat4(
+                    1.0, 0.0, 0.0, 0.0,
+                    0.0, c, 0.0, -s,
+                    0.0, 0.0, 1.0, 0.0,
+                    0.0, s, 0.0, c
+                );
             }
             
             vec3 project4Dto3D(vec4 p) {
@@ -156,7 +167,9 @@ class VIB3EnhancedVisualizer {
                 
                 // 4D rotation with proper polytopal math
                 float timeRotation = u_time * 0.15 * u_rotationSpeed;
-                mat2 rotation = mat2(cos(timeRotation), -sin(timeRotation), sin(timeRotation), cos(timeRotation));
+                float cosRot = cos(timeRotation);
+                float sinRot = sin(timeRotation);
+                mat2 rotation = mat2(cosRot, -sinRot, sinRot, cosRot);
                 p.xy = rotation * p.xy;
                 p.z = sin(u_time * 0.08) * 0.3;
                 
@@ -249,7 +262,9 @@ class VIB3EnhancedVisualizer {
         this.gl.compileShader(shader);
         
         if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-            console.error('Enhanced 4D shader compile error:', this.gl.getShaderInfoLog(shader));
+            const log = this.gl.getShaderInfoLog(shader);
+            console.error('Enhanced 4D shader compile error:', log);
+            console.error('Shader source:', source);
             this.gl.deleteShader(shader);
             return null;
         }
@@ -302,6 +317,11 @@ class VIB3EnhancedVisualizer {
     }
     
     render() {
+        if (this.fallbackMode) {
+            this.render2DFallback();
+            return;
+        }
+        
         if (!this.gl || !this.program || !this.sectionConfig) return;
         
         this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -349,6 +369,62 @@ class VIB3EnhancedVisualizer {
         if (this.animationId) return;
         this.animationId = true;
         this.animate();
+    }
+    
+    create2DFallback() {
+        console.log('🎨 Creating 2D fallback visualizer...');
+        this.ctx = this.canvas.getContext('2d');
+        this.fallbackMode = true;
+        this.start();
+    }
+    
+    render2DFallback() {
+        if (!this.ctx || !this.sectionConfig) return;
+        
+        const { width, height } = this.canvas;
+        this.ctx.clearRect(0, 0, width, height);
+        
+        // Simple geometric patterns based on section
+        this.ctx.strokeStyle = `hsl(${(this.sectionConfig.hue || 0.5) * 360}, 70%, 60%)`;
+        this.ctx.lineWidth = 2;
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const time = this.time * 0.001;
+        
+        // Draw based on geometry type
+        if (this.sectionConfig.geometry === 'hypercube') {
+            // Rotating squares
+            for (let i = 0; i < 5; i++) {
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                this.ctx.rotate(time * 0.5 + i * 0.2);
+                const size = 50 + i * 30;
+                this.ctx.strokeRect(-size/2, -size/2, size, size);
+                this.ctx.restore();
+            }
+        } else if (this.sectionConfig.geometry === 'tetrahedron') {
+            // Triangle patterns
+            for (let i = 0; i < 3; i++) {
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                this.ctx.rotate(time * 0.3 + i * Math.PI * 2 / 3);
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, -50 - i * 20);
+                this.ctx.lineTo(-43 - i * 17, 25 + i * 10);
+                this.ctx.lineTo(43 + i * 17, 25 + i * 10);
+                this.ctx.closePath();
+                this.ctx.stroke();
+                this.ctx.restore();
+            }
+        } else {
+            // Default circles
+            for (let i = 0; i < 8; i++) {
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, 20 + i * 15, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+        }
     }
     
     stop() {
