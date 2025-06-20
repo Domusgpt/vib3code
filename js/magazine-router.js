@@ -170,10 +170,10 @@ var MagazineRouter = { // Converted const
             var article = this.findArticleById(section); // Converted const
             themeKey = article ? (article.theme_modifier_key || article.contentType || 'article') : 'home';
         }
-        if (window.ThemeEngine && typeof window.ThemeEngine.applySectionTheme === 'function') {
-            window.ThemeEngine.applySectionTheme(themeKey);
-        } else if (window.VIB3VisualizerIntegration && typeof window.VIB3VisualizerIntegration.applySectionPreset === 'function') {
-            window.VIB3VisualizerIntegration.applySectionPreset(themeKey);
+        if (window.visualizerManager && typeof window.visualizerManager.applyMasterStyle === 'function') {
+            window.visualizerManager.applyMasterStyle(themeKey);
+        } else {
+            console.warn('VisualizerManager not found or applyMasterStyle method is missing.');
         }
     },
 

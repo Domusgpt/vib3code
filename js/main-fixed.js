@@ -36,6 +36,7 @@
         this.setupCardAnimations();
         this.setupNewsletterForm();
         this.setupAudioContext();
+        this.setupPersistentVisualizers(); // Call the new method
         
         var self = this;
         setTimeout(function() {
@@ -433,6 +434,111 @@
             }
         } catch (error) {
             console.error('Failed to initialize audio context:', error);
+        }
+    };
+
+    VIB3CODEApp.prototype.setupPersistentVisualizers = function() {
+        console.log('Setting up Persistent Visualizers...');
+
+        function createAndAppendCanvas(id, className, zIndex) {
+            let canvas = document.getElementById(id);
+            if (canvas) { // If canvas already exists (e.g. from previous load or static HTML)
+                // Optionally clear it or ensure it's correctly styled
+                console.log(`Canvas ${id} already exists. Reusing.`);
+            } else {
+                canvas = document.createElement('canvas');
+                canvas.id = id;
+                document.body.appendChild(canvas);
+                console.log(`Canvas ${id} created.`);
+            }
+
+            canvas.className = className; // Apply class
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = zIndex.toString();
+            return canvas;
+        }
+
+        const headerCanvas = createAndAppendCanvas('persistent-header', 'header-visualizer', 1);
+        const contentCanvas = createAndAppendCanvas('persistent-content', 'content-visualizer', 0);
+        const ambientCanvas = createAndAppendCanvas('persistent-ambient', 'ambient-visualizer', -1);
+
+        if (window.visualizerManager && typeof window.visualizerManager.addInstance === 'function') {
+            const vm = window.visualizerManager;
+
+            vm.addInstance('header', headerCanvas,
+                { intensity: 0.3, opacity: 0.25, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 1.0 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.05, direction: 'direct', min: 5, max: 25 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.01, direction: 'direct', min: 0, max: 0.5 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.02, direction: 'direct', min: 0, max: 0.5 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.005,direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
+                vm.globalVelocityState
+            );
+
+            vm.addInstance('content', contentCanvas,
+                { intensity: 0.15, opacity: 0.12, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 0.5 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.07, direction: 'direct', min: 5, max: 30 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.015,direction: 'direct', min: 0, max: 0.6 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.03, direction: 'direct', min: 0, max: 0.6 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.007,direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
+                vm.globalVelocityState
+            );
+
+            vm.addInstance('ambient', ambientCanvas,
+                { intensity: 0.08, opacity: 0.06, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 0.25 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.1,  direction: 'direct', min: 5, max: 35 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.02, direction: 'direct', min: 0, max: 0.7 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.04, direction: 'direct', min: 0, max: 0.7 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.01, direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
+                vm.globalVelocityState
+            );
+
+            // After adding instances, it might be necessary to apply the initial master style
+            // if the router hasn't run yet or if a default state is desired immediately.
+            // vm.applyMasterStyle(vm.getCurrentMasterStyleKey() || 'home');
+
+        } else {
+            console.error('VisualizerManager not found or addInstance method is missing. Visualizers not added.');
         }
     };
     
