@@ -68,6 +68,18 @@ class VisualizerManager {
             }
         };
         
+        this.masterReactivitySettings = {
+            scrollSensitivity: {
+                gridDensity: 0.1,
+                rotationSpeed: 0.02,
+                intensity: 0.005
+            },
+            mouseSensitivity: {
+                glitchIntensity: 0.05,
+                morphFactor: 0.01
+            }
+        };
+
         this.globalVelocityState = {
             mouseVelocity: 0,
             scrollVelocity: 0,
@@ -99,6 +111,18 @@ class VisualizerManager {
                 this.globalVelocityState.lastMouseX = e.clientX;
                 this.globalVelocityState.lastMouseY = e.clientY;
                 this.globalVelocityState.lastTime = now;
+
+                const mouseDeltas = {};
+                if (this.masterReactivitySettings.mouseSensitivity.glitchIntensity) {
+                    mouseDeltas.glitchIntensity = this.globalVelocityState.mouseVelocity * this.masterReactivitySettings.mouseSensitivity.glitchIntensity;
+                }
+                if (this.masterReactivitySettings.mouseSensitivity.morphFactor) {
+                    mouseDeltas.morphFactor = this.globalVelocityState.mouseVelocity * this.masterReactivitySettings.mouseSensitivity.morphFactor;
+                }
+                this.propagateReactiveUpdate('GLOBAL_MOUSE_MOVE_UPDATE', {
+                    mouseVelocity: this.globalVelocityState.mouseVelocity,
+                    deltas: mouseDeltas
+                });
             }
         });
         
@@ -108,6 +132,21 @@ class VisualizerManager {
             const currentScrollY = window.scrollY;
             this.globalVelocityState.scrollVelocity = Math.abs(currentScrollY - lastScrollY);
             lastScrollY = currentScrollY;
+
+            const scrollDeltas = {};
+            if (this.masterReactivitySettings.scrollSensitivity.gridDensity) {
+                scrollDeltas.gridDensity = this.globalVelocityState.scrollVelocity * this.masterReactivitySettings.scrollSensitivity.gridDensity;
+            }
+            if (this.masterReactivitySettings.scrollSensitivity.rotationSpeed) {
+                scrollDeltas.rotationSpeed = this.globalVelocityState.scrollVelocity * this.masterReactivitySettings.scrollSensitivity.rotationSpeed;
+            }
+            if (this.masterReactivitySettings.scrollSensitivity.intensity) {
+                scrollDeltas.intensity = this.globalVelocityState.scrollVelocity * this.masterReactivitySettings.scrollSensitivity.intensity;
+            }
+            this.propagateReactiveUpdate('GLOBAL_SCROLL_UPDATE', {
+                scrollVelocity: this.globalVelocityState.scrollVelocity,
+                deltas: scrollDeltas
+            });
             
             setTimeout(() => {
                 this.globalVelocityState.scrollVelocity *= 0.8;
@@ -235,11 +274,61 @@ class VisualizerManager {
     }
 
     propagateGlobalEffect(effectType, effectParams) {
-        console.log(`VisualizerManager: Propagating global effect '${effectType}' to all instances.`);
+        console.log(`VisualizerManager: Received global effect '${effectType}' with params:`, effectParams);
+
+        if (effectType === 'SWAP_INSTANCE_CONFIGS') {
+            if (effectParams && effectParams.instanceId1 && effectParams.instanceId2) {
+                const instance1 = this.getInstance(effectParams.instanceId1);
+                const instance2 = this.getInstance(effectParams.instanceId2);
+
+                if (instance1 && instance2) {
+                    // Perform a "deep" swap: currentComputedConfig, baseConfig, and rules
+                    let tempComputedConfig = instance1.currentComputedConfig;
+                    instance1.currentComputedConfig = instance2.currentComputedConfig;
+                    instance2.currentComputedConfig = tempComputedConfig;
+
+                    let tempBaseConfig = instance1.baseConfig;
+                    instance1.baseConfig = instance2.baseConfig;
+                    instance2.baseConfig = tempBaseConfig;
+
+                    let tempRules = instance1.rules;
+                    instance1.rules = instance2.rules;
+                    instance2.rules = tempRules;
+
+                    console.log(`VisualizerManager: Deep swapped configs (currentComputed, base, rules) of instances '${effectParams.instanceId1}' and '${effectParams.instanceId2}'.`);
+
+                    // Optional: Trigger a very fast transition to visually acknowledge the swap
+                    // This would require smoothTransition to handle being called with the new current config.
+                    // instance1.smoothTransition(instance1.currentComputedConfig, 50);
+                    // instance2.smoothTransition(instance2.currentComputedConfig, 50);
+                    // For now, direct change will be picked up by the next render tick.
+
+                } else {
+                    console.warn(`VisualizerManager: One or both instances not found for SWAP_INSTANCE_CONFIGS. Instance1 ID: '${effectParams.instanceId1}', Instance2 ID: '${effectParams.instanceId2}'`);
+                }
+            } else {
+                console.warn("VisualizerManager: SWAP_INSTANCE_CONFIGS effect requires instanceId1 and instanceId2 in effectParams.");
+            }
+            // This effect is fully handled by the manager, so return.
+            return;
+        }
+
+        // Default behavior for other effects: propagate to all instances
         Object.values(this.instances).forEach(instance => {
             if (instance && typeof instance.applyGlobalEffect === 'function') {
                 instance.applyGlobalEffect(effectType, effectParams);
             }
+        });
+    }
+
+    propagateReactiveUpdate(eventType, eventData) {
+        Object.values(this.instances).forEach(instance => {
+            if (instance && typeof instance.applyReactiveUpdate === 'function') {
+                instance.applyReactiveUpdate(eventType, eventData);
+            }
+            // else if (instance) {
+            //     console.warn(`Instance ${instance.id} does not have applyReactiveUpdate method.`);
+            // }
         });
     }
 }
@@ -575,28 +664,109 @@ class ManagedVisualizer {
         return result;
     }
 
+    _isAdjustmentAllowed(paramName) {
+        if (this.rules && Array.isArray(this.rules.allowedAdjustments)) {
+            return this.rules.allowedAdjustments.includes(paramName);
+        }
+        return true; // Default: allow adjustment if allowedAdjustments rule is not defined
+    }
+
+    applyReactiveUpdate(eventType, eventData) {
+        if (!this.rules || !this.rules.eventReactions || !this.rules.eventReactions[eventType]) {
+            return; // No rules for this event type for this instance
+        }
+
+        const eventRules = this.rules.eventReactions[eventType];
+
+        for (const paramName in eventRules) {
+            if (eventRules.hasOwnProperty(paramName)) {
+                const rule = eventRules[paramName];
+                let inputValue = 0;
+
+                // Determine input value based on rule.source
+                if (rule.source) {
+                    if (rule.source.startsWith('masterEffect.deltas.')) {
+                        const sourceParam = rule.source.substring('masterEffect.deltas.'.length);
+                        if (eventData.deltas && eventData.deltas[sourceParam] !== undefined) {
+                            inputValue = eventData.deltas[sourceParam];
+                        } else {
+                            // console.warn(`Instance ${this.id}: Source '${rule.source}' not found in eventData.deltas for event '${eventType}'.`);
+                            continue;
+                        }
+                    } else if (rule.source === 'raw.scrollVelocity' && eventData.scrollVelocity !== undefined) {
+                        inputValue = eventData.scrollVelocity;
+                    } else if (rule.source === 'raw.mouseVelocity' && eventData.mouseVelocity !== undefined) {
+                        inputValue = eventData.mouseVelocity;
+                    } else {
+                        // console.warn(`Instance ${this.id}: Unknown or missing source '${rule.source}' in eventData for event '${eventType}'.`);
+                        continue;
+                    }
+                } else {
+                    // console.warn(`Instance ${this.id}: Rule for param '${paramName}' in event '${eventType}' is missing a 'source'.`);
+                    continue;
+                }
+
+                const multiplier = rule.multiplier !== undefined ? rule.multiplier : 1.0;
+                const direction = rule.direction === 'inverse' ? -1 : 1;
+
+                const instanceDelta = inputValue * multiplier * direction;
+
+                // Update the currentComputedConfig
+                if (this.currentComputedConfig[paramName] !== undefined) {
+                    this.currentComputedConfig[paramName] += instanceDelta;
+                } else {
+                    // Initialize if not present, though most should be from masterConfig or baseConfig
+                    this.currentComputedConfig[paramName] = instanceDelta;
+                }
+
+                // Apply clamps
+                if (rule.min !== undefined) {
+                    this.currentComputedConfig[paramName] = Math.max(rule.min, this.currentComputedConfig[paramName]);
+                }
+                if (rule.max !== undefined) {
+                    this.currentComputedConfig[paramName] = Math.min(rule.max, this.currentComputedConfig[paramName]);
+                }
+            }
+        }
+        // Changes to currentComputedConfig will be picked up by the render loop
+    }
+
     applyGlobalEffect(effectType, effectParams) {
         console.log(`Instance ${this.id}: Applying global effect '${effectType}' with params:`, effectParams);
         let needsImmediateRenderUpdate = false; // Flag if a non-transitioning change is made
 
         switch (effectType) {
             case 'INVERT_COLORS':
+                if (!this._isAdjustmentAllowed('baseColor')) {
+                    console.warn(`Instance ${this.id}: Adjustment of 'baseColor' not allowed by rules for INVERT_COLORS.`);
+                    break;
+                }
                 if (this.currentComputedConfig.baseColor) {
                     this.currentComputedConfig.baseColor = this.currentComputedConfig.baseColor.map(c => 1.0 - c);
                     needsImmediateRenderUpdate = true;
                 }
                 break;
             case 'MULTIPLY_GRID_DENSITY':
+                if (!this._isAdjustmentAllowed('gridDensity')) {
+                    console.warn(`Instance ${this.id}: Adjustment of 'gridDensity' not allowed by rules for MULTIPLY_GRID_DENSITY.`);
+                    break;
+                }
                 if (effectParams && typeof effectParams.factor === 'number') {
-                    this.currentComputedConfig.gridDensity *= effectParams.factor;
+                    // Ensure gridDensity exists and is a number before multiplication
+                    this.currentComputedConfig.gridDensity = (this.currentComputedConfig.gridDensity || 0) * effectParams.factor;
                     needsImmediateRenderUpdate = true;
                 }
                 break;
             case 'CYCLE_GEOMETRY':
+                if (!this._isAdjustmentAllowed('geometry')) {
+                    console.warn(`Instance ${this.id}: Adjustment of 'geometry' not allowed by rules for CYCLE_GEOMETRY.`);
+                    break;
+                }
                 // Assuming 5 geometries, indexed 0-4, as per current shader comments (Hypercube to Fractal)
                 // If more are added to shader, this maxGeomIndex needs update.
                 const maxGeomIndex = 4; // Hypercube, Tetrahedron, Sphere, Torus, Fractal
-                this.currentComputedConfig.geometry = (this.currentComputedConfig.geometry + 1) % (maxGeomIndex + 1);
+                // Ensure geometry exists and is a number before cycling
+                this.currentComputedConfig.geometry = ((this.currentComputedConfig.geometry || 0) + 1) % (maxGeomIndex + 1);
                 needsImmediateRenderUpdate = true;
                 break;
             // Add more cases here, e.g., for swapping parameters if effectParams includes another instance's config
@@ -616,10 +786,8 @@ class ManagedVisualizer {
     render() {
         this.time = performance.now() * 0.001;
         
-        // Calculate velocity influence
-        const mouseVel = Math.min(this.globalVelocityState.mouseVelocity * 0.1, 1.0);
-        const scrollVel = Math.min(this.globalVelocityState.scrollVelocity * 0.1, 1.0);
-        const velocityInfluence = (mouseVel + scrollVel) * this.currentComputedConfig.intensity;
+        // Reactivity calculations are now handled by applyReactiveUpdate.
+        // mouseVel, scrollVel, and velocityInfluence are no longer calculated here.
         
         // Clear
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -632,50 +800,17 @@ class ManagedVisualizer {
         
         this.gl.useProgram(this.program);
         
-        // Set uniforms
-        const rConfig = this.currentComputedConfig.reactivityConfig || {};
-
-        // Helper to parse reactivity value which can be number or {multiplier, direction} object
-        function parseReactivityRule(ruleValue, defaultMultiplier) {
-            let multiplier = defaultMultiplier;
-            let direction = 1; // 1 for direct, -1 for inverse
-
-            if (typeof ruleValue === 'number') {
-                multiplier = ruleValue;
-            } else if (typeof ruleValue === 'object' && ruleValue !== null) {
-                multiplier = (ruleValue.multiplier !== undefined) ? ruleValue.multiplier : defaultMultiplier;
-                if (ruleValue.direction === 'inverse') {
-                    direction = -1;
-                }
-            }
-            return { multiplier, direction };
-        }
-
-        const gridDensityRule = parseReactivityRule(rConfig.gridDensityFromVelocity, 2.0);
-        const glitchRule = parseReactivityRule(rConfig.glitchFromMouseVelocity, 0.05);
-        const rotationRule = parseReactivityRule(rConfig.rotationFromScrollVelocity, 0.1);
-        const intensityRule = parseReactivityRule(rConfig.intensityFromVelocity, 1.0);
-
+        // Set uniforms directly from currentComputedConfig
         this.gl.uniform1f(this.uniforms.time, this.time);
         this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
         this.gl.uniform3fv(this.uniforms.baseColor, this.currentComputedConfig.baseColor || [1,1,1]);
-
-        const currentGridDensity = this.currentComputedConfig.gridDensity || 0;
-        this.gl.uniform1f(this.uniforms.gridDensity, currentGridDensity + velocityInfluence * gridDensityRule.multiplier * gridDensityRule.direction);
-
+        this.gl.uniform1f(this.uniforms.gridDensity, this.currentComputedConfig.gridDensity || 0);
         this.gl.uniform1f(this.uniforms.morphFactor, this.currentComputedConfig.morphFactor || 0.5);
         this.gl.uniform1f(this.uniforms.dimension, this.currentComputedConfig.dimension || 3.0);
-
-        const currentGlitchIntensity = this.currentComputedConfig.glitchIntensity || 0;
-        this.gl.uniform1f(this.uniforms.glitchIntensity, currentGlitchIntensity + mouseVel * glitchRule.multiplier * glitchRule.direction);
-
-        const currentRotationSpeed = this.currentComputedConfig.rotationSpeed || 0;
-        this.gl.uniform1f(this.uniforms.rotationSpeed, currentRotationSpeed + scrollVel * rotationRule.multiplier * rotationRule.direction);
-
+        this.gl.uniform1f(this.uniforms.glitchIntensity, this.currentComputedConfig.glitchIntensity || 0);
+        this.gl.uniform1f(this.uniforms.rotationSpeed, this.currentComputedConfig.rotationSpeed || 0);
         this.gl.uniform1f(this.uniforms.geometry, this.currentComputedConfig.geometry || 0);
-
-        const currentIntensity = this.currentComputedConfig.intensity || 0;
-        this.gl.uniform1f(this.uniforms.intensity, currentIntensity + velocityInfluence * intensityRule.multiplier * intensityRule.direction);
+        this.gl.uniform1f(this.uniforms.intensity, this.currentComputedConfig.intensity || 0);
         
         // Set lattice style
         const latticeStyleMap = { wireframe: 0.0, solid: 1.0, hybrid: 2.0 };

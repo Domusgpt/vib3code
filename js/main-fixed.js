@@ -471,23 +471,65 @@
             const vm = window.visualizerManager;
 
             vm.addInstance('header', headerCanvas,
-                { intensity: 0.3, opacity: 0.25, transitionDuration: 1000,
-                  reactivityConfig: { gridDensityFromVelocity: 1.5, glitchFromMouseVelocity: 0.04, rotationFromScrollVelocity: 0.08, intensityFromVelocity: 0.8 } },
-                { intensityMultiplierRelativeToMaster: 1.0 },
+                { intensity: 0.3, opacity: 0.25, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 1.0 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.05, direction: 'direct', min: 5, max: 25 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.01, direction: 'direct', min: 0, max: 0.5 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.02, direction: 'direct', min: 0, max: 0.5 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.005,direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
                 vm.globalVelocityState
             );
 
             vm.addInstance('content', contentCanvas,
-                { intensity: 0.15, opacity: 0.12, transitionDuration: 1000,
-                  reactivityConfig: { gridDensityFromVelocity: 2.0, glitchFromMouseVelocity: 0.05, rotationFromScrollVelocity: 0.1, intensityFromVelocity: 1.0 } },
-                { intensityMultiplierRelativeToMaster: 0.5 },
+                { intensity: 0.15, opacity: 0.12, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 0.5 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.07, direction: 'direct', min: 5, max: 30 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.015,direction: 'direct', min: 0, max: 0.6 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.03, direction: 'direct', min: 0, max: 0.6 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.007,direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
                 vm.globalVelocityState
             );
 
             vm.addInstance('ambient', ambientCanvas,
-                { intensity: 0.08, opacity: 0.06, transitionDuration: 1000,
-                  reactivityConfig: { gridDensityFromVelocity: 2.5, glitchFromMouseVelocity: 0.06, rotationFromScrollVelocity: 0.12, intensityFromVelocity: 1.2 } },
-                { intensityMultiplierRelativeToMaster: 0.25 },
+                { intensity: 0.08, opacity: 0.06, transitionDuration: 1000 }, // reactivityConfig removed
+                { // rules object
+                    parameterDerivation: {
+                        intensity: { multiplierRelativeToMaster: 0.25 }
+                    },
+                    allowedAdjustments: ['intensity', 'gridDensity', 'baseColor', 'glitchIntensity', 'rotationSpeed', 'morphFactor', 'geometry', 'latticeStyle'],
+                    eventReactions: {
+                        GLOBAL_SCROLL_UPDATE: {
+                            gridDensity:   { source: 'raw.scrollVelocity', multiplier: 0.1,  direction: 'direct', min: 5, max: 35 },
+                            rotationSpeed: { source: 'raw.scrollVelocity', multiplier: 0.02, direction: 'direct', min: 0, max: 0.7 }
+                        },
+                        GLOBAL_MOUSE_MOVE_UPDATE: {
+                            glitchIntensity: { source: 'raw.mouseVelocity', multiplier: 0.04, direction: 'direct', min: 0, max: 0.7 },
+                            morphFactor:     { source: 'raw.mouseVelocity', multiplier: 0.01, direction: 'direct', min: 0, max: 1.0 }
+                        }
+                    }
+                },
                 vm.globalVelocityState
             );
 
