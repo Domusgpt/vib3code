@@ -6,7 +6,7 @@
     <meta name="description" content="VIB3CODE - Where elegant code meets digital freedom. Modern development without vendor lock-in.">
     <meta name="keywords" content="VIB3CODE, coding, development, digital freedom, parserator, no vendor lock-in">
     
-    <title>VIB3CODE - Polytopal Kernel Architecture - WORKING v1750410000</title>
+    <title>VIB3CODE - Multi-Visualizer WebGL System - WORKING v1750420000</title>
     
     <!-- FORCE COMPLETE CACHE REFRESH -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -2045,34 +2045,33 @@
     </footer>
 
 
-    <!-- POLYTOPAL KERNEL SYSTEM v2.0 - ENHANCED ARCHITECTURE -->
-    <!-- Load Core Modules First -->
-    <script type="module" src="core/GeometryManager.js?v=1750410000"></script>
-    <script type="module" src="core/ProjectionManager.js?v=1750410000"></script>
-    <script type="module" src="core/ShaderManager.js?v=1750410000"></script>
-    <script type="module" src="core/HypercubeCore.js?v=1750410000"></script>
-    <script type="module" src="core/PolytopalKernelCore.js?v=1750410000"></script>
+    <!-- VIB3CODE MULTI-VISUALIZER SYSTEM v3.0 - DIRECT WEBGL ARCHITECTURE -->
+    <!-- Load Home-Master System (Working Component) -->
+    <script type="module" src="shared-reactive-core/home-master-system.js?v=1750420000"></script>
     
-    <!-- Load Polytopal Integration System -->
-    <script type="module" src="js/vib3-polytopal-kernel-integration-enhanced.js?v=1750410000"></script>
+    <!-- Load Direct WebGL Multi-Visualizer System -->
+    <script type="module" src="js/vib3-multi-visualizer-webgl.js?v=1750420000"></script>
+    
+    <!-- Load Integration Manager -->
+    <script type="module" src="js/vib3-integration-manager.js?v=1750420000"></script>
     
     <!-- Fallback for non-module browsers -->
-    <script nomodule src="js/vib3-home-master-enhanced.js?v=1750410000"></script>
+    <script nomodule src="js/vib3-home-master-enhanced.js?v=1750420000"></script>
     
-    <!-- Wait for Polytopal Kernel System then load router -->
+    <!-- Wait for Multi-Visualizer System then load router -->
     <script>
-        // Enhanced system detection for Polytopal Kernel
-        function waitForPolytopalSystem() {
-            const hasPolytopal = window.vib3PolytopalIntegration || window.vib3PolytopalSystemReady;
-            const hasVisualizer = window.visualizerManager;
-            const hasHomeMaster = window.HomeBasedReactiveSystem;
+        // Enhanced system detection for Multi-Visualizer WebGL with Integration Manager
+        function waitForMultiVisualizerSystem() {
+            const hasMultiVisualizer = window.vib3MultiVisualizer || window.vib3MultiVisualizerReady;
+            const hasHomeMaster = window.homeMasterSystem || window.HomeBasedReactiveSystem;
+            const hasIntegration = window.vib3IntegrationManager || window.vib3IntegrationReady;
             
-            if (hasPolytopal && hasVisualizer && hasHomeMaster) {
-                console.log('✅ VIB3CODE Polytopal Kernel System ready, loading router...');
+            if (hasMultiVisualizer && hasHomeMaster && hasIntegration) {
+                console.log('✅ VIB3CODE Complete Multi-Visualizer System ready, loading router...');
                 loadRouter();
             } else {
-                console.log(`⏳ Waiting for Polytopal System... (P:${!!hasPolytopal} V:${!!hasVisualizer} H:${!!hasHomeMaster})`);
-                setTimeout(waitForPolytopalSystem, 200);
+                console.log(`⏳ Waiting for Complete System... (MV:${!!hasMultiVisualizer} HM:${!!hasHomeMaster} INT:${!!hasIntegration})`);
+                setTimeout(waitForMultiVisualizerSystem, 200);
             }
         }
         
@@ -2080,23 +2079,24 @@
             const script = document.createElement('script');
             script.src = 'js/magazine-router.js?v=1749968724';
             script.onload = () => {
-                console.log('✅ Magazine router loaded with Polytopal Kernel support');
+                console.log('✅ Magazine router loaded with Multi-Visualizer WebGL support');
             };
             document.head.appendChild(script);
         }
         
-        // Start waiting for polytopal system
-        waitForPolytopalSystem();
+        // Start waiting for multi-visualizer system
+        waitForMultiVisualizerSystem();
         
         // Enhanced debug monitoring
         setInterval(() => {
-            console.log('🔍 POLYTOPAL KERNEL DEBUG:', {
-                'PolytopalIntegration': !!window.vib3PolytopalIntegration,
-                'PolytopalSystemReady': !!window.vib3PolytopalSystemReady,
-                'VisualizerManager': !!window.visualizerManager,
-                'HomeMasterSystem': !!window.HomeBasedReactiveSystem,
-                'DebugInterface': !!window.debugPolytopalKernel,
-                'MainCanvas': !!document.getElementById('vib3-polytopal-kernel-canvas'),
+            console.log('🔍 MULTI-VISUALIZER DEBUG:', {
+                'MultiVisualizer': !!window.vib3MultiVisualizer,
+                'MultiVisualizerReady': !!window.vib3MultiVisualizerReady,
+                'HomeMasterSystem': !!window.homeMasterSystem,
+                'IntegrationManager': !!window.vib3IntegrationManager,
+                'IntegrationReady': !!window.vib3IntegrationReady,
+                'SystemStatus': window.vib3IntegrationManager ? window.vib3IntegrationManager.getSystemStatus() : null,
+                'MainCanvas': !!document.getElementById('vib3-visualizer-canvas'),
                 'TotalCanvases': document.querySelectorAll('canvas').length
             });
         }, 3000);
